@@ -5,22 +5,34 @@
   "type": "module",
   "scripts": {
     "test": "test",
-    "build": "tsc",
-    "start": "node dist/server/index.js",
-    "dev": "tsx watch src/server/index.ts"
+    "build": "npm run build:server && npm run build:client",
+    "build:server": "tsc",
+    "build:client": "vite build",
+    "start": "NODE_ENV=production node dist/server/index.js",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "tsx watch src/server/index.ts",
+    "dev:client": "vite",
+    "dev:build": "npm run build:client && npm run dev:server"
   },
   "author": "Jarl-Erik Malmström",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.12.2",
-    "express": "^5.1.0",
-    "node-cache": "^5.1.2"
+    "express": "^4.19.2",
+    "node-cache": "^5.1.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@types/express": "^5.0.4",
+    "@types/express": "^4.17.21",
     "@types/node": "^24.9.1",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^8.2.2",
     "ts-node-dev": "^2.0.0",
     "tsx": "^4.7.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite": "^5.2.0"
   }
 }

@@ -1,13 +1,26 @@
 {
-    "compilerOptions": {
+  "compilerOptions": {
     "target": "ES2020",
     "module": "ES2020",
     "moduleResolution": "node",
-    "outDir": "dist",
+    "outDir": "dist/server",
     "rootDir": "src",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
-    }
+    "skipLibCheck": true,
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "src/server/**/*",
+    "src/data/**/*",
+    "src/elo/**/*",
+    "src/utils/**/*"
+  ],
+  "exclude": [
+    "src/**/*.tsx",
+    "src/components/**/*",
+    "src/App.tsx",
+    "src/main.tsx"
+  ]
 }   
