@@ -18,14 +18,6 @@ interface Prediction {
   minAwayOdd?: number;
 }
 
-interface ScorePrediction {
-  homeTeam: string;
-  awayTeam: string;
-  lambdaHome: number;
-  lambdaAway: number;
-  top10: any[];
-}
-
 interface GamePredictionProps {
   teams: Team[];
 }
