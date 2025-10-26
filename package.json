@@ -1,14 +1,13 @@
 {
   "name": "elo-predictor",
   "version": "1.0.0",
-  "description": "Web tool to calculate probabilities for betting ",
   "type": "module",
   "scripts": {
     "test": "test",
-    "build": "npm run build:server && npm run build:client",
+    "build": "npm run build:client",
     "build:server": "tsc",
     "build:client": "vite build",
-    "start": "NODE_ENV=production node dist/server/index.js",
+    "start": "NODE_ENV=production tsx src/server/index.ts",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "tsx watch src/server/index.ts",
     "dev:client": "vite",
