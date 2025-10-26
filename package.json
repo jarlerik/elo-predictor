@@ -1,0 +1,26 @@
+{
+  "name": "elo-predictor",
+  "version": "1.0.0",
+  "description": "Web tool to calculate probabilities for betting ",
+  "type": "module",
+  "scripts": {
+    "test": "test",
+    "build": "tsc",
+    "start": "node dist/server/index.js",
+    "dev": "tsx watch src/server/index.ts"
+  },
+  "author": "Jarl-Erik Malmström",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "express": "^5.1.0",
+    "node-cache": "^5.1.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.4",
+    "@types/node": "^24.9.1",
+    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.9.3"
+  }
+}
