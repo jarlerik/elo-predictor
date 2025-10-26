@@ -264,3 +264,100 @@ body {
 .team-list-items::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
 }
+
+/* Score Prediction */
+.score-prediction {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.score-prediction h3 {
+  margin: 0 0 1rem 0;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.expected-goals {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.goal-expectation {
+  flex: 1;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.goal-expectation .team-name {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.goal-expectation .lambda {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.value-bets {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.value-bet-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid #4ade80;
+}
+
+.value-bet-card:nth-child(even) {
+  border-left-color: #60a5fa;
+}
+
+.bet-info {
+  flex: 1;
+}
+
+.bet-type {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.bet-details {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.bet-stats {
+  text-align: right;
+  min-width: 140px;
+}
+
+.bet-stats .probability {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.bet-stats .value {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #4ade80;
+}
+
+.bet-stats .odds {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-bottom: 0.25rem;
+}

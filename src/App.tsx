@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import TeamSelector from "./components/TeamSelector";
 import PredictionResult from "./components/PredictionResult";
+import ScorePrediction from "./components/ScorePrediction";
 import TeamList from "./components/TeamList";
 
 interface Team {
@@ -15,6 +16,16 @@ interface Prediction {
   homeWinProbability: number;
   drawProbability: number;
   awayWinProbability: number;
+  minHomeOdd?: number;
+  minAwayOdd?: number;
+}
+
+interface ScorePrediction {
+  homeTeam: string;
+  awayTeam: string;
+  lambdaHome: number;
+  lambdaAway: number;
+  top10: any[];
 }
 
 function App() {
@@ -22,6 +33,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [prediction, setPrediction] = useState<Prediction | null>(null);
+  const [scorePrediction, setScorePrediction] =
+    useState<ScorePrediction | null>(null);
   const [selectedHome, setSelectedHome] = useState<string>("");
   const [selectedAway, setSelectedAway] = useState<string>("");
 
@@ -53,14 +66,25 @@ function App() {
 
     try {
       setError(null);
-      const response = await fetch(
-        `/api/predict?home=${selectedHome}&away=${selectedAway}`
-      );
-      if (!response.ok) {
+
+      // Fetch both predictions in parallel
+      const [predictionResponse, scoreResponse] = await Promise.all([
+        fetch(`/api/predict?home=${selectedHome}&away=${selectedAway}`),
+        fetch(`/api/predict/score?home=${selectedHome}&away=${selectedAway}`),
+      ]);
+
+      if (!predictionResponse.ok) {
         throw new Error("Failed to get prediction");
       }
-      const data = await response.json();
-      setPrediction(data);
+      if (!scoreResponse.ok) {
+        throw new Error("Failed to get score prediction");
+      }
+
+      const predictionData = await predictionResponse.json();
+      const scoreData = await scoreResponse.json();
+
+      setPrediction(predictionData);
+      setScorePrediction(scoreData);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     }
@@ -101,6 +125,9 @@ function App() {
           />
 
           {prediction && <PredictionResult prediction={prediction} />}
+          {scorePrediction && (
+            <ScorePrediction scorePrediction={scorePrediction} />
+          )}
         </div>
 
         <div className="teams-section">
