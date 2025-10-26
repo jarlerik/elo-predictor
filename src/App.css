@@ -4,6 +4,7 @@
   color: #a3a3a3;
   font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
   position: relative;
+  display: flex;
 }
 
 .app::before {
@@ -44,24 +45,37 @@
 }
 
 .app-main {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  flex: 1;
+  padding: 2rem;
+  margin-left: 280px;
   position: relative;
   z-index: 1;
 }
 
 @media (max-width: 768px) {
   .app-main {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    margin-left: 0;
+    padding: 1rem;
   }
   
-  .app-header h1 {
-    font-size: 2rem;
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  
+  .sidebar-nav {
+    flex-direction: row;
+    gap: 1rem;
+  }
+  
+  .nav-item {
+    flex-direction: column;
+    padding: 0.5rem;
+  }
+  
+  .nav-text {
+    font-size: 0.8rem;
   }
 }
 
@@ -101,15 +115,153 @@
   justify-content: center;
 }
 
+/* Sidebar Styles */
+.sidebar {
+  width: 280px;
+  height: 100vh;
+  background: #262626;
+  border-right: 1px solid #171717;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  border-bottom: 2px solid #f97316;
+  text-align: center;
+}
+
+.sidebar-header h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 1px;
+}
+
+.sidebar-header p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #a3a3a3;
+  font-weight: 500;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: none;
+  border: none;
+  color: #a3a3a3;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+  font-weight: 500;
+}
+
+.nav-item:hover {
+  background: #171717;
+  color: #FFFFFF;
+}
+
+.nav-item.active {
+  background: #f97316;
+  color: #FFFFFF;
+}
+
+.nav-icon {
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+}
+
+.nav-text {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-footer {
+  padding: 1.5rem;
+  border-top: 1px solid #171717;
+}
+
+.system-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.status-label {
+  font-size: 0.75rem;
+  color: #a3a3a3;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.status-value {
+  font-size: 0.75rem;
+  color: #22c55e;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.status-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #737373;
+}
+
+/* Page Content Styles */
+.page-content {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #262626;
+}
+
+.page-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: 1px;
+}
+
+.page-header p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #a3a3a3;
+}
+
 .prediction-section,
 .teams-section {
   background: #262626;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 1.5rem;
-  backdrop-filter: blur(20px);
-  border: 1px solid #262626;
+  border: 1px solid #171717;
   position: relative;
-  overflow: hidden;
 }
 
 
