@@ -1,4 +1,5 @@
 import { GameRecord, TeamElo } from "../utils/types";
+import { CURRENT_NHL_TEAMS } from "../utils/teamData";
 
 const BASE_ELO = 1500;
 const BASE_K = 20; // per-game base
@@ -69,11 +70,15 @@ export function computeElosFromGames(games: GameRecord[]): TeamElo[] {
 
   const res: TeamElo[] = [];
   for (const [id, e] of elos.entries()) {
-    res.push({
-      teamId: id,
-      abbr: abbrs.get(id) ?? String(id),
-      elo: Math.round(e * 100) / 100,
-    });
+    const abbr = abbrs.get(id) ?? String(id);
+    // Only include current NHL teams
+    if (CURRENT_NHL_TEAMS.has(abbr)) {
+      res.push({
+        teamId: id,
+        abbr: abbr,
+        elo: Math.round(e * 100) / 100,
+      });
+    }
   }
   return res.sort((a, b) => b.elo - a.elo);
 }

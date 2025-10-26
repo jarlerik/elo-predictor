@@ -1,4 +1,5 @@
 import React from "react";
+import { TEAM_FULL_NAMES } from "../utils/teamData";
 
 interface Team {
   abbr: string;
@@ -28,27 +29,6 @@ const TeamSelector: React.FC<TeamSelectorProps> = ({
     <div className="team-selector">
       <div className="team-selection">
         <div className="team-field">
-          <label htmlFor="away-team">Away Team:</label>
-          <select
-            id="away-team"
-            value={selectedAway}
-            onChange={(e) => onAwayChange(e.target.value)}
-            className="team-select"
-          >
-            <option value="">Select away team</option>
-            {sortedTeams.map((team) => (
-              <option key={team.abbr} value={team.abbr}>
-                {team.abbr} ({team.elo.toFixed(0)})
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="vs-divider">
-          <span>@</span>
-        </div>
-
-        <div className="team-field">
           <label htmlFor="home-team">Home Team:</label>
           <select
             id="home-team"
@@ -59,7 +39,28 @@ const TeamSelector: React.FC<TeamSelectorProps> = ({
             <option value="">Select home team</option>
             {sortedTeams.map((team) => (
               <option key={team.abbr} value={team.abbr}>
-                {team.abbr} ({team.elo.toFixed(0)})
+                {TEAM_FULL_NAMES[team.abbr] || team.abbr}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="vs-divider">
+          <span>vs</span>
+        </div>
+
+        <div className="team-field">
+          <label htmlFor="away-team">Away Team:</label>
+          <select
+            id="away-team"
+            value={selectedAway}
+            onChange={(e) => onAwayChange(e.target.value)}
+            className="team-select"
+          >
+            <option value="">Select away team</option>
+            {sortedTeams.map((team) => (
+              <option key={team.abbr} value={team.abbr}>
+                {TEAM_FULL_NAMES[team.abbr] || team.abbr}
               </option>
             ))}
           </select>

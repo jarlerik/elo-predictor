@@ -161,6 +161,13 @@ body {
   margin-bottom: 0.5rem;
 }
 
+.probability-card .odds {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
 .bar {
   height: 8px;
   background: rgba(255, 255, 255, 0.2);

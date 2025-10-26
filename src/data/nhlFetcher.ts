@@ -1,6 +1,7 @@
 import axios from "axios";
 import NodeCache from "node-cache";
 import { GameRecord } from "../utils/types";
+import { CURRENT_NHL_TEAMS } from "../utils/teamData";
 
 const cache = new NodeCache({ stdTTL: 60 * 60 * 6 }); // 6h
 
@@ -21,7 +22,10 @@ async function getTeamMapping(): Promise<Map<number, string>> {
   const mapping = new Map<number, string>();
 
   for (const team of teams) {
-    mapping.set(team.id, team.triCode);
+    // Only include current NHL teams
+    if (CURRENT_NHL_TEAMS.has(team.triCode)) {
+      mapping.set(team.id, team.triCode);
+    }
   }
 
   teamMapping = mapping;

@@ -1,4 +1,5 @@
 import React from "react";
+import { TEAM_FULL_NAMES } from "../utils/teamData";
 
 interface Team {
   abbr: string;
@@ -22,7 +23,9 @@ const TeamList: React.FC<TeamListProps> = ({ teams }) => {
         {sortedTeams.map((team, index) => (
           <div key={team.abbr} className="team-item">
             <div className="team-rank">#{index + 1}</div>
-            <div className="team-name">{team.abbr}</div>
+            <div className="team-name">
+              {TEAM_FULL_NAMES[team.abbr] || team.abbr}
+            </div>
             <div className="team-elo">{team.elo.toFixed(0)}</div>
           </div>
         ))}
