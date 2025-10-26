@@ -18,7 +18,6 @@ export type ScoreProbability = {
   score: string; // e.g. '3-2'
   probability: number;
   minOdd: number; // 1/probability
-  expectedValue?: number | null; // if marketOdd provided
 };
 
 export function computeScoreProbabilities(
@@ -54,36 +53,11 @@ export function computeScoreProbabilities(
 }
 
 /**
- * Given optional marketOdds map (score->odd), compute expected value for each score
- * marketOdds must be an object where keys are "H-A" strings and values are decimal odds
- */
-export function annotateWithMarketOdds(
-  probs: ScoreProbability[],
-  marketOdds?: Record<string, number>
-): ScoreProbability[] {
-  if (!marketOdds) return probs;
-  for (const s of probs) {
-    const odd = marketOdds[s.score];
-    if (odd && odd > 0) s.expectedValue = s.probability * odd;
-    else s.expectedValue = null;
-  }
-  return probs;
-}
-
-/**
  * Convenience: return top-N value bets sorted by EV descending (only where EV>1.0), or by minOdd if no market
  */
 export function topValueBets(
   probs: ScoreProbability[],
   topN = 10
 ): ScoreProbability[] {
-  // If expectedValue present -> use that. Otherwise use minOdd (lower is better)
-  const withEV = probs.filter((p) => typeof p.expectedValue === "number");
-  if (withEV.length > 0) {
-    const winners = withEV.filter((p) => (p.expectedValue ?? 0) > 1.0);
-    winners.sort((a, b) => (b.expectedValue ?? 0) - (a.expectedValue ?? 0));
-    return winners.slice(0, topN);
-  }
-  // fallback: top by probability but include minOdds
   return probs.slice(0, topN);
 }

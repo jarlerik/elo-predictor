@@ -5,11 +5,7 @@ import { eloToWinProb, findTeamElo } from "../elo/probabilities";
 import { TeamElo } from "../utils/types";
 import { computeRecentStatsForTeam } from "../score/recentStats";
 import { computeExpectedGoals } from "../score/expectedGoals";
-import {
-  computeScoreProbabilities,
-  annotateWithMarketOdds,
-  topValueBets,
-} from "../score/correctScore";
+import { computeScoreProbabilities, topValueBets } from "../score/correctScore";
 
 const router = express.Router();
 
@@ -118,7 +114,6 @@ router.get("/predict/score", async (req, res) => {
       }
     }
 
-    annotateWithMarketOdds(probs, marketOdds);
     const top = topValueBets(probs, 10);
 
     res.json({
