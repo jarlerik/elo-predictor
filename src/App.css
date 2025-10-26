@@ -1,28 +1,46 @@
 .app {
   min-height: 100vh;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-  color: white;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #171717;
+  color: #a3a3a3;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  position: relative;
+}
+
+.app::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .app-header {
   text-align: center;
   padding: 2rem 1rem;
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
+  background: #171717;
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid #262626;
+  position: relative;
+  z-index: 1;
 }
 
 .app-header h1 {
   margin: 0 0 0.5rem 0;
   font-size: 2.5rem;
-  font-weight: 700;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: 1px;
 }
 
 .app-header p {
   margin: 0;
   font-size: 1.1rem;
-  opacity: 0.9;
+  opacity: 0.8;
+  color: #a3a3a3;
 }
 
 .app-main {
@@ -32,6 +50,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
+  position: relative;
+  z-index: 1;
 }
 
 @media (max-width: 768px) {
@@ -51,18 +71,20 @@
   align-items: center;
   min-height: 50vh;
   font-size: 1.2rem;
+  color: #a3a3a3;
 }
 
 .error {
-  background: rgba(220, 53, 69, 0.9);
-  color: white;
+  background: rgba(248, 81, 73, 0.1);
+  color: #f85149;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: 6px;
   margin-bottom: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px);
+  border: 1px solid #f85149;
 }
 
 .error button {
@@ -81,16 +103,22 @@
 
 .prediction-section,
 .teams-section {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  background: #262626;
+  border-radius: 8px;
   padding: 1.5rem;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  border: 1px solid #262626;
+  position: relative;
+  overflow: hidden;
 }
+
 
 .prediction-section h2,
 .teams-section h2 {
   margin: 0 0 1.5rem 0;
   font-size: 1.5rem;
   font-weight: 600;
+  color: #FFFFFF;
+  position: relative;
+  z-index: 2;
 }

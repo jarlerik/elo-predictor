@@ -4,9 +4,11 @@
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #171717;
+  color: #a3a3a3;
 }
 
 #root {
@@ -43,10 +45,10 @@ body {
 
 .team-select {
   padding: 0.75rem;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
+  border: 1px solid #262626;
+  border-radius: 6px;
+  background: #171717;
+  color: #FFFFFF;
   font-size: 1rem;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
@@ -54,13 +56,14 @@ body {
 
 .team-select:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.2);
+  border-color: #f97316;
+  background: #171717;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
 }
 
 .team-select option {
-  background: #2a5298;
-  color: white;
+  background: #171717;
+  color: #FFFFFF;
 }
 
 .vs-divider {
@@ -71,21 +74,20 @@ body {
 }
 
 .predict-button {
-  padding: 1rem 2rem;
-  background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-  color: white;
+  padding: 0.875rem 1.5rem;
+  background: #f97316;
+  color: #FFFFFF;
   border: none;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: 600;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+  transition: all 0.2s ease;
 }
 
 .predict-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
 }
 
 .predict-button:disabled {
@@ -132,22 +134,24 @@ body {
 }
 
 .probability-card {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  background: #262626;
+  border-radius: 6px;
   padding: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #262626;
+  position: relative;
+  overflow: hidden;
 }
 
 .probability-card.away-win {
-  border-left: 4px solid #ff6b6b;
+  border-left: 3px solid #f97316;
 }
 
 .probability-card.draw {
-  border-left: 4px solid #feca57;
+  border-left: 3px solid #737373;
 }
 
 .probability-card.home-win {
-  border-left: 4px solid #48dbfb;
+  border-left: 3px solid #f97316;
 }
 
 .probability-card .team-name {
@@ -177,7 +181,7 @@ body {
 
 .bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.6));
+  background: #f97316;
   transition: width 0.8s ease;
 }
 
@@ -196,18 +200,20 @@ body {
 
 /* Team List Styles */
 .team-list {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  background: #262626;
+  border-radius: 6px;
   overflow: hidden;
+  border: 1px solid #262626;
 }
 
 .team-list-header {
   display: grid;
   grid-template-columns: 1fr auto;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.2);
+  background: #171717;
   font-weight: 600;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid #262626;
+  color: #FFFFFF;
 }
 
 .team-list-items {
@@ -220,12 +226,13 @@ body {
   grid-template-columns: auto 1fr auto;
   align-items: center;
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  transition: background 0.2s ease;
+  border-bottom: 1px solid #262626;
+  transition: all 0.2s ease;
+  color: #a3a3a3;
 }
 
 .team-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: #171717;
 }
 
 .team-item:last-child {
@@ -269,14 +276,14 @@ body {
 .score-prediction {
   margin-top: 2rem;
   padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #262626;
+  border-radius: 6px;
+  border: 1px solid #262626;
 }
 
 .score-prediction h3 {
   margin: 0 0 1rem 0;
-  color: #fff;
+  color: #FFFFFF;
   font-size: 1.2rem;
 }
 
@@ -290,9 +297,11 @@ body {
 .goal-expectation {
   flex: 1;
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  background: #171717;
+  border-radius: 6px;
   text-align: center;
+  border: 1px solid #262626;
+  color: #a3a3a3;
 }
 
 .goal-expectation .team-name {
@@ -316,13 +325,14 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  border-left: 3px solid #4ade80;
+  background: #171717;
+  border-radius: 6px;
+  border-left: 3px solid #f97316;
+  color: #a3a3a3;
 }
 
 .value-bet-card:nth-child(even) {
-  border-left-color: #60a5fa;
+  border-left-color: #737373;
 }
 
 .bet-info {
@@ -353,7 +363,7 @@ body {
 .bet-stats .value {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #4ade80;
+  color: #f97316;
 }
 
 .bet-stats .odds {
