@@ -672,6 +672,46 @@ body {
   color: #f97316;
 }
 
+.bet-scores {
+  background: #1a1a1a;
+  border-top: 1px solid #262626;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-start;
+}
+
+.bet-score-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 0 1 auto;
+  min-width: 180px;
+  padding: 0.5rem 0.75rem;
+  background: #171717;
+  border-radius: 4px;
+  border: 1px solid #262626;
+}
+
+.bet-score {
+  font-weight: 600;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+}
+
+.bet-probability {
+  color: #a3a3a3;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.bet-odds {
+  color: #f97316;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
 .empty-state {
   background: #262626;
   border-radius: 6px;

@@ -238,4 +238,24 @@ router.get("/bets/list", async (req, res) => {
   }
 });
 
+router.get("/bets/:filename", async (req, res) => {
+  try {
+    const { filename } = req.params;
+    const betsDir = path.join(process.cwd(), "data", "bets");
+    const filePath = path.join(betsDir, filename);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: "Bet file not found" });
+    }
+
+    const fileContent = fs.readFileSync(filePath, "utf-8");
+    const bets = JSON.parse(fileContent);
+
+    res.json(bets);
+  } catch (e) {
+    console.error("failed to fetch bet file", e);
+    res.status(500).json({ error: "failed to fetch bet file" });
+  }
+});
+
 export default router;
