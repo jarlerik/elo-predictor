@@ -114,7 +114,9 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
           onClick={handlePlayBets}
           disabled={loading}
         >
-          {loading ? "Saving..." : "Play top 10 bets"}
+          {loading
+            ? "Saving..."
+            : `Play top ${checkedBets.filter(Boolean).length} bets`}
         </button>
       </div>
 
