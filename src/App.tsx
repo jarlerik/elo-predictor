@@ -15,6 +15,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activePage, setActivePage] = useState<string>("prediction");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     fetchTeams();
@@ -46,7 +47,20 @@ function App() {
 
   return (
     <div className="app">
-      <Sidebar activePage={activePage} onPageChange={setActivePage} />
+      <Sidebar
+        activePage={activePage}
+        onPageChange={(page) => {
+          setActivePage(page);
+          setIsMobileMenuOpen(false);
+        }}
+        isMobileMenuOpen={isMobileMenuOpen}
+        onMobileMenuToggle={setIsMobileMenuOpen}
+      />
+
+      <div
+        className={`sidebar-overlay ${isMobileMenuOpen ? "active" : ""}`}
+        onClick={() => setIsMobileMenuOpen(false)}
+      />
 
       <main className="app-main">
         {activePage === "prediction" && <GamePrediction teams={teams} />}

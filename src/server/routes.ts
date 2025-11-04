@@ -1,4 +1,6 @@
 import express from "express";
+import fs from "fs";
+import path from "path";
 import { fetchMultipleSeasons } from "../data/nhlFetcher";
 import { computeElosFromGames } from "../elo/calculator";
 import { eloToWinProb, findTeamElo } from "../elo/probabilities";
@@ -127,6 +129,50 @@ router.get("/predict/score", async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "failed" });
+  }
+});
+
+router.post("/bets/save", async (req, res) => {
+  try {
+    const { homeTeam, awayTeam, scores } = req.body;
+
+    if (!homeTeam || !awayTeam || !scores || !Array.isArray(scores)) {
+      return res
+        .status(400)
+        .json({ error: "please provide homeTeam, awayTeam, and scores array" });
+    }
+
+    // Format date as DD.MM.YYYY
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const year = now.getFullYear();
+    const dateStr = `${day}.${month}.${year}`;
+
+    // Generate filename: HOME_ABBR__AWAY_ABBR_DD.MM.YYYY.json
+    const filename = `${homeTeam}__${awayTeam}_${dateStr}.json`;
+
+    // Create data/bets directory if it doesn't exist
+    const betsDir = path.join(process.cwd(), "data", "bets");
+    if (!fs.existsSync(betsDir)) {
+      fs.mkdirSync(betsDir, { recursive: true });
+    }
+
+    // Format scores for JSON: score, probability, odds (where odds maps to minOdd)
+    const formattedScores = scores.map((score: any) => ({
+      score: score.score,
+      probability: score.probability,
+      odds: score.minOdd,
+    }));
+
+    // Write JSON file
+    const filePath = path.join(betsDir, filename);
+    fs.writeFileSync(filePath, JSON.stringify(formattedScores, null, 2));
+
+    res.json({ success: true, filename });
+  } catch (e) {
+    console.error("failed to save bets", e);
+    res.status(500).json({ error: "failed to save bets" });
   }
 });
 

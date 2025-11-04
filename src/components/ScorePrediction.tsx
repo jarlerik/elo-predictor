@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { TEAM_FULL_NAMES } from "../utils/teamData";
 
 interface ScoreProbability {
@@ -25,9 +25,130 @@ interface ScorePredictionProps {
 const ScorePrediction: React.FC<ScorePredictionProps> = ({
   scorePrediction,
 }) => {
+  const [checkedBets, setCheckedBets] = useState<boolean[]>(
+    new Array(scorePrediction.top10.length).fill(true)
+  );
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
+  useEffect(() => {
+    setCheckedBets(new Array(scorePrediction.top10.length).fill(true));
+  }, [scorePrediction.top10.length]);
+
+  const handleCheckboxChange = (index: number) => {
+    const newCheckedBets = [...checkedBets];
+    newCheckedBets[index] = !newCheckedBets[index];
+    setCheckedBets(newCheckedBets);
+  };
+
+  const handlePlayBets = async () => {
+    // Filter checked scores
+    const checkedScores = scorePrediction.top10.filter(
+      (_, index) => checkedBets[index]
+    );
+
+    if (checkedScores.length === 0) {
+      setMessage({
+        type: "error",
+        text: "Please select at least one bet to save",
+      });
+      return;
+    }
+
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch("/api/bets/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          homeTeam: scorePrediction.homeTeam,
+          awayTeam: scorePrediction.awayTeam,
+          scores: checkedScores,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to save bets");
+      }
+
+      const data = await response.json();
+      setMessage({
+        type: "success",
+        text: `Bets saved successfully! (${data.filename})`,
+      });
+    } catch (err) {
+      setMessage({
+        type: "error",
+        text:
+          err instanceof Error
+            ? err.message
+            : "An error occurred while saving bets",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="score-prediction">
-      <h3>Top 10 Score Value Bets</h3>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "1rem",
+          marginBottom: "1rem",
+        }}
+      >
+        <h3>Top 10 Score Value Bets</h3>
+        <button
+          className="predict-button"
+          onClick={handlePlayBets}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Play top 10 bets"}
+        </button>
+      </div>
+
+      {message && (
+        <div
+          style={{
+            padding: "0.75rem",
+            marginBottom: "1rem",
+            borderRadius: "4px",
+            backgroundColor: message.type === "success" ? "#d4edda" : "#f8d7da",
+            color: message.type === "success" ? "#155724" : "#721c24",
+            border: `1px solid ${
+              message.type === "success" ? "#c3e6cb" : "#f5c6cb"
+            }`,
+          }}
+        >
+          {message.text}
+          <button
+            onClick={() => setMessage(null)}
+            style={{
+              float: "right",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "1.2rem",
+              lineHeight: "1",
+              padding: "0",
+              marginLeft: "0.5rem",
+            }}
+          >
+            ×
+          </button>
+        </div>
+      )}
 
       <div className="expected-goals">
         <div className="goal-expectation">
@@ -52,8 +173,18 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
 
       <div className="value-bets">
         {scorePrediction.top10.map((bet, index) => (
-          <div key={index} className="value-bet-card">
-            <div className="bet-info">
+          <div
+            key={index}
+            className="value-bet-card"
+            style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+          >
+            <input
+              type="checkbox"
+              checked={checkedBets[index]}
+              onChange={() => handleCheckboxChange(index)}
+              style={{ cursor: "pointer" }}
+            />
+            <div className="bet-info" style={{ flex: 1 }}>
               <div className="bet-type">Score: {bet.score}</div>
               <div className="bet-details">
                 {TEAM_FULL_NAMES[scorePrediction.homeTeam] ||

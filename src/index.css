@@ -27,6 +27,8 @@ body {
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .team-field {
@@ -35,6 +37,25 @@ body {
   gap: 0.5rem;
   flex: 1;
   min-width: 200px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .team-selection {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .team-field {
+    min-width: 100%;
+    width: 100%;
+  }
+
+  .vs-divider {
+    display: none;
+  }
 }
 
 .team-field label {
@@ -52,6 +73,15 @@ body {
   font-size: 1rem;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
+  min-height: 44px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .team-select {
+    width: 100%;
+  }
 }
 
 .team-select:focus {
@@ -83,6 +113,7 @@ body {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  min-height: 44px;
 }
 
 .predict-button:hover:not(:disabled) {
@@ -96,6 +127,14 @@ body {
   transform: none;
 }
 
+@media (max-width: 768px) {
+  .predict-button {
+    width: 100%;
+    margin-top: 0.5rem;
+    touch-action: manipulation;
+  }
+}
+
 /* Prediction Result Styles */
 .prediction-result {
   margin-top: 1.5rem;
@@ -105,6 +144,17 @@ body {
   margin: 0 0 1rem 0;
   font-size: 1.3rem;
   font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .prediction-result {
+    margin-top: 1rem;
+  }
+
+  .prediction-result h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+  }
 }
 
 .game-matchup {
@@ -125,6 +175,45 @@ body {
 .game-matchup .vs {
   margin: 0 1rem;
   opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .game-matchup {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .game-matchup .away-team,
+  .game-matchup .home-team {
+    padding: 0.4rem 0.75rem;
+    margin: 0 0.25rem;
+    display: inline-block;
+  }
+
+  .game-matchup .vs {
+    margin: 0 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-matchup {
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .game-matchup .away-team,
+  .game-matchup .home-team {
+    width: 100%;
+    max-width: 200px;
+    margin: 0;
+  }
+
+  .game-matchup .vs {
+    margin: 0;
+  }
 }
 
 .probabilities {
@@ -172,6 +261,30 @@ body {
   font-weight: 500;
 }
 
+@media (max-width: 768px) {
+  .probability-card {
+    padding: 0.75rem;
+  }
+
+  .probability-card .team-name {
+    font-size: 0.95rem;
+  }
+
+  .probability-card .percentage {
+    font-size: 1.3rem;
+  }
+
+  .probability-card .odds {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .probability-card .percentage {
+    font-size: 1.1rem;
+  }
+}
+
 .bar {
   height: 8px;
   background: rgba(255, 255, 255, 0.2);
@@ -196,6 +309,23 @@ body {
 .prediction-summary p {
   margin: 0;
   font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .prediction-summary {
+    margin-top: 1rem;
+    padding: 0.75rem;
+  }
+
+  .prediction-summary p {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .prediction-summary p {
+    font-size: 0.85rem;
+  }
 }
 
 /* Team List Styles */
@@ -229,6 +359,63 @@ body {
   border-bottom: 1px solid #262626;
   transition: all 0.2s ease;
   color: #a3a3a3;
+}
+
+@media (max-width: 768px) {
+  .team-list-header {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .team-item {
+    padding: 0.6rem 0.75rem;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.5rem;
+  }
+
+  .team-rank {
+    font-size: 0.9rem;
+    margin-right: 0.75rem;
+  }
+
+  .team-name {
+    font-size: 0.9rem;
+  }
+
+  .team-elo {
+    font-size: 0.9rem;
+  }
+
+  .team-list-items {
+    max-height: 500px;
+  }
+}
+
+@media (max-width: 480px) {
+  .team-list-header {
+    padding: 0.6rem;
+    font-size: 0.85rem;
+  }
+
+  .team-item {
+    padding: 0.5rem 0.6rem;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.4rem;
+  }
+
+  .team-rank {
+    font-size: 0.85rem;
+    margin-right: 0.5rem;
+  }
+
+  .team-name {
+    font-size: 0.85rem;
+    word-break: break-word;
+  }
+
+  .team-elo {
+    font-size: 0.85rem;
+  }
 }
 
 .team-item:hover {
@@ -292,6 +479,24 @@ body {
   justify-content: space-between;
   margin-bottom: 1.5rem;
   gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .score-prediction {
+    margin-top: 1.5rem;
+    padding: 1rem;
+  }
+
+  .score-prediction h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .expected-goals {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
 }
 
 .goal-expectation {
@@ -370,4 +575,52 @@ body {
   font-size: 0.9rem;
   opacity: 0.8;
   margin-bottom: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .value-bet-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .bet-stats {
+    text-align: left;
+    min-width: auto;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #262626;
+  }
+
+  .bet-stats .probability {
+    font-size: 1rem;
+  }
+
+  .bet-details {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .value-bet-card {
+    padding: 0.6rem;
+  }
+
+  .bet-type {
+    font-size: 0.9rem;
+  }
+
+  .bet-stats .probability {
+    font-size: 0.95rem;
+  }
+
+  .bet-stats .odds,
+  .bet-stats .value {
+    font-size: 0.8rem;
+  }
 }
