@@ -54,6 +54,16 @@ const Sidebar: React.FC<SidebarProps> = ({
             <span className="nav-icon">💰</span>
             <span className="nav-text">KELLY BET</span>
           </button>
+
+          <button
+            className={`nav-item ${
+              activePage === "played-bets" ? "active" : ""
+            }`}
+            onClick={() => onPageChange("played-bets")}
+          >
+            <span className="nav-icon">📋</span>
+            <span className="nav-text">PLAYED BETS</span>
+          </button>
         </nav>
 
         <div className="sidebar-footer">

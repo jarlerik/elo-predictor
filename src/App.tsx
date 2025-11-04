@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar";
 import GamePrediction from "./components/GamePrediction";
 import TeamRatings from "./components/TeamRatings";
 import KellyBet from "./components/KellyBet";
+import PlayedBets from "./components/PlayedBets";
 
 interface Team {
   abbr: string;
@@ -66,6 +67,7 @@ function App() {
         {activePage === "prediction" && <GamePrediction teams={teams} />}
         {activePage === "ratings" && <TeamRatings teams={teams} />}
         {activePage === "kelly" && <KellyBet />}
+        {activePage === "played-bets" && <PlayedBets />}
       </main>
     </div>
   );

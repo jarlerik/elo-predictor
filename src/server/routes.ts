@@ -176,4 +176,66 @@ router.post("/bets/save", async (req, res) => {
   }
 });
 
+router.get("/bets/list", async (req, res) => {
+  try {
+    const betsDir = path.join(process.cwd(), "data", "bets");
+
+    if (!fs.existsSync(betsDir)) {
+      return res.json([]);
+    }
+
+    const files = fs.readdirSync(betsDir);
+    const jsonFiles = files.filter((file) => file.endsWith(".json"));
+
+    const betsList = jsonFiles
+      .map((filename) => {
+        // Parse filename: HOME__AWAY_DD.MM.YYYY.json
+        const nameWithoutExt = filename.replace(".json", "");
+        const parts = nameWithoutExt.split("__"); // Split by double underscore
+
+        if (parts.length < 2) {
+          return null;
+        }
+
+        const homeTeam = parts[0];
+        const rest = parts[1];
+        const restParts = rest.split("_");
+
+        if (restParts.length < 2) {
+          return null;
+        }
+
+        const awayTeam = restParts[0];
+        const date = restParts.slice(1).join("_"); // In case date has underscores
+
+        // Read file to count array elements
+        const filePath = path.join(betsDir, filename);
+        let betCount = 0;
+        try {
+          const fileContent = fs.readFileSync(filePath, "utf-8");
+          const bets = JSON.parse(fileContent);
+          if (Array.isArray(bets)) {
+            betCount = bets.length;
+          }
+        } catch (e) {
+          console.error(`Failed to read bet file ${filename}:`, e);
+        }
+
+        return {
+          filename,
+          homeTeam,
+          awayTeam,
+          date,
+          betCount,
+        };
+      })
+      .filter((item) => item !== null);
+
+    res.json(betsList);
+  } catch (e) {
+    console.error("failed to list bets", e);
+    res.status(500).json({ error: "failed to list bets" });
+  }
+});
+
 export default router;
