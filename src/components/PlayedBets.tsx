@@ -39,6 +39,12 @@ const PlayedBets: React.FC = () => {
     fetchBetFiles();
   }, []);
 
+  const parseDate = (dateStr: string): Date => {
+    // Date format: DD.MM.YYYY
+    const [day, month, year] = dateStr.split(".").map(Number);
+    return new Date(year, month - 1, day);
+  };
+
   const fetchBetFiles = async () => {
     try {
       setLoading(true);
@@ -48,7 +54,13 @@ const PlayedBets: React.FC = () => {
         throw new Error("Failed to fetch bet files");
       }
       const data = await response.json();
-      setBetFiles(data);
+      // Sort by date (newest first)
+      const sortedData = data.sort((a: BetFile, b: BetFile) => {
+        const dateA = parseDate(a.date);
+        const dateB = parseDate(b.date);
+        return dateB.getTime() - dateA.getTime();
+      });
+      setBetFiles(sortedData);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -200,6 +212,23 @@ const PlayedBets: React.FC = () => {
       </div>
     );
   }
+
+  // Group bets by date
+  const groupedByDate = betFiles.reduce((acc, betFile) => {
+    const date = betFile.date;
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    acc[date].push(betFile);
+    return acc;
+  }, {} as Record<string, BetFile[]>);
+
+  // Get dates sorted (newest first)
+  const dates = Object.keys(groupedByDate).sort((a, b) => {
+    const dateA = parseDate(a);
+    const dateB = parseDate(b);
+    return dateB.getTime() - dateA.getTime();
+  });
 
   return (
     <div className="page-content">
@@ -374,73 +403,98 @@ const PlayedBets: React.FC = () => {
           </div>
         ) : (
           <div className="bets-list">
-            {betFiles.map((betFile) => {
-              const isExpanded = expandedRows.has(betFile.filename);
-              const bets = betData[betFile.filename] || [];
-
-              return (
-                <div key={betFile.filename}>
-                  <div
-                    className="bet-file-row"
-                    onClick={() => toggleRow(betFile.filename)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <span className="bet-match">
-                      {getTeamName(betFile.homeTeam)} vs{" "}
-                      {getTeamName(betFile.awayTeam)}
-                    </span>
-                    <span className="bet-date">{betFile.date}</span>
-                    <span className="bet-count">{betFile.betCount} bets</span>
-                  </div>
-                  {isExpanded && (
-                    <div className="bet-scores">
-                      {bets.map((bet, index) => {
-                        const isSelected =
-                          selectedBet &&
-                          selectedBet.filename === betFile.filename &&
-                          selectedBet.betIndex === index;
-                        return (
-                          <div
-                            key={index}
-                            className="bet-score-item"
-                            onClick={(e) =>
-                              handleScoreToggle(betFile.filename, index, bet, e)
-                            }
-                            style={{
-                              cursor: "pointer",
-                              backgroundColor: isSelected
-                                ? "#404040"
-                                : "transparent",
-                              transition: "background-color 0.2s",
-                            }}
-                            onMouseOver={(e) => {
-                              if (!isSelected) {
-                                e.currentTarget.style.backgroundColor =
-                                  "#2a2a2a";
-                              }
-                            }}
-                            onMouseOut={(e) => {
-                              if (!isSelected) {
-                                e.currentTarget.style.backgroundColor =
-                                  "transparent";
-                              }
-                            }}
-                          >
-                            <span className="bet-score">{bet.score}</span>
-                            <span className="bet-probability">
-                              {formatProbability(bet.probability)}
-                            </span>
-                            <span className="bet-odds">
-                              {formatOdds(bet.odds)}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
+            {dates.map((date) => (
+              <div key={date} className="date-group">
+                <div
+                  className="date-header"
+                  style={{
+                    padding: "1rem",
+                    marginBottom: "0.5rem",
+                    marginTop: dates.indexOf(date) > 0 ? "2rem" : "0",
+                    fontSize: "1.1rem",
+                    fontWeight: "600",
+                    color: "#FFFFFF",
+                    borderBottom: "2px solid #404040",
+                  }}
+                >
+                  {date}
                 </div>
-              );
-            })}
+                {groupedByDate[date].map((betFile) => {
+                  const isExpanded = expandedRows.has(betFile.filename);
+                  const bets = betData[betFile.filename] || [];
+
+                  return (
+                    <div key={betFile.filename}>
+                      <div
+                        className="bet-file-row"
+                        onClick={() => toggleRow(betFile.filename)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <span className="bet-match">
+                          {getTeamName(betFile.homeTeam)} vs{" "}
+                          {getTeamName(betFile.awayTeam)}
+                        </span>
+                        <span className="bet-date">{betFile.date}</span>
+                        <span className="bet-count">
+                          {betFile.betCount} bets
+                        </span>
+                      </div>
+                      {isExpanded && (
+                        <div className="bet-scores">
+                          {bets.map((bet, index) => {
+                            const isSelected =
+                              selectedBet &&
+                              selectedBet.filename === betFile.filename &&
+                              selectedBet.betIndex === index;
+                            return (
+                              <div
+                                key={index}
+                                className="bet-score-item"
+                                onClick={(e) =>
+                                  handleScoreToggle(
+                                    betFile.filename,
+                                    index,
+                                    bet,
+                                    e
+                                  )
+                                }
+                                style={{
+                                  cursor: "pointer",
+                                  backgroundColor: isSelected
+                                    ? "#404040"
+                                    : "transparent",
+                                  transition: "background-color 0.2s",
+                                }}
+                                onMouseOver={(e) => {
+                                  if (!isSelected) {
+                                    e.currentTarget.style.backgroundColor =
+                                      "#2a2a2a";
+                                  }
+                                }}
+                                onMouseOut={(e) => {
+                                  if (!isSelected) {
+                                    e.currentTarget.style.backgroundColor =
+                                      "transparent";
+                                  }
+                                }}
+                              >
+                                <span className="bet-score">{bet.score}</span>
+                                <span className="bet-probability">
+                                  {formatProbability(bet.probability)}
+                                </span>
+                                <span className="bet-odds">
+                                  {formatOdds(bet.odds)}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
           </div>
         )}
       </div>
