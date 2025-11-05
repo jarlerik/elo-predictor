@@ -238,6 +238,38 @@ router.get("/bets/list", async (req, res) => {
   }
 });
 
+router.get("/bets/total", async (req, res) => {
+  try {
+    const betsDir = path.join(process.cwd(), "data", "bets");
+
+    if (!fs.existsSync(betsDir)) {
+      return res.json({ total: 0 });
+    }
+
+    const files = fs.readdirSync(betsDir);
+    const jsonFiles = files.filter((file) => file.endsWith(".json"));
+
+    let totalBets = 0;
+    for (const filename of jsonFiles) {
+      try {
+        const filePath = path.join(betsDir, filename);
+        const fileContent = fs.readFileSync(filePath, "utf-8");
+        const bets = JSON.parse(fileContent);
+        if (Array.isArray(bets)) {
+          totalBets += bets.length;
+        }
+      } catch (e) {
+        console.error(`Failed to read bet file ${filename}:`, e);
+      }
+    }
+
+    res.json({ total: totalBets });
+  } catch (e) {
+    console.error("failed to calculate total bets", e);
+    res.status(500).json({ error: "failed to calculate total bets" });
+  }
+});
+
 router.get("/bets/:filename", async (req, res) => {
   try {
     const { filename } = req.params;
