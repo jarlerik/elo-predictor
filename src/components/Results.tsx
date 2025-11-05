@@ -35,7 +35,7 @@ const Results: React.FC = () => {
   };
 
   const formatGameName = (game: string): string => {
-    // Format: COL__TBL_04.11.2025 -> COL vs TBL (04.11.2025)
+    // Format: COL__TBL_04.11.2025 -> COL vs TBL 04.11.2025
     const parts = game.split("__");
     if (parts.length === 2) {
       const rest = parts[1];
@@ -43,7 +43,7 @@ const Results: React.FC = () => {
       if (restParts.length >= 2) {
         const awayTeam = restParts[0];
         const date = restParts.slice(1).join("_");
-        return `${parts[0]} vs ${awayTeam} (${date})`;
+        return `${parts[0]} vs ${awayTeam} ${date}`;
       }
     }
     return game;
@@ -54,13 +54,24 @@ const Results: React.FC = () => {
   };
 
   const formatCurrency = (value: number): string => {
-    return `$${value.toFixed(2)}`;
+    return `${value.toFixed(2)}€`;
   };
+
+  const totalResults = results.length;
+  const totalReturn = results.reduce((sum, r) => sum + r.return, 0);
 
   return (
     <div className="page-content">
       <div className="page-header">
         <h1>Results</h1>
+      </div>
+      <div className="results-summary">
+        <p>
+          Total Results: <strong>{totalResults}</strong>
+        </p>
+        <p>
+          Total Return: <strong>{formatCurrency(totalReturn)}</strong>
+        </p>
       </div>
       <div className="results-section">
         {loading ? (
@@ -98,19 +109,6 @@ const Results: React.FC = () => {
                   </div>
                 </React.Fragment>
               ))}
-            </div>
-            <div className="results-summary">
-              <p>
-                Total Results: <strong>{results.length}</strong>
-              </p>
-              <p>
-                Total Return:{" "}
-                <strong>
-                  {formatCurrency(
-                    results.reduce((sum, r) => sum + r.return, 0)
-                  )}
-                </strong>
-              </p>
             </div>
           </div>
         )}

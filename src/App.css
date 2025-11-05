@@ -814,9 +814,12 @@
 }
 
 .results-summary {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #262626;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #262626;
+  border-radius: 6px;
+  border: 1px solid #171717;
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
