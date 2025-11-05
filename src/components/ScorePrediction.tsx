@@ -16,6 +16,7 @@ interface ScorePrediction {
   lambdaHome: number;
   lambdaAway: number;
   top10: ScoreProbability[];
+  allTop100?: ScoreProbability[];
 }
 
 interface ScorePredictionProps {
@@ -25,8 +26,13 @@ interface ScorePredictionProps {
 const ScorePrediction: React.FC<ScorePredictionProps> = ({
   scorePrediction,
 }) => {
+  // Use allTop100 if available, otherwise fall back to top10
+  const allScores = scorePrediction.allTop100 || scorePrediction.top10;
+  const [displayCount, setDisplayCount] = useState(10);
+  const displayedScores = allScores.slice(0, displayCount);
+
   const [checkedBets, setCheckedBets] = useState<boolean[]>(
-    new Array(scorePrediction.top10.length).fill(true)
+    new Array(displayedScores.length).fill(true)
   );
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{
@@ -34,9 +40,28 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
     text: string;
   } | null>(null);
 
+  // Reset display count when score prediction changes
   useEffect(() => {
-    setCheckedBets(new Array(scorePrediction.top10.length).fill(true));
-  }, [scorePrediction.top10.length]);
+    setDisplayCount(10);
+    setCheckedBets(new Array(10).fill(true));
+  }, [scorePrediction.homeTeam, scorePrediction.awayTeam]);
+
+  useEffect(() => {
+    const newLength = Math.min(displayCount, allScores.length);
+    setCheckedBets((prev) => {
+      // Preserve existing checked states, add new ones as checked
+      const newChecked = [...prev];
+      while (newChecked.length < newLength) {
+        newChecked.push(true);
+      }
+      // Trim if we somehow have more than needed
+      return newChecked.slice(0, newLength);
+    });
+  }, [displayCount, allScores.length]);
+
+  const handleShowMore = () => {
+    setDisplayCount((prev) => Math.min(prev + 10, allScores.length));
+  };
 
   const handleCheckboxChange = (index: number) => {
     const newCheckedBets = [...checkedBets];
@@ -45,8 +70,8 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
   };
 
   const handlePlayBets = async () => {
-    // Filter checked scores
-    const checkedScores = scorePrediction.top10.filter(
+    // Filter checked scores from displayed scores
+    const checkedScores = displayedScores.filter(
       (_, index) => checkedBets[index]
     );
 
@@ -174,7 +199,7 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
       </div>
 
       <div className="value-bets">
-        {scorePrediction.top10.map((bet, index) => (
+        {displayedScores.map((bet, index) => (
           <div
             key={index}
             className="value-bet-card"
@@ -210,6 +235,18 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
           </div>
         ))}
       </div>
+
+      {displayCount < allScores.length && (
+        <div style={{ textAlign: "center", marginTop: "1rem" }}>
+          <button
+            className="predict-button"
+            onClick={handleShowMore}
+            style={{ margin: "0 auto" }}
+          >
+            Show 10 more
+          </button>
+        </div>
+      )}
     </div>
   );
 };
