@@ -758,3 +758,127 @@
   position: relative;
   z-index: 2;
 }
+
+/* Results Table Styles */
+.results-section {
+  background: #262626;
+  border-radius: 6px;
+  padding: 1.5rem;
+  border: 1px solid #171717;
+}
+
+.results-table-container {
+  width: 100%;
+}
+
+.results-table {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 0;
+  border: 1px solid #171717;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #171717;
+}
+
+.results-cell {
+  padding: 1rem;
+  border-bottom: 1px solid #262626;
+  color: #a3a3a3;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.results-header-cell {
+  background: #171717;
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  overflow: visible;
+}
+
+/* Simple hover effect on individual cells */
+.results-table > .results-cell:not(.results-header-cell):hover {
+  background: #1f1f1f;
+}
+
+/* Remove border from last row */
+.results-table > .results-cell:nth-last-child(-n+5):not(.results-header-cell) {
+  border-bottom: none;
+}
+
+.results-summary {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #262626;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.results-summary p {
+  margin: 0;
+  color: #a3a3a3;
+  font-size: 1rem;
+}
+
+.results-summary strong {
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .results-table {
+    grid-template-columns: 1fr;
+  }
+
+  .results-header-cell {
+    display: none;
+  }
+
+  .results-cell {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #262626;
+    white-space: normal;
+  }
+
+  .results-cell:not(.results-header-cell)::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: 600;
+    color: #FFFFFF;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .results-cell:nth-child(5n+1):not(.results-header-cell) {
+    padding-top: 1.5rem;
+    border-top: 1px solid #262626;
+    margin-top: 0.5rem;
+  }
+
+  .results-cell:nth-child(5n+1):not(.results-header-cell):first-of-type {
+    margin-top: 0;
+    border-top: none;
+    padding-top: 0.75rem;
+  }
+
+  .results-cell:nth-child(5n+5):not(.results-header-cell) {
+    border-bottom: 2px solid #171717;
+    margin-bottom: 0.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .results-summary {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

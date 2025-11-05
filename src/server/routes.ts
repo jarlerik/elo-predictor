@@ -258,4 +258,91 @@ router.get("/bets/:filename", async (req, res) => {
   }
 });
 
+router.get("/results", async (req, res) => {
+  try {
+    const resultsDir = path.join(process.cwd(), "data");
+    const resultsPath = path.join(resultsDir, "results.json");
+
+    if (!fs.existsSync(resultsPath)) {
+      return res.json([]);
+    }
+
+    const fileContent = fs.readFileSync(resultsPath, "utf-8");
+    const results = JSON.parse(fileContent);
+
+    if (!Array.isArray(results)) {
+      return res.json([]);
+    }
+
+    res.json(results);
+  } catch (e) {
+    console.error("failed to fetch results", e);
+    res.status(500).json({ error: "failed to fetch results" });
+  }
+});
+
+router.post("/results/add", async (req, res) => {
+  try {
+    const { game, score, probability, odds, return: returnValue } = req.body;
+
+    if (
+      !game ||
+      !score ||
+      probability === undefined ||
+      odds === undefined ||
+      returnValue === undefined
+    ) {
+      return res.status(400).json({
+        error: "please provide game, score, probability, odds, and return",
+      });
+    }
+
+    const resultsDir = path.join(process.cwd(), "data");
+    const resultsPath = path.join(resultsDir, "results.json");
+
+    // Read existing results or initialize empty array
+    let results: any[] = [];
+    if (fs.existsSync(resultsPath)) {
+      try {
+        const fileContent = fs.readFileSync(resultsPath, "utf-8");
+        results = JSON.parse(fileContent);
+        if (!Array.isArray(results)) {
+          results = [];
+        }
+      } catch (e) {
+        console.error(
+          "Failed to read results file, initializing new array:",
+          e
+        );
+        results = [];
+      }
+    } else {
+      // Create data directory if it doesn't exist
+      if (!fs.existsSync(resultsDir)) {
+        fs.mkdirSync(resultsDir, { recursive: true });
+      }
+    }
+
+    // Create new result item
+    const newResult = {
+      game,
+      score,
+      probability,
+      odds,
+      return: returnValue,
+    };
+
+    // Append to array
+    results.push(newResult);
+
+    // Write back to file
+    fs.writeFileSync(resultsPath, JSON.stringify(results, null, 2));
+
+    res.json({ success: true, result: newResult });
+  } catch (e) {
+    console.error("failed to save result", e);
+    res.status(500).json({ error: "failed to save result" });
+  }
+});
+
 export default router;

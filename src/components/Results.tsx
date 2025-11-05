@@ -1,38 +1,60 @@
 import React, { useState, useEffect } from "react";
 
-interface BetFile {
-  filename: string;
-  homeTeam: string;
-  awayTeam: string;
-  date: string;
-  betCount: number;
+interface Result {
+  game: string;
+  score: string;
+  probability: number;
+  odds: number;
+  return: number;
 }
 
 const Results: React.FC = () => {
-  const [totalBets, setTotalBets] = useState<number>(0);
+  const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchTotalBets();
+    fetchResults();
   }, []);
 
-  const fetchTotalBets = async () => {
+  const fetchResults = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("/api/bets/list");
+      const response = await fetch("/api/results");
       if (!response.ok) {
-        throw new Error("Failed to fetch bet files");
+        throw new Error("Failed to fetch results");
       }
-      const data: BetFile[] = await response.json();
-      const total = data.reduce((sum, file) => sum + file.betCount, 0);
-      setTotalBets(total);
+      const data: Result[] = await response.json();
+      setResults(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
+  };
+
+  const formatGameName = (game: string): string => {
+    // Format: COL__TBL_04.11.2025 -> COL vs TBL (04.11.2025)
+    const parts = game.split("__");
+    if (parts.length === 2) {
+      const rest = parts[1];
+      const restParts = rest.split("_");
+      if (restParts.length >= 2) {
+        const awayTeam = restParts[0];
+        const date = restParts.slice(1).join("_");
+        return `${parts[0]} vs ${awayTeam} (${date})`;
+      }
+    }
+    return game;
+  };
+
+  const formatPercentage = (value: number): string => {
+    return `${(value * 100).toFixed(2)}%`;
+  };
+
+  const formatCurrency = (value: number): string => {
+    return `$${value.toFixed(2)}`;
   };
 
   return (
@@ -45,8 +67,52 @@ const Results: React.FC = () => {
           <p>Loading...</p>
         ) : error ? (
           <p className="error">Error: {error}</p>
+        ) : results.length === 0 ? (
+          <p>No results found.</p>
         ) : (
-          <p>Total played bets: {totalBets}</p>
+          <div className="results-table-container">
+            <div className="results-table">
+              <div className="results-cell results-header-cell">Game</div>
+              <div className="results-cell results-header-cell">Score</div>
+              <div className="results-cell results-header-cell">
+                Probability
+              </div>
+              <div className="results-cell results-header-cell">Odds</div>
+              <div className="results-cell results-header-cell">Return</div>
+              {results.map((result, index) => (
+                <React.Fragment key={index}>
+                  <div className="results-cell" data-label="Game">
+                    {formatGameName(result.game)}
+                  </div>
+                  <div className="results-cell" data-label="Score">
+                    {result.score}
+                  </div>
+                  <div className="results-cell" data-label="Probability">
+                    {formatPercentage(result.probability)}
+                  </div>
+                  <div className="results-cell" data-label="Odds">
+                    {result.odds.toFixed(2)}
+                  </div>
+                  <div className="results-cell" data-label="Return">
+                    {formatCurrency(result.return)}
+                  </div>
+                </React.Fragment>
+              ))}
+            </div>
+            <div className="results-summary">
+              <p>
+                Total Results: <strong>{results.length}</strong>
+              </p>
+              <p>
+                Total Return:{" "}
+                <strong>
+                  {formatCurrency(
+                    results.reduce((sum, r) => sum + r.return, 0)
+                  )}
+                </strong>
+              </p>
+            </div>
+          </div>
         )}
       </div>
     </div>
@@ -54,4 +120,3 @@ const Results: React.FC = () => {
 };
 
 export default Results;
-
