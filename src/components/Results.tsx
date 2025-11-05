@@ -74,6 +74,8 @@ const Results: React.FC = () => {
 
   const totalResults = results.length;
   const totalReturn = results.reduce((sum, r) => sum + r.return, 0);
+  const returnRate =
+    totalBets > 0 ? ((totalReturn - totalBets) / totalBets) * 100 : 0;
 
   return (
     <div className="page-content">
@@ -82,10 +84,13 @@ const Results: React.FC = () => {
       </div>
       <div className="results-summary">
         <p>
-          Total bets: <strong>{totalBets}</strong>
+          Total bets: <strong>{formatCurrency(totalBets)}</strong>
         </p>
         <p>
           Total Return: <strong>{formatCurrency(totalReturn)}</strong>
+        </p>
+        <p>
+          Return rate: <strong>{returnRate.toFixed(2)}%</strong>
         </p>
       </div>
       <div className="results-section">
