@@ -32,7 +32,7 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
   const displayedScores = allScores.slice(0, displayCount);
 
   const [checkedBets, setCheckedBets] = useState<boolean[]>(
-    new Array(displayedScores.length).fill(true)
+    new Array(displayedScores.length).fill(false)
   );
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{
@@ -43,16 +43,16 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
   // Reset display count when score prediction changes
   useEffect(() => {
     setDisplayCount(10);
-    setCheckedBets(new Array(10).fill(true));
+    setCheckedBets(new Array(10).fill(false));
   }, [scorePrediction.homeTeam, scorePrediction.awayTeam]);
 
   useEffect(() => {
     const newLength = Math.min(displayCount, allScores.length);
     setCheckedBets((prev) => {
-      // Preserve existing checked states, add new ones as checked
+      // Preserve existing checked states, add new ones as unchecked
       const newChecked = [...prev];
       while (newChecked.length < newLength) {
-        newChecked.push(true);
+        newChecked.push(false);
       }
       // Trim if we somehow have more than needed
       return newChecked.slice(0, newLength);
