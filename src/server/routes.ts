@@ -176,6 +176,70 @@ router.post("/bets/save", async (req, res) => {
   }
 });
 
+router.post("/bets/save-winner", async (req, res) => {
+  try {
+    const { homeTeam, awayTeam, team, probability, odds } = req.body;
+
+    if (!homeTeam || !awayTeam || !team || probability === undefined || !odds) {
+      return res.status(400).json({
+        error: "please provide homeTeam, awayTeam, team, probability, and odds",
+      });
+    }
+
+    // Format date as DD.MM.YYYY
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const year = now.getFullYear();
+    const dateStr = `${day}.${month}.${year}`;
+
+    // Generate filename: HOME_ABBR__AWAY_ABBR_DD.MM.YYYY_winner.json
+    const filename = `${homeTeam}__${awayTeam}_${dateStr}_winner.json`;
+
+    // Create data/bets directory if it doesn't exist
+    const betsDir = path.join(process.cwd(), "data", "bets");
+    if (!fs.existsSync(betsDir)) {
+      fs.mkdirSync(betsDir, { recursive: true });
+    }
+
+    // Read existing winner bets or initialize empty array
+    const filePath = path.join(betsDir, filename);
+    let winnerBets: any[] = [];
+    if (fs.existsSync(filePath)) {
+      try {
+        const fileContent = fs.readFileSync(filePath, "utf-8");
+        winnerBets = JSON.parse(fileContent);
+        if (!Array.isArray(winnerBets)) {
+          winnerBets = [];
+        }
+      } catch (e) {
+        console.error("Failed to read winner bet file, initializing new array:", e);
+        winnerBets = [];
+      }
+    }
+
+    // Add new winner bet
+    const newBet = {
+      team,
+      probability,
+      odds,
+      homeTeam,
+      awayTeam,
+      timestamp: new Date().toISOString(),
+    };
+
+    winnerBets.push(newBet);
+
+    // Write JSON file
+    fs.writeFileSync(filePath, JSON.stringify(winnerBets, null, 2));
+
+    res.json({ success: true, filename, bet: newBet });
+  } catch (e) {
+    console.error("failed to save winner bet", e);
+    res.status(500).json({ error: "failed to save winner bet" });
+  }
+});
+
 router.get("/bets/list", async (req, res) => {
   try {
     const betsDir = path.join(process.cwd(), "data", "bets");
