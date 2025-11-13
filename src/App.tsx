@@ -5,6 +5,7 @@ import GamePrediction from "./components/GamePrediction";
 import TeamRatings from "./components/TeamRatings";
 import KellyBet from "./components/KellyBet";
 import PlayedBets from "./components/PlayedBets";
+import PlayedWinnerBets from "./components/PlayedWinnerBets";
 import Results from "./components/Results";
 
 interface Team {
@@ -69,6 +70,7 @@ function App() {
         {activePage === "ratings" && <TeamRatings teams={teams} />}
         {activePage === "kelly" && <KellyBet />}
         {activePage === "played-bets" && <PlayedBets />}
+        {activePage === "played-winner-bets" && <PlayedWinnerBets />}
         {activePage === "results" && <Results />}
       </main>
     </div>

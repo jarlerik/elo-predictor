@@ -213,7 +213,10 @@ router.post("/bets/save-winner", async (req, res) => {
           winnerBets = [];
         }
       } catch (e) {
-        console.error("Failed to read winner bet file, initializing new array:", e);
+        console.error(
+          "Failed to read winner bet file, initializing new array:",
+          e
+        );
         winnerBets = [];
       }
     }
@@ -334,6 +337,68 @@ router.get("/bets/total", async (req, res) => {
   }
 });
 
+router.get("/bets/list-winners", async (req, res) => {
+  try {
+    const betsDir = path.join(process.cwd(), "data", "bets");
+
+    if (!fs.existsSync(betsDir)) {
+      return res.json([]);
+    }
+
+    const files = fs.readdirSync(betsDir);
+    const winnerFiles = files.filter((file) => file.endsWith("_winner.json"));
+
+    const betsList = winnerFiles
+      .map((filename) => {
+        // Parse filename: HOME__AWAY_DD.MM.YYYY_winner.json
+        const nameWithoutExt = filename.replace("_winner.json", "");
+        const parts = nameWithoutExt.split("__"); // Split by double underscore
+
+        if (parts.length < 2) {
+          return null;
+        }
+
+        const homeTeam = parts[0];
+        const rest = parts[1];
+        const restParts = rest.split("_");
+
+        if (restParts.length < 2) {
+          return null;
+        }
+
+        const awayTeam = restParts[0];
+        const date = restParts.slice(1).join("_"); // In case date has underscores
+
+        // Read file to count array elements
+        const filePath = path.join(betsDir, filename);
+        let betCount = 0;
+        try {
+          const fileContent = fs.readFileSync(filePath, "utf-8");
+          const bets = JSON.parse(fileContent);
+          if (Array.isArray(bets)) {
+            betCount = bets.length;
+          }
+        } catch (e) {
+          console.error(`Failed to read winner bet file ${filename}:`, e);
+        }
+
+        return {
+          filename,
+          homeTeam,
+          awayTeam,
+          date,
+          betCount,
+        };
+      })
+      .filter((item) => item !== null);
+
+    res.json(betsList);
+  } catch (e) {
+    console.error("failed to list winner bets", e);
+    res.status(500).json({ error: "failed to list winner bets" });
+  }
+});
+
 router.get("/bets/:filename", async (req, res) => {
   try {
     const { filename } = req.params;
@@ -379,17 +444,26 @@ router.get("/results", async (req, res) => {
 
 router.post("/results/add", async (req, res) => {
   try {
-    const { game, score, probability, odds, return: returnValue } = req.body;
+    const {
+      game,
+      score,
+      team,
+      probability,
+      odds,
+      return: returnValue,
+    } = req.body;
 
+    // Validate: either score (for score bets) or team (for winner bets) must be provided
     if (
       !game ||
-      !score ||
+      (!score && !team) ||
       probability === undefined ||
       odds === undefined ||
       returnValue === undefined
     ) {
       return res.status(400).json({
-        error: "please provide game, score, probability, odds, and return",
+        error:
+          "please provide game, score or team, probability, odds, and return",
       });
     }
 
@@ -420,13 +494,20 @@ router.post("/results/add", async (req, res) => {
     }
 
     // Create new result item
-    const newResult = {
+    const newResult: any = {
       game,
-      score,
       probability,
       odds,
       return: returnValue,
     };
+
+    // Add score for score bets or team for winner bets
+    if (score) {
+      newResult.score = score;
+    }
+    if (team) {
+      newResult.team = team;
+    }
 
     // Append to array
     results.push(newResult);

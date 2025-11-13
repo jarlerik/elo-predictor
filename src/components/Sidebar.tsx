@@ -66,6 +66,16 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           <button
+            className={`nav-item ${
+              activePage === "played-winner-bets" ? "active" : ""
+            }`}
+            onClick={() => onPageChange("played-winner-bets")}
+          >
+            <span className="nav-icon">🏆</span>
+            <span className="nav-text">PLAYED WINNER BETS</span>
+          </button>
+
+          <button
             className={`nav-item ${activePage === "results" ? "active" : ""}`}
             onClick={() => onPageChange("results")}
           >
