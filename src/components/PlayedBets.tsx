@@ -195,7 +195,7 @@ const PlayedBets: React.FC = () => {
     return (
       <div className="page-content">
         <div className="page-header">
-          <h1>Played Bets</h1>
+          <h1>Played Score Bets</h1>
           <p>Loading bet files...</p>
         </div>
       </div>
@@ -206,7 +206,7 @@ const PlayedBets: React.FC = () => {
     return (
       <div className="page-content">
         <div className="page-header">
-          <h1>Played Bets</h1>
+          <h1>Played Score Bets</h1>
           <p className="error">Error: {error}</p>
         </div>
       </div>
@@ -233,8 +233,8 @@ const PlayedBets: React.FC = () => {
   return (
     <div className="page-content">
       <div className="page-header">
-        <h1>Played Bets</h1>
-        <p>View all your saved bet files</p>
+        <h1>Played Score Bets</h1>
+        <p>View all your saved score bet files</p>
       </div>
 
       {message && (

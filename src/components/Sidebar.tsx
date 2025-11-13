@@ -62,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             onClick={() => onPageChange("played-bets")}
           >
             <span className="nav-icon">📋</span>
-            <span className="nav-text">PLAYED BETS</span>
+            <span className="nav-text">PLAYED SCORE BETS</span>
           </button>
 
           <button
