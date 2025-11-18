@@ -5,5 +5,12 @@
     "probability": 0.05719037613182941,
     "odds": 17.48545940133183,
     "return": 23.39
+  },
+  {
+    "game": "SEA__SJS_14.11.2025",
+    "probability": 0.8543,
+    "odds": 1.17,
+    "return": 1.62,
+    "team": "SEA"
   }
 ]
