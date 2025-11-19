@@ -12,5 +12,19 @@
     "odds": 1.17,
     "return": 1.62,
     "team": "SEA"
+  },
+  {
+    "game": "SJS__UTA_18.11.2025",
+    "probability": 0.2054,
+    "odds": 4.87,
+    "return": 2.16,
+    "team": "SJS"
+  },
+  {
+    "game": "CHI__CGY_18.11.2025",
+    "probability": 0.3194,
+    "odds": 3.13,
+    "return": 1.93,
+    "team": "CHI"
   }
 ]
