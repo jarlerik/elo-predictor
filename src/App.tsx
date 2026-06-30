@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import Sidebar from "./components/Sidebar";
 import GamePrediction from "./components/GamePrediction";
+import SoccerPrediction from "./components/SoccerPrediction";
 import TeamRatings from "./components/TeamRatings";
 import KellyBet from "./components/KellyBet";
 import PlayedBets from "./components/PlayedBets";
@@ -67,6 +68,7 @@ function App() {
 
       <main className="app-main">
         {activePage === "prediction" && <GamePrediction teams={teams} />}
+        {activePage === "soccer" && <SoccerPrediction />}
         {activePage === "ratings" && <TeamRatings teams={teams} />}
         {activePage === "kelly" && <KellyBet />}
         {activePage === "played-bets" && <PlayedBets />}

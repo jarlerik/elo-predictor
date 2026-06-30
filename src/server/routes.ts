@@ -3,11 +3,19 @@ import fs from "fs";
 import path from "path";
 import { fetchMultipleSeasons } from "../data/nhlFetcher";
 import { computeElosFromGames } from "../elo/calculator";
-import { eloToWinProb, findTeamElo } from "../elo/probabilities";
+import {
+  eloToWinProb,
+  findTeamElo,
+  SOCCER_DRAW_FACTOR,
+} from "../elo/probabilities";
 import { TeamElo } from "../utils/types";
 import { computeRecentStatsForTeam } from "../score/recentStats";
 import { computeExpectedGoals } from "../score/expectedGoals";
 import { computeScoreProbabilities, topValueBets } from "../score/correctScore";
+import {
+  soccerExpectedGoals,
+  SOCCER_BASE_TOTAL,
+} from "../score/soccerGoals";
 
 const router = express.Router();
 
@@ -71,6 +79,166 @@ router.get("/predict", async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "failed" });
+  }
+});
+
+// Soccer national-team ratings, loaded once from the seed file.
+let cachedSoccerRatings: Record<string, number> | null = null;
+
+function loadSoccerRatings(): Record<string, number> {
+  if (cachedSoccerRatings) return cachedSoccerRatings;
+  const ratingsPath = path.join(
+    process.cwd(),
+    "data",
+    "soccer",
+    "ratings.json"
+  );
+  const raw = JSON.parse(fs.readFileSync(ratingsPath, "utf-8"));
+  cachedSoccerRatings = (raw.ratings ?? raw) as Record<string, number>;
+  return cachedSoccerRatings;
+}
+
+// List soccer national teams with their seeded ratings (mirrors /teams).
+router.get("/soccer/teams", async (req, res) => {
+  try {
+    const ratings = loadSoccerRatings();
+    const teams = Object.entries(ratings)
+      .map(([abbr, elo]) => ({ abbr, elo }))
+      .sort((a, b) => b.elo - a.elo);
+    res.json(teams);
+  } catch (e) {
+    console.error("failed to load soccer teams", e);
+    res.status(500).json({ error: "failed to load soccer teams" });
+  }
+});
+
+// 1X2 (home / draw / away) prediction for soccer, e.g. World Cup.
+// Defaults: neutral venue (homeAdv 0) and the soccer draw factor (ν).
+// Ratings come from data/soccer/ratings.json, but can be overridden per
+// request via ?homeElo=&awayElo= so it's testable without seeded teams.
+router.get("/predict/soccer", async (req, res) => {
+  try {
+    const home = ((req.query.home as string) || "").toUpperCase();
+    const away = ((req.query.away as string) || "").toUpperCase();
+    if (!home || !away)
+      return res
+        .status(400)
+        .json({ error: "please provide home and away (3-letter code)" });
+
+    const ratings = loadSoccerRatings();
+
+    const num = (v: unknown) =>
+      v === undefined ? undefined : Number(v as string);
+
+    const homeElo = num(req.query.homeElo) ?? ratings[home];
+    const awayElo = num(req.query.awayElo) ?? ratings[away];
+    if (homeElo === undefined || Number.isNaN(homeElo))
+      return res.status(404).json({ error: `unknown team / no rating: ${home}` });
+    if (awayElo === undefined || Number.isNaN(awayElo))
+      return res.status(404).json({ error: `unknown team / no rating: ${away}` });
+
+    // Knockout games can't draw -> pass ?drawFactor=0. Group stage uses ν.
+    const drawFactorParam = num(req.query.drawFactor);
+    const drawFactor =
+      drawFactorParam !== undefined && !Number.isNaN(drawFactorParam)
+        ? drawFactorParam
+        : SOCCER_DRAW_FACTOR;
+
+    // World Cup is played at neutral venues, so no home advantage by default.
+    // Allow ?neutral=false (or ?homeAdv=) for a true home game (host nation).
+    const homeAdvParam = num(req.query.homeAdv);
+    const homeAdv =
+      homeAdvParam !== undefined && !Number.isNaN(homeAdvParam)
+        ? homeAdvParam
+        : req.query.neutral === "false"
+        ? 60
+        : 0;
+
+    const probs = eloToWinProb(homeElo, awayElo, homeAdv, drawFactor);
+
+    const fairOdd = (p: number) =>
+      p > 0 ? Math.round((1 / p) * 100) / 100 : 0;
+
+    res.json({
+      homeTeam: home,
+      awayTeam: away,
+      homeElo,
+      awayElo,
+      homeAdv,
+      drawFactor,
+      homeWinProbability: Math.round(probs.homeWin * 10000) / 10000,
+      drawProbability: Math.round(probs.draw * 10000) / 10000,
+      awayWinProbability: Math.round(probs.awayWin * 10000) / 10000,
+      minHomeOdd: fairOdd(probs.homeWin),
+      minDrawOdd: fairOdd(probs.draw),
+      minAwayOdd: fairOdd(probs.awayWin),
+    });
+  } catch (e) {
+    console.error("failed to predict soccer", e);
+    res.status(500).json({ error: "failed to predict soccer" });
+  }
+});
+
+// Correct-score odds for soccer, derived from Elo via the supremacy+total
+// model (no game history needed). Mirrors the response shape of /predict/score
+// so the existing ScorePrediction UI component can render it unchanged.
+router.get("/predict/soccer/score", async (req, res) => {
+  try {
+    const home = ((req.query.home as string) || "").toUpperCase();
+    const away = ((req.query.away as string) || "").toUpperCase();
+    if (!home || !away)
+      return res
+        .status(400)
+        .json({ error: "please provide home and away (3-letter code)" });
+
+    const ratings = loadSoccerRatings();
+    const num = (v: unknown) =>
+      v === undefined ? undefined : Number(v as string);
+
+    const homeElo = num(req.query.homeElo) ?? ratings[home];
+    const awayElo = num(req.query.awayElo) ?? ratings[away];
+    if (homeElo === undefined || Number.isNaN(homeElo))
+      return res.status(404).json({ error: `unknown team / no rating: ${home}` });
+    if (awayElo === undefined || Number.isNaN(awayElo))
+      return res.status(404).json({ error: `unknown team / no rating: ${away}` });
+
+    // Neutral venue by default (World Cup); ?neutral=false or ?homeAdv= for host.
+    const homeAdvParam = num(req.query.homeAdv);
+    const homeAdv =
+      homeAdvParam !== undefined && !Number.isNaN(homeAdvParam)
+        ? homeAdvParam
+        : req.query.neutral === "false"
+        ? 60
+        : 0;
+
+    const baseTotalParam = num(req.query.baseTotal);
+    const baseTotal =
+      baseTotalParam !== undefined && !Number.isNaN(baseTotalParam)
+        ? baseTotalParam
+        : SOCCER_BASE_TOTAL;
+
+    const { lambdaHome, lambdaAway } = soccerExpectedGoals(
+      homeElo,
+      awayElo,
+      homeAdv,
+      baseTotal
+    );
+
+    // Soccer rarely exceeds ~6 goals/side; cap there.
+    const probs = computeScoreProbabilities(lambdaHome, lambdaAway, 6);
+    const top = topValueBets(probs, 10);
+
+    res.json({
+      homeTeam: home,
+      awayTeam: away,
+      lambdaHome: Math.round(lambdaHome * 1000) / 1000,
+      lambdaAway: Math.round(lambdaAway * 1000) / 1000,
+      top10: top,
+      allTop100: probs.slice(0, 100),
+    });
+  } catch (e) {
+    console.error("failed to predict soccer score", e);
+    res.status(500).json({ error: "failed to predict soccer score" });
   }
 });
 
