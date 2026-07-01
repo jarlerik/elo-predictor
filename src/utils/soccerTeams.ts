@@ -39,6 +39,7 @@ export const COUNTRY_NAMES: Record<string, string> = {
   SRB: "Serbia",
   KOR: "South Korea",
   CHI: "Chile",
+  COD: "DR Congo",
   HUN: "Hungary",
   POL: "Poland",
   PER: "Peru",
