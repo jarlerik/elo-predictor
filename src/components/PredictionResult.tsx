@@ -8,16 +8,20 @@ interface Prediction {
   drawProbability: number;
   awayWinProbability: number;
   minHomeOdd?: number;
+  minDrawOdd?: number;
   minAwayOdd?: number;
 }
+
+type Outcome = "home" | "draw" | "away";
 
 interface PredictionResultProps {
   prediction: Prediction;
 }
 
 const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
-  const [saving, setSaving] = useState<{ home: boolean; away: boolean }>({
+  const [saving, setSaving] = useState<Record<Outcome, boolean>>({
     home: false,
+    draw: false,
     away: false,
   });
   const [message, setMessage] = useState<{
@@ -25,16 +29,32 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
     text: string;
   } | null>(null);
 
+  // Soccer leagues return a draw probability; hockey returns 0 (no draws).
+  const hasDraw = prediction.drawProbability > 0;
+
   const homePercent = (prediction.homeWinProbability * 100).toFixed(1);
+  const drawPercent = (prediction.drawProbability * 100).toFixed(1);
   const awayPercent = (prediction.awayWinProbability * 100).toFixed(1);
 
-  const handleBet = async (team: "home" | "away") => {
-    const isHome = team === "home";
-    const teamAbbr = isHome ? prediction.homeTeam : prediction.awayTeam;
-    const probability = isHome
-      ? prediction.homeWinProbability
-      : prediction.awayWinProbability;
-    const odds = isHome ? prediction.minHomeOdd : prediction.minAwayOdd;
+  const handleBet = async (team: Outcome) => {
+    const teamAbbr =
+      team === "home"
+        ? prediction.homeTeam
+        : team === "away"
+        ? prediction.awayTeam
+        : "DRAW";
+    const probability =
+      team === "home"
+        ? prediction.homeWinProbability
+        : team === "away"
+        ? prediction.awayWinProbability
+        : prediction.drawProbability;
+    const odds =
+      team === "home"
+        ? prediction.minHomeOdd
+        : team === "away"
+        ? prediction.minAwayOdd
+        : prediction.minDrawOdd;
 
     if (!odds) {
       setMessage({
@@ -69,7 +89,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
 
       const data = await response.json();
       const teamName =
-        TEAM_FULL_NAMES[teamAbbr] || teamAbbr;
+        teamAbbr === "DRAW" ? "Draw" : TEAM_FULL_NAMES[teamAbbr] || teamAbbr;
       setMessage({
         type: "success",
         text: `Bet saved for ${teamName}!`,
@@ -166,6 +186,33 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
           </button>
         </div>
 
+        {hasDraw && (
+          <div className="probability-card draw">
+            <div className="probability-content">
+              <div className="team-name">Draw</div>
+              <div className="percentage">{drawPercent}%</div>
+              {prediction.minDrawOdd && (
+                <div className="odds">
+                  Min Odds: {prediction.minDrawOdd.toFixed(2)}
+                </div>
+              )}
+              <div className="bar">
+                <div
+                  className="bar-fill"
+                  style={{ width: `${drawPercent}%` }}
+                ></div>
+              </div>
+            </div>
+            <button
+              className="bet-button"
+              onClick={() => handleBet("draw")}
+              disabled={saving.draw || !prediction.minDrawOdd}
+            >
+              {saving.draw ? "Saving..." : "Bet on Draw"}
+            </button>
+          </div>
+        )}
+
         <div className="probability-card away-win">
           <div className="probability-content">
             <div className="team-name">
@@ -197,7 +244,10 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
       <div className="prediction-summary">
         <p>
           <strong>Most Likely Outcome:</strong>{" "}
-          {prediction.homeWinProbability > prediction.awayWinProbability
+          {prediction.drawProbability > prediction.homeWinProbability &&
+          prediction.drawProbability > prediction.awayWinProbability
+            ? "Draw"
+            : prediction.homeWinProbability > prediction.awayWinProbability
             ? `${
                 TEAM_FULL_NAMES[prediction.homeTeam] || prediction.homeTeam
               } wins at home`

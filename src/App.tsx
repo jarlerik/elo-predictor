@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import Sidebar from "./components/Sidebar";
 import GamePrediction from "./components/GamePrediction";
@@ -9,45 +9,9 @@ import PlayedBets from "./components/PlayedBets";
 import PlayedWinnerBets from "./components/PlayedWinnerBets";
 import Results from "./components/Results";
 
-interface Team {
-  abbr: string;
-  elo: number;
-}
-
 function App() {
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [activePage, setActivePage] = useState<string>("prediction");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    fetchTeams();
-  }, []);
-
-  const fetchTeams = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch("/api/teams");
-      if (!response.ok) {
-        throw new Error("Failed to fetch teams");
-      }
-      const data = await response.json();
-      setTeams(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="app">
-        <div className="loading">Loading NHL teams...</div>
-      </div>
-    );
-  }
 
   return (
     <div className="app">
@@ -67,9 +31,11 @@ function App() {
       />
 
       <main className="app-main">
-        {activePage === "prediction" && <GamePrediction teams={teams} />}
+        {activePage === "prediction" && <GamePrediction league="nhl" />}
+        {activePage === "liiga" && <GamePrediction league="liiga" />}
+        {activePage === "epl" && <GamePrediction league="epl" />}
         {activePage === "soccer" && <SoccerPrediction />}
-        {activePage === "ratings" && <TeamRatings teams={teams} />}
+        {activePage === "ratings" && <TeamRatings />}
         {activePage === "kelly" && <KellyBet />}
         {activePage === "played-bets" && <PlayedBets />}
         {activePage === "played-winner-bets" && <PlayedWinnerBets />}

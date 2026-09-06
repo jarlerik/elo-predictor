@@ -2,8 +2,8 @@ export type GameRecord = {
   gamePk: number;
   season: string;
   date: string; // ISO
-  homeTeamId: number;
-  awayTeamId: number;
+  homeTeamId: number | string;
+  awayTeamId: number | string;
   homeAbbr: string;
   awayAbbr: string;
   homeGoals: number;
@@ -12,7 +12,7 @@ export type GameRecord = {
 };
 
 export type TeamElo = {
-  teamId: number;
+  teamId: number | string;
   abbr: string;
   elo: number;
 };

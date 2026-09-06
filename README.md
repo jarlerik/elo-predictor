@@ -1,14 +1,24 @@
-# NHL ELO Predictor
+# ELO Predictor
 
-A full-stack web application that predicts NHL game outcomes using ELO ratings. Built with Node.js/Express backend and React/TypeScript frontend.
+A full-stack web application that predicts game outcomes using ELO ratings. Covers the NHL, the Finnish SM-liiga, the English Premier League and international soccer (World Cup). Built with Node.js/Express backend and React/TypeScript frontend.
 
 ## Features
 
-- 🏒 **NHL Game Predictions**: Predict game outcomes using ELO ratings
-- 📊 **Team Rankings**: View current ELO ratings for all NHL teams
-- 🎯 **Probability Calculations**: Get win probabilities for home/away teams
+- 🏒 **NHL & SM-liiga Predictions**: Win probabilities and correct-score odds from ELO computed over the last three seasons
+- ⚽ **Premier League Predictions**: 1X2 (home / draw / away) and correct-score odds, with draws modelled via the Davidson tie model
+- 🏆 **World Cup**: 1X2 odds for national teams from seeded eloratings.net ratings
+- 📊 **Team Rankings**: Current ELO ratings per league
 - 📱 **Responsive Design**: Modern, mobile-friendly interface
-- ⚡ **Real-time Data**: Fetches live NHL data from official APIs
+- ⚡ **Live Data**: Results are pulled from public feeds and refreshed every 6 hours
+
+## Data Sources
+
+| League         | Source                                                  | Seasons used          |
+| -------------- | ------------------------------------------------------- | --------------------- |
+| NHL            | `api.nhle.com` official stats API                       | 2 previous + current  |
+| SM-liiga       | `liiga.fi/api/v2/games` (regular season, `runkosarja`)  | 2 previous + current  |
+| Premier League | `fixturedownload.com/feed/json/epl-<year>`              | 2 previous + current  |
+| World Cup      | `data/soccer/ratings.json` seeded from eloratings.net   | —                     |
 
 ## Tech Stack
 
@@ -79,11 +89,15 @@ elo-predictor/
 │   │   ├── index.ts      # Server entry point
 │   │   └── routes.ts    # API routes
 │   ├── data/            # Data fetching logic
-│   │   └── nhlFetcher.ts # NHL API integration
+│   │   ├── leagueData.ts # Per-league game/ELO cache
+│   │   ├── nhlFetcher.ts # NHL API integration
+│   │   ├── liigaFetcher.ts # SM-liiga API integration
+│   │   └── eplFetcher.ts # Premier League feed integration
 │   ├── elo/             # ELO calculation logic
 │   │   ├── calculator.ts
 │   │   └── probabilities.ts
 │   ├── utils/           # Shared utilities
+│   │   ├── leagues.ts   # League registry + team tables
 │   │   └── types.ts     # TypeScript type definitions
 │   ├── components/      # React components
 │   │   ├── TeamSelector.tsx
@@ -103,8 +117,13 @@ elo-predictor/
 
 ## API Endpoints
 
-- `GET /api/teams` - Get all teams with current ELO ratings
-- `GET /api/predict?home=TEAM&away=TEAM` - Get game prediction
+All game-history endpoints take an optional `league=nhl|liiga|epl` query parameter (default `nhl`).
+
+- `GET /api/leagues` - List supported leagues
+- `GET /api/teams?league=` - Get all teams with current ELO ratings
+- `GET /api/predict?league=&home=TEAM&away=TEAM` - Win / draw / loss probabilities and fair odds
+- `GET /api/predict/score?league=&home=TEAM&away=TEAM` - Correct-score probabilities
+- `GET /api/soccer/teams`, `GET /api/predict/soccer`, `GET /api/predict/soccer/score` - World Cup (national teams)
 
 ## How It Works
 

@@ -38,7 +38,7 @@ if (isProduction || fs.existsSync(clientIndexPath)) {
 }
 
 app.listen(port, () => {
-  console.log(`NHL ELO Predictor running on http://localhost:${port}`);
+  console.log(`ELO Predictor running on http://localhost:${port}`);
   if (!isProduction && !fs.existsSync(clientIndexPath)) {
     console.log(`Frontend dev server: http://localhost:3001`);
     console.log(

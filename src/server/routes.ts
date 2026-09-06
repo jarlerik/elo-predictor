@@ -1,14 +1,14 @@
 import express from "express";
 import fs from "fs";
 import path from "path";
-import { fetchMultipleSeasons } from "../data/nhlFetcher";
-import { computeElosFromGames } from "../elo/calculator";
+import { ensureLeague } from "../data/leagueData";
 import {
   eloToWinProb,
   findTeamElo,
+  NO_DRAW,
   SOCCER_DRAW_FACTOR,
 } from "../elo/probabilities";
-import { TeamElo } from "../utils/types";
+import { LeagueId, LEAGUES, isLeagueId } from "../utils/leagues";
 import { computeRecentStatsForTeam } from "../score/recentStats";
 import { computeExpectedGoals } from "../score/expectedGoals";
 import { computeScoreProbabilities, topValueBets } from "../score/correctScore";
@@ -19,29 +19,36 @@ import {
 
 const router = express.Router();
 
-let cachedElos: TeamElo[] | null = null;
-
-async function ensureElos() {
-  if (cachedElos) return cachedElos;
-  // seasons: 2 previous + current
-  const seasons = ["20222023", "20232024", "20242025"];
-  const games = await fetchMultipleSeasons(seasons);
-  const elos = computeElosFromGames(games);
-  cachedElos = elos;
-  return elos;
+// Game-history leagues (NHL, Liiga, Premier League) share the endpoints
+// below and are selected with ?league=nhl|liiga|epl (default: nhl).
+function leagueFrom(req: express.Request): LeagueId | null {
+  const raw = req.query.league;
+  if (raw === undefined || raw === "") return "nhl";
+  const id = String(raw).toLowerCase();
+  return isLeagueId(id) ? id : null;
 }
 
+const fairOdd = (p: number) => (p > 0 ? Math.round((1 / p) * 100) / 100 : 0);
+
+router.get("/leagues", (req, res) => {
+  res.json(Object.values(LEAGUES));
+});
+
 router.get("/teams", async (req, res) => {
+  const league = leagueFrom(req);
+  if (!league) return res.status(400).json({ error: "unknown league" });
   try {
-    const elos = await ensureElos();
+    const { elos } = await ensureLeague(league);
     res.json(elos);
   } catch (e) {
-    console.error("failed to fetch team elos", e);
+    console.error(`failed to fetch team elos (${league})`, e);
     res.status(500).json({ error: "failed to fetch team elos" });
   }
 });
 
 router.get("/predict", async (req, res) => {
+  const league = leagueFrom(req);
+  if (!league) return res.status(400).json({ error: "unknown league" });
   try {
     const home = ((req.query.home as string) || "").toUpperCase();
     const away = ((req.query.away as string) || "").toUpperCase();
@@ -50,7 +57,7 @@ router.get("/predict", async (req, res) => {
         .status(400)
         .json({ error: "please provide home and away (abbr)" });
 
-    const elos = await ensureElos();
+    const { elos } = await ensureLeague(league);
     const homeTeamElo = findTeamElo(home, elos);
     const awayTeamElo = findTeamElo(away, elos);
     if (!homeTeamElo)
@@ -58,21 +65,26 @@ router.get("/predict", async (req, res) => {
     if (!awayTeamElo)
       return res.status(404).json({ error: `team not found: ${away}` });
 
-    const probs = eloToWinProb(homeTeamElo.elo, awayTeamElo.elo);
-
-    const minHomeOdd =
-      probs.homeWin > 0 ? Math.round((1 / probs.homeWin) * 100) / 100 : 0;
-    const minAwayOdd =
-      probs.awayWin > 0 ? Math.round((1 / probs.awayWin) * 100) / 100 : 0;
+    // Hockey can't end level (OT/SO), league soccer draws ~1 in 4.
+    const drawFactor =
+      LEAGUES[league].sport === "soccer" ? SOCCER_DRAW_FACTOR : NO_DRAW;
+    const probs = eloToWinProb(
+      homeTeamElo.elo,
+      awayTeamElo.elo,
+      undefined,
+      drawFactor
+    );
 
     res.json({
+      league,
       homeTeam: homeTeamElo.abbr,
       awayTeam: awayTeamElo.abbr,
       homeWinProbability: Math.round(probs.homeWin * 10000) / 10000,
-      drawProbability: 0.0,
+      drawProbability: Math.round(probs.draw * 10000) / 10000,
       awayWinProbability: Math.round(probs.awayWin * 10000) / 10000,
-      minHomeOdd,
-      minAwayOdd,
+      minHomeOdd: fairOdd(probs.homeWin),
+      minDrawOdd: fairOdd(probs.draw),
+      minAwayOdd: fairOdd(probs.awayWin),
       homeElo: homeTeamElo.elo,
       awayElo: awayTeamElo.elo,
     });
@@ -243,6 +255,8 @@ router.get("/predict/soccer/score", async (req, res) => {
 });
 
 router.get("/predict/score", async (req, res) => {
+  const league = leagueFrom(req);
+  if (!league) return res.status(400).json({ error: "unknown league" });
   try {
     const home = ((req.query.home as string) || "").toUpperCase();
     const away = ((req.query.away as string) || "").toUpperCase();
@@ -251,12 +265,10 @@ router.get("/predict/score", async (req, res) => {
         .status(400)
         .json({ error: "please provide home and away (abbr)" });
 
-    // ensure elos and games loaded
-    const seasons = ["20222023", "20232024", "20242025"];
-    const games = await fetchMultipleSeasons(seasons); // sorted ascending
-    const elos = await ensureElos();
-    const homeTeam = elos.find((t: any) => t.abbr.toUpperCase() === home);
-    const awayTeam = elos.find((t: any) => t.abbr.toUpperCase() === away);
+    // games are sorted ascending; elos already computed from them
+    const { games, elos } = await ensureLeague(league);
+    const homeTeam = findTeamElo(home, elos);
+    const awayTeam = findTeamElo(away, elos);
     if (!homeTeam || !awayTeam)
       return res.status(404).json({ error: "team not found" });
 
@@ -271,7 +283,9 @@ router.get("/predict/score", async (req, res) => {
       awayTeam.elo
     );
 
-    const probs = computeScoreProbabilities(lambdaHome, lambdaAway, 8);
+    // Soccer rarely exceeds ~6 goals/side; hockey needs more headroom.
+    const maxGoals = LEAGUES[league].sport === "soccer" ? 6 : 8;
+    const probs = computeScoreProbabilities(lambdaHome, lambdaAway, maxGoals);
 
     // marketOdds optional param as URL-encoded JSON string or plain JSON
     let marketOdds: Record<string, number> | undefined = undefined;
@@ -287,6 +301,7 @@ router.get("/predict/score", async (req, res) => {
     const top = topValueBets(probs, 10);
 
     res.json({
+      league,
       homeTeam: homeTeam.abbr,
       awayTeam: awayTeam.abbr,
       lambdaHome: Math.round(lambdaHome * 1000) / 1000,

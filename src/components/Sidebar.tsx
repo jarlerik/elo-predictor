@@ -24,7 +24,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       </button>
       <div className={`sidebar ${isMobileMenuOpen ? "mobile-open" : ""}`}>
         <div className="sidebar-header">
-          <h2>NHL ELO Predictor</h2>
+          <h2>ELO Predictor</h2>
           <p>v1.0.0 BETA</p>
         </div>
 
@@ -35,15 +35,31 @@ const Sidebar: React.FC<SidebarProps> = ({
             }`}
             onClick={() => onPageChange("prediction")}
           >
-            <span className="nav-icon">🎯</span>
-            <span className="nav-text">PREDICT GAME</span>
+            <span className="nav-icon">🏒</span>
+            <span className="nav-text">NHL</span>
+          </button>
+
+          <button
+            className={`nav-item ${activePage === "liiga" ? "active" : ""}`}
+            onClick={() => onPageChange("liiga")}
+          >
+            <span className="nav-icon">🇫🇮</span>
+            <span className="nav-text">SM-LIIGA</span>
+          </button>
+
+          <button
+            className={`nav-item ${activePage === "epl" ? "active" : ""}`}
+            onClick={() => onPageChange("epl")}
+          >
+            <span className="nav-icon">⚽</span>
+            <span className="nav-text">PREMIER LEAGUE</span>
           </button>
 
           <button
             className={`nav-item ${activePage === "soccer" ? "active" : ""}`}
             onClick={() => onPageChange("soccer")}
           >
-            <span className="nav-icon">⚽</span>
+            <span className="nav-icon">🏆</span>
             <span className="nav-text">WORLD CUP</span>
           </button>
 
@@ -98,7 +114,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <span className="status-value">ONLINE</span>
           </div>
           <div className="status-info">
-            <span>Teams: 32</span>
+            <span>NHL · Liiga · EPL</span>
             <span>ELO Updated</span>
           </div>
         </div>

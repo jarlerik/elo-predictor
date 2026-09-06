@@ -5,6 +5,12 @@ const BASE_ELO = 1500;
 const BASE_K = 20; // per-game base
 const HOME_ADV = 60; // chosen as per earlier decision
 
+export interface EloOptions {
+  /** Only these abbreviations are returned (teams that left the league are dropped). */
+  currentTeams?: Set<string>;
+  homeAdv?: number;
+}
+
 function marginMultiplier(goalDiff: number, eloDiff: number): number {
   // from common implementations
   return (
@@ -21,11 +27,17 @@ function timeWeight(gameDateStr: string): number {
   return weight;
 }
 
-export function computeElosFromGames(games: GameRecord[]): TeamElo[] {
-  const elos = new Map<number, number>();
-  const abbrs = new Map<number, string>();
+export function computeElosFromGames(
+  games: GameRecord[],
+  options: EloOptions = {}
+): TeamElo[] {
+  const currentTeams = options.currentTeams ?? CURRENT_NHL_TEAMS;
+  const homeAdv = options.homeAdv ?? HOME_ADV;
 
-  function ensureTeam(id: number, abbr: string) {
+  const elos = new Map<number | string, number>();
+  const abbrs = new Map<number | string, string>();
+
+  function ensureTeam(id: number | string, abbr: string) {
     if (!elos.has(id)) {
       elos.set(id, BASE_ELO);
       abbrs.set(id, abbr);
@@ -39,18 +51,16 @@ export function computeElosFromGames(games: GameRecord[]): TeamElo[] {
     const homeElo = elos.get(g.homeTeamId)!;
     const awayElo = elos.get(g.awayTeamId)!;
 
-    const homeRating = homeElo + HOME_ADV;
+    const homeRating = homeElo + homeAdv;
     const awayRating = awayElo;
 
     const expectedHome =
       1 / (1 + Math.pow(10, (awayRating - homeRating) / 400));
-    const expectedAway = 1 - expectedHome;
 
-    // actual results: winner 1, loser 0
-    let actualHome = 0;
-    let actualAway = 0;
+    // actual result: win 1, loss 0, draw 0.5 (soccer only; hockey never ties)
+    let actualHome = 0.5;
     if (g.homeGoals > g.awayGoals) actualHome = 1;
-    else if (g.awayGoals > g.homeGoals) actualAway = 1;
+    else if (g.awayGoals > g.homeGoals) actualHome = 0;
 
     const goalDiff = Math.abs(g.homeGoals - g.awayGoals);
     const eloDiff = Math.abs(homeElo - awayElo);
@@ -71,8 +81,8 @@ export function computeElosFromGames(games: GameRecord[]): TeamElo[] {
   const res: TeamElo[] = [];
   for (const [id, e] of elos.entries()) {
     const abbr = abbrs.get(id) ?? String(id);
-    // Only include current NHL teams
-    if (CURRENT_NHL_TEAMS.has(abbr)) {
+    // Only include teams currently in the league
+    if (currentTeams.has(abbr)) {
       res.push({
         teamId: id,
         abbr: abbr,

@@ -1,5 +1,7 @@
-// Team abbreviation to full name mapping
-export const TEAM_FULL_NAMES: Record<string, string> = {
+import { LIIGA_TEAM_NAMES, EPL_TEAM_NAMES } from "./leagues";
+
+// NHL team abbreviation to full name mapping
+export const NHL_TEAM_NAMES: Record<string, string> = {
   ANA: "Anaheim Ducks",
   BOS: "Boston Bruins",
   BUF: "Buffalo Sabres",
@@ -32,6 +34,14 @@ export const TEAM_FULL_NAMES: Record<string, string> = {
   VGK: "Vegas Golden Knights",
   WPG: "Winnipeg Jets",
   WSH: "Washington Capitals",
+};
+
+// Abbreviation -> full name across every supported league. Codes are unique
+// across leagues, so one lookup serves all the shared UI components.
+export const TEAM_FULL_NAMES: Record<string, string> = {
+  ...NHL_TEAM_NAMES,
+  ...LIIGA_TEAM_NAMES,
+  ...EPL_TEAM_NAMES,
 };
 
 // Current NHL teams (as of 2024-25 season)

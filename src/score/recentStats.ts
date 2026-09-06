@@ -1,17 +1,7 @@
 import { TeamRecentStats } from "./expectedGoals";
+import { GameRecord } from "../utils/types";
 
-export type GameRecordForStats = {
-  gamePk: number;
-  season: string;
-  date: string; // ISO
-  homeTeamId: number;
-  awayTeamId: number;
-  homeAbbr: string;
-  awayAbbr: string;
-  homeGoals: number;
-  awayGoals: number;
-  decidedInOTorSO: boolean;
-};
+export type GameRecordForStats = GameRecord;
 
 /**
  * Compute time decay weight for a game based on days ago.
