@@ -9,6 +9,8 @@ export interface EloOptions {
   /** Only these abbreviations are returned (teams that left the league are dropped). */
   currentTeams?: Set<string>;
   homeAdv?: number;
+  /** Starting rating per abbreviation (e.g. an external seed); others start at 1500. */
+  initialElos?: Record<string, number>;
 }
 
 function marginMultiplier(goalDiff: number, eloDiff: number): number {
@@ -33,23 +35,24 @@ export function computeElosFromGames(
 ): TeamElo[] {
   const currentTeams = options.currentTeams ?? CURRENT_NHL_TEAMS;
   const homeAdv = options.homeAdv ?? HOME_ADV;
+  const initial = options.initialElos ?? {};
 
-  const elos = new Map<number | string, number>();
-  const abbrs = new Map<number | string, string>();
+  // Keyed by abbreviation: a franchise can change upstream id when it is
+  // renamed (e.g. Utah Hockey Club -> Utah Mammoth) but keeps its history.
+  const elos = new Map<string, number>();
+  const ids = new Map<string, number | string>();
 
   function ensureTeam(id: number | string, abbr: string) {
-    if (!elos.has(id)) {
-      elos.set(id, BASE_ELO);
-      abbrs.set(id, abbr);
-    }
+    if (!elos.has(abbr)) elos.set(abbr, initial[abbr] ?? BASE_ELO);
+    ids.set(abbr, id); // latest id wins
   }
 
   for (const g of games) {
     ensureTeam(g.homeTeamId, g.homeAbbr);
     ensureTeam(g.awayTeamId, g.awayAbbr);
 
-    const homeElo = elos.get(g.homeTeamId)!;
-    const awayElo = elos.get(g.awayTeamId)!;
+    const homeElo = elos.get(g.homeAbbr)!;
+    const awayElo = elos.get(g.awayAbbr)!;
 
     const homeRating = homeElo + homeAdv;
     const awayRating = awayElo;
@@ -74,17 +77,16 @@ export function computeElosFromGames(
     const deltaHome = k * (actualHome - expectedHome);
     const deltaAway = -deltaHome; // zero-sum
 
-    elos.set(g.homeTeamId, homeElo + deltaHome);
-    elos.set(g.awayTeamId, awayElo + deltaAway);
+    elos.set(g.homeAbbr, homeElo + deltaHome);
+    elos.set(g.awayAbbr, awayElo + deltaAway);
   }
 
   const res: TeamElo[] = [];
-  for (const [id, e] of elos.entries()) {
-    const abbr = abbrs.get(id) ?? String(id);
+  for (const [abbr, e] of elos.entries()) {
     // Only include teams currently in the league
     if (currentTeams.has(abbr)) {
       res.push({
-        teamId: id,
+        teamId: ids.get(abbr) ?? abbr,
         abbr: abbr,
         elo: Math.round(e * 100) / 100,
       });

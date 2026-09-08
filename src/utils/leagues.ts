@@ -112,6 +112,49 @@ export const EPL_TEAMS: Record<string, LeagueTeam> = {
   WOL: { name: "Wolverhampton Wanderers", apiName: "Wolves" },
 };
 
+// UEFA Champions League 2026-27 participants. apiName = team name in
+// https://fixturedownload.com/feed/json/champions-league-<season start year>.
+// Codes are unique across NHL / Liiga / EPL (English clubs reuse their EPL
+// codes) and avoid FIFA country codes used by the World Cup page.
+export const UCL_TEAMS: Record<string, LeagueTeam & { country: string }> = {
+  AEK: { name: "AEK Athens", apiName: "AEK Athens", country: "GRE" },
+  ARS: { name: "Arsenal", apiName: "Arsenal", country: "ENG" },
+  AVL: { name: "Aston Villa", apiName: "Aston Villa", country: "ENG" },
+  ATM: { name: "Atlético Madrid", apiName: "Atleti", country: "ESP" },
+  BVB: { name: "Borussia Dortmund", apiName: "B. Dortmund", country: "GER" },
+  FCB: { name: "Barcelona", apiName: "Barcelona", country: "ESP" },
+  BAY: { name: "Bayern München", apiName: "Bayern München", country: "GER" },
+  BOD: { name: "Bodø/Glimt", apiName: "Bodø/Glimt", country: "NOR" },
+  BRU: { name: "Club Brugge", apiName: "Club Brugge", country: "BEL" },
+  COM: { name: "Como", apiName: "Como", country: "ITA" },
+  FEN: { name: "Fenerbahçe", apiName: "Fenerbahçe", country: "TUR" },
+  FEY: { name: "Feyenoord", apiName: "Feyenoord", country: "NED" },
+  GAL: { name: "Galatasaray", apiName: "Galatasaray", country: "TUR" },
+  INT: { name: "Inter", apiName: "Inter", country: "ITA" },
+  LSK: { name: "LASK", apiName: "LASK", country: "AUT" },
+  RBL: { name: "RB Leipzig", apiName: "Leipzig", country: "GER" },
+  RCL: { name: "Lens", apiName: "Lens", country: "FRA" },
+  LIL: { name: "Lille", apiName: "Lille", country: "FRA" },
+  LIV: { name: "Liverpool", apiName: "Liverpool", country: "ENG" },
+  MCI: { name: "Manchester City", apiName: "Man City", country: "ENG" },
+  MUN: { name: "Manchester United", apiName: "Man Utd", country: "ENG" },
+  NAP: { name: "Napoli", apiName: "Napoli", country: "ITA" },
+  PSV: { name: "PSV Eindhoven", apiName: "PSV", country: "NED" },
+  PSG: { name: "Paris Saint-Germain", apiName: "Paris", country: "FRA" },
+  FCP: { name: "FC Porto", apiName: "Porto", country: "POR" },
+  BET: { name: "Real Betis", apiName: "Real Betis", country: "ESP" },
+  RMA: { name: "Real Madrid", apiName: "Real Madrid", country: "ESP" },
+  ROM: { name: "Roma", apiName: "Roma", country: "ITA" },
+  SLB: { name: "Slovan Bratislava", apiName: "S. Bratislava", country: "SVK" },
+  SAB: { name: "Sabah", apiName: "Sabah", country: "AZE" },
+  SHK: { name: "Shakhtar Donetsk", apiName: "Shakhtar", country: "UKR" },
+  SLA: { name: "Slavia Praha", apiName: "Slavia Praha", country: "CZE" },
+  SCP: { name: "Sporting CP", apiName: "Sporting CP", country: "POR" },
+  VFB: { name: "VfB Stuttgart", apiName: "Stuttgart", country: "GER" },
+  VIK: { name: "Viking", apiName: "Viking", country: "NOR" },
+  VIL: { name: "Villarreal", apiName: "Villarreal", country: "ESP" },
+};
+
 function namesOf(teams: Record<string, LeagueTeam>): Record<string, string> {
   return Object.fromEntries(
     Object.entries(teams).map(([abbr, t]) => [abbr, t.name])
@@ -120,6 +163,7 @@ function namesOf(teams: Record<string, LeagueTeam>): Record<string, string> {
 
 export const LIIGA_TEAM_NAMES = namesOf(LIIGA_TEAMS);
 export const EPL_TEAM_NAMES = namesOf(EPL_TEAMS);
+export const UCL_TEAM_NAMES = namesOf(UCL_TEAMS);
 
 /**
  * Build a reverse lookup (upstream name -> app abbreviation) for a fetcher.

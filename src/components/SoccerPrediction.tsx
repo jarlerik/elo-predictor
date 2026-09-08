@@ -1,10 +1,60 @@
 import React, { useEffect, useState } from "react";
 import ScorePrediction from "./ScorePrediction";
 import { COUNTRY_NAMES } from "../utils/soccerTeams";
+import { UCL_TEAM_NAMES } from "../utils/leagues";
 
 interface Team {
   abbr: string;
   elo: number;
+  seedElo?: number;
+  played?: number;
+}
+
+export type SoccerCompetition = "worldcup" | "ucl";
+
+interface CompetitionConfig {
+  title: string;
+  subtitle: string;
+  teamsUrl: string;
+  names: Record<string, string>;
+  homeLabel: string;
+  awayLabel: string;
+  knockoutLabel: string;
+  // The venue checkbox flips the competition default: World Cup games are
+  // neutral unless the host plays; Champions League games are home games
+  // unless it's the final.
+  venueLabel: string;
+  defaultNeutral: boolean;
+}
+
+const COMPETITIONS: Record<SoccerCompetition, CompetitionConfig> = {
+  worldcup: {
+    title: "World Cup Prediction",
+    subtitle: "1X2 (home / draw / away) odds for international matches",
+    teamsUrl: "/api/soccer/teams",
+    names: COUNTRY_NAMES,
+    homeLabel: "Team A:",
+    awayLabel: "Team B:",
+    knockoutLabel: "Knockout (no draw)",
+    venueLabel: "Team A is host nation (home advantage)",
+    defaultNeutral: true,
+  },
+  ucl: {
+    title: "Champions League Prediction",
+    subtitle:
+      "1X2 and correct-score odds for clubs, seeded from clubelo.com and updated with played games",
+    teamsUrl: "/api/ucl/teams",
+    names: UCL_TEAM_NAMES,
+    homeLabel: "Home Team:",
+    awayLabel: "Away Team:",
+    knockoutLabel: "Single match, no draw (final)",
+    venueLabel: "Neutral venue (final)",
+    defaultNeutral: false,
+  },
+};
+
+interface SoccerPredictionProps {
+  competition?: SoccerCompetition;
 }
 
 interface ScorePredictionData {
@@ -33,12 +83,17 @@ interface SoccerPrediction {
 
 type Outcome = "home" | "draw" | "away";
 
-const SoccerPrediction: React.FC = () => {
+const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
+  competition = "worldcup",
+}) => {
+  const cfg = COMPETITIONS[competition];
   const [teams, setTeams] = useState<Team[]>([]);
+  const [seedRefreshed, setSeedRefreshed] = useState<string>("");
   const [selectedHome, setSelectedHome] = useState<string>("");
   const [selectedAway, setSelectedAway] = useState<string>("");
   const [knockout, setKnockout] = useState<boolean>(false);
-  const [hostNation, setHostNation] = useState<boolean>(false);
+  // "venue flipped" = the venue checkbox is ticked (host nation / neutral final)
+  const [venueFlipped, setVenueFlipped] = useState<boolean>(false);
   const [prediction, setPrediction] = useState<SoccerPrediction | null>(null);
   const [scorePrediction, setScorePrediction] =
     useState<ScorePredictionData | null>(null);
@@ -50,13 +105,21 @@ const SoccerPrediction: React.FC = () => {
   } | null>(null);
 
   useEffect(() => {
-    fetch("/api/soccer/teams")
+    fetch(cfg.teamsUrl)
       .then((r) => r.json())
-      .then(setTeams)
-      .catch(() => setError("Failed to load soccer teams"));
-  }, []);
+      .then((data) => {
+        // /api/ucl/teams wraps the list with seed metadata.
+        if (Array.isArray(data)) setTeams(data);
+        else {
+          setTeams(data.teams ?? []);
+          setSeedRefreshed(data.seedRefreshed ?? "");
+        }
+      })
+      .catch(() => setError("Failed to load teams"));
+  }, [cfg.teamsUrl]);
 
-  const name = (abbr: string) => COUNTRY_NAMES[abbr] || abbr;
+  const name = (abbr: string) => cfg.names[abbr] || abbr;
+  const neutral = cfg.defaultNeutral ? !venueFlipped : venueFlipped;
   const sorted = [...teams].sort((a, b) =>
     name(a.abbr).localeCompare(name(b.abbr))
   );
@@ -74,20 +137,22 @@ const SoccerPrediction: React.FC = () => {
     setMessage(null);
     try {
       const params = new URLSearchParams({
+        competition,
         home: selectedHome,
         away: selectedAway,
+        neutral: String(neutral),
       });
-      // Knockout games can't draw; neutral venue unless host nation is set.
+      // Single-match knockouts can't draw.
       if (knockout) params.set("drawFactor", "0");
-      if (hostNation) params.set("neutral", "false");
 
-      // Score odds use the same venue (neutral/host) but draws are inherent to
-      // the Poisson model, so the knockout flag doesn't apply there.
+      // Score odds use the same venue but draws are inherent to the Poisson
+      // model, so the knockout flag doesn't apply there.
       const scoreParams = new URLSearchParams({
+        competition,
         home: selectedHome,
         away: selectedAway,
+        neutral: String(neutral),
       });
-      if (hostNation) scoreParams.set("neutral", "false");
 
       const [res, scoreRes] = await Promise.all([
         fetch(`/api/predict/soccer?${params.toString()}`),
@@ -168,8 +233,14 @@ const SoccerPrediction: React.FC = () => {
   return (
     <div className="page-content">
       <div className="page-header">
-        <h1>World Cup Prediction</h1>
-        <p>1X2 (home / draw / away) odds for international matches</p>
+        <h1>{cfg.title}</h1>
+        <p>{cfg.subtitle}</p>
+        {competition === "ucl" && seedRefreshed && (
+          <p style={{ opacity: 0.7, fontSize: "0.85rem" }}>
+            Seed ratings from clubelo.com dated {seedRefreshed}; the rating
+            shown next to each club includes played Champions League games.
+          </p>
+        )}
       </div>
 
       {error && (
@@ -183,7 +254,7 @@ const SoccerPrediction: React.FC = () => {
         <div className="team-selector">
           <div className="team-selection">
             <div className="team-field">
-              <label htmlFor="soccer-home">Team A:</label>
+              <label htmlFor="soccer-home">{cfg.homeLabel}</label>
               <select
                 id="soccer-home"
                 value={selectedHome}
@@ -193,7 +264,7 @@ const SoccerPrediction: React.FC = () => {
                 <option value="">Select team</option>
                 {sorted.map((t) => (
                   <option key={t.abbr} value={t.abbr}>
-                    {name(t.abbr)} ({t.abbr}) — {t.elo}
+                    {name(t.abbr)} ({t.abbr}) — {Math.round(t.elo)}
                   </option>
                 ))}
               </select>
@@ -204,7 +275,7 @@ const SoccerPrediction: React.FC = () => {
             </div>
 
             <div className="team-field">
-              <label htmlFor="soccer-away">Team B:</label>
+              <label htmlFor="soccer-away">{cfg.awayLabel}</label>
               <select
                 id="soccer-away"
                 value={selectedAway}
@@ -214,7 +285,7 @@ const SoccerPrediction: React.FC = () => {
                 <option value="">Select team</option>
                 {sorted.map((t) => (
                   <option key={t.abbr} value={t.abbr}>
-                    {name(t.abbr)} ({t.abbr}) — {t.elo}
+                    {name(t.abbr)} ({t.abbr}) — {Math.round(t.elo)}
                   </option>
                 ))}
               </select>
@@ -236,15 +307,15 @@ const SoccerPrediction: React.FC = () => {
                 checked={knockout}
                 onChange={(e) => setKnockout(e.target.checked)}
               />
-              Knockout (no draw)
+              {cfg.knockoutLabel}
             </label>
             <label style={{ display: "flex", gap: "0.4rem", alignItems: "center" }}>
               <input
                 type="checkbox"
-                checked={hostNation}
-                onChange={(e) => setHostNation(e.target.checked)}
+                checked={venueFlipped}
+                onChange={(e) => setVenueFlipped(e.target.checked)}
               />
-              Team A is host nation (home advantage)
+              {cfg.venueLabel}
             </label>
           </div>
 

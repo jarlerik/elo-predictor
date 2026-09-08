@@ -34,7 +34,8 @@ function App() {
         {activePage === "prediction" && <GamePrediction league="nhl" />}
         {activePage === "liiga" && <GamePrediction league="liiga" />}
         {activePage === "epl" && <GamePrediction league="epl" />}
-        {activePage === "soccer" && <SoccerPrediction />}
+        {activePage === "ucl" && <SoccerPrediction competition="ucl" />}
+        {activePage === "soccer" && <SoccerPrediction competition="worldcup" />}
         {activePage === "ratings" && <TeamRatings />}
         {activePage === "kelly" && <KellyBet />}
         {activePage === "played-bets" && <PlayedBets />}

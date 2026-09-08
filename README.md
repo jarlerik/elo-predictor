@@ -1,11 +1,12 @@
 # ELO Predictor
 
-A full-stack web application that predicts game outcomes using ELO ratings. Covers the NHL, the Finnish SM-liiga, the English Premier League and international soccer (World Cup). Built with Node.js/Express backend and React/TypeScript frontend.
+A full-stack web application that predicts game outcomes using ELO ratings. Covers the NHL, the Finnish SM-liiga, the English Premier League, the UEFA Champions League and international soccer (World Cup). Built with Node.js/Express backend and React/TypeScript frontend.
 
 ## Features
 
 - 🏒 **NHL & SM-liiga Predictions**: Win probabilities and correct-score odds from ELO computed over the last three seasons
 - ⚽ **Premier League Predictions**: 1X2 (home / draw / away) and correct-score odds, with draws modelled via the Davidson tie model
+- ⭐ **Champions League**: 1X2 and correct-score odds for the 36 participants, seeded from clubelo.com (cross-league calibrated) and updated with every played Champions League game
 - 🏆 **World Cup**: 1X2 odds for national teams from seeded eloratings.net ratings
 - 📊 **Team Rankings**: Current ELO ratings per league
 - 📱 **Responsive Design**: Modern, mobile-friendly interface
@@ -18,7 +19,10 @@ A full-stack web application that predicts game outcomes using ELO ratings. Cove
 | NHL            | `api.nhle.com` official stats API                       | 2 previous + current  |
 | SM-liiga       | `liiga.fi/api/v2/games` (regular season, `runkosarja`)  | 2 previous + current  |
 | Premier League | `fixturedownload.com/feed/json/epl-<year>`              | 2 previous + current  |
+| Champions League | `data/ucl/ratings.json` seeded from clubelo.com, updated from `fixturedownload.com/feed/json/champions-league-<year>` | current |
 | World Cup      | `data/soccer/ratings.json` seeded from eloratings.net   | —                     |
+
+Live sources are re-fetched every 6 hours. The Champions League and World Cup seeds are refreshed by hand; see [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) for endpoints, season id conventions, what needs manual upkeep and the step-by-step refresh procedures.
 
 ## Tech Stack
 
@@ -92,6 +96,7 @@ elo-predictor/
 │   │   ├── leagueData.ts # Per-league game/ELO cache
 │   │   ├── nhlFetcher.ts # NHL API integration
 │   │   ├── liigaFetcher.ts # SM-liiga API integration
+│   │   ├── uclFetcher.ts # Champions League seed + live updates
 │   │   └── eplFetcher.ts # Premier League feed integration
 │   ├── elo/             # ELO calculation logic
 │   │   ├── calculator.ts
@@ -123,7 +128,8 @@ All game-history endpoints take an optional `league=nhl|liiga|epl` query paramet
 - `GET /api/teams?league=` - Get all teams with current ELO ratings
 - `GET /api/predict?league=&home=TEAM&away=TEAM` - Win / draw / loss probabilities and fair odds
 - `GET /api/predict/score?league=&home=TEAM&away=TEAM` - Correct-score probabilities
-- `GET /api/soccer/teams`, `GET /api/predict/soccer`, `GET /api/predict/soccer/score` - World Cup (national teams)
+- `GET /api/soccer/teams`, `GET /api/predict/soccer`, `GET /api/predict/soccer/score` - Seeded soccer competitions; `competition=worldcup` (default, neutral venues) or `competition=ucl` (home advantage on). `neutral=true|false` and `drawFactor=0` override per request.
+- `GET /api/ucl/teams` - Champions League clubs with seed rating, current rating and games played
 
 ## How It Works
 

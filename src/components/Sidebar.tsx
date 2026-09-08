@@ -56,6 +56,14 @@ const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           <button
+            className={`nav-item ${activePage === "ucl" ? "active" : ""}`}
+            onClick={() => onPageChange("ucl")}
+          >
+            <span className="nav-icon">⭐</span>
+            <span className="nav-text">CHAMPIONS LEAGUE</span>
+          </button>
+
+          <button
             className={`nav-item ${activePage === "soccer" ? "active" : ""}`}
             onClick={() => onPageChange("soccer")}
           >
@@ -114,7 +122,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             <span className="status-value">ONLINE</span>
           </div>
           <div className="status-info">
-            <span>NHL · Liiga · EPL</span>
+            <span>NHL · Liiga · EPL · UCL</span>
             <span>ELO Updated</span>
           </div>
         </div>

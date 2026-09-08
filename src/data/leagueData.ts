@@ -1,7 +1,7 @@
 import { GameRecord, TeamElo } from "../utils/types";
 import { LeagueId } from "../utils/leagues";
 import { CURRENT_NHL_TEAMS } from "../utils/teamData";
-import { fetchMultipleSeasons } from "./nhlFetcher";
+import { fetchNhlGames } from "./nhlFetcher";
 import { fetchLiigaData } from "./liigaFetcher";
 import { fetchEplData } from "./eplFetcher";
 import { computeElosFromGames } from "../elo/calculator";
@@ -17,14 +17,11 @@ export interface LeagueState extends LeagueData {
   loadedAt: number;
 }
 
-// seasons: 2 previous + current
-const NHL_SEASONS = ["20222023", "20232024", "20242025"];
-
 async function loadLeagueData(league: LeagueId): Promise<LeagueData> {
   switch (league) {
     case "nhl":
       return {
-        games: await fetchMultipleSeasons(NHL_SEASONS),
+        games: await fetchNhlGames(),
         currentTeams: CURRENT_NHL_TEAMS,
       };
     case "liiga":

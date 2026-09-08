@@ -1,4 +1,8 @@
-import { LIIGA_TEAM_NAMES, EPL_TEAM_NAMES } from "./leagues";
+import {
+  LIIGA_TEAM_NAMES,
+  EPL_TEAM_NAMES,
+  UCL_TEAM_NAMES,
+} from "./leagues";
 
 // NHL team abbreviation to full name mapping
 export const NHL_TEAM_NAMES: Record<string, string> = {
@@ -29,7 +33,7 @@ export const NHL_TEAM_NAMES: Record<string, string> = {
   STL: "St. Louis Blues",
   TBL: "Tampa Bay Lightning",
   TOR: "Toronto Maple Leafs",
-  UTA: "Utah Hockey Club",
+  UTA: "Utah Mammoth",
   VAN: "Vancouver Canucks",
   VGK: "Vegas Golden Knights",
   WPG: "Winnipeg Jets",
@@ -42,9 +46,10 @@ export const TEAM_FULL_NAMES: Record<string, string> = {
   ...NHL_TEAM_NAMES,
   ...LIIGA_TEAM_NAMES,
   ...EPL_TEAM_NAMES,
+  ...UCL_TEAM_NAMES,
 };
 
-// Current NHL teams (as of 2024-25 season)
+// Current NHL teams (as of 2025-26 season)
 export const CURRENT_NHL_TEAMS = new Set([
   "ANA",
   "BOS",
