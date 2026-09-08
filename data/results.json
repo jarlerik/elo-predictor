@@ -1,30 +1,9 @@
 [
   {
-    "game": "COL__TBL_04.11.2025",
-    "score": "3-2",
-    "probability": 0.05719037613182941,
-    "odds": 17.48545940133183,
-    "return": 23.39
-  },
-  {
-    "game": "SEA__SJS_14.11.2025",
-    "probability": 0.8543,
-    "odds": 1.17,
-    "return": 1.62,
-    "team": "SEA"
-  },
-  {
-    "game": "SJS__UTA_18.11.2025",
-    "probability": 0.2054,
-    "odds": 4.87,
-    "return": 2.16,
-    "team": "SJS"
-  },
-  {
-    "game": "CHI__CGY_18.11.2025",
-    "probability": 0.3194,
-    "odds": 3.13,
-    "return": 1.93,
-    "team": "CHI"
+    "game": "ARS__CHE_06.09.2026",
+    "probability": 0.0826832989067783,
+    "odds": 12.094340855067419,
+    "return": 9.86,
+    "score": "2-1"
   }
 ]
