@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { TEAM_FULL_NAMES } from "../utils/teamData";
 import {
+  ClosingOdds,
   LineStatus,
   SettleButtons,
   SettleRestButton,
@@ -548,6 +549,17 @@ const PlayedBets: React.FC = () => {
                                   row={ledger.byId.get(
                                     ledgerId(betFile.filename, index)
                                   )}
+                                />
+                                <ClosingOdds
+                                  row={ledger.byId.get(
+                                    ledgerId(betFile.filename, index)
+                                  )}
+                                  onSave={(odds) =>
+                                    ledger.setClosingOdds(
+                                  ledgerId(betFile.filename, index),
+                                  odds
+                                    )
+                                  }
                                 />
                                 <SettleButtons
                                   row={ledger.byId.get(

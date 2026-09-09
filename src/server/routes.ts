@@ -28,8 +28,16 @@ import {
   ModelSnapshot,
   newRow,
   round2,
+  setClosingOdds,
   settleRows,
 } from "../data/ledger";
+import {
+  logPrediction,
+  notePredictionBet,
+  readPredictions,
+  scorePredictions,
+  setPredictionClosing,
+} from "../data/predictions";
 import { isSegmentBy, segments, staking, summarize } from "../data/metrics";
 import {
   bankrollState,
@@ -181,6 +189,25 @@ router.get("/predict", async (req, res) => {
       };
     }
 
+    // Prediction log: the model as shown today, bet or not.
+    try {
+      logPrediction({
+        league,
+        home: homeTeamElo.abbr,
+        away: awayTeamElo.abbr,
+        market: sport === "hockey" ? "regulation" : "fullTime",
+        model: {
+          probs: { home: probs.homeWin, draw: probs.draw, away: probs.awayWin },
+          homeElo: homeTeamElo.elo,
+          awayElo: awayTeamElo.elo,
+          drawFactor,
+          homeAdv: 60,
+        },
+      });
+    } catch (e) {
+      console.error("failed to log prediction", e);
+    }
+
     res.json(body);
   } catch (e) {
     console.error(e);
@@ -309,6 +336,27 @@ router.get("/predict/soccer", async (req, res) => {
     const homeAdv = homeAdvFrom(req, ctx.defaultNeutral);
 
     const probs = eloToWinProb(homeElo, awayElo, homeAdv, drawFactor);
+
+    // Prediction log, unless the ratings were overridden for the request.
+    if (req.query.homeElo === undefined && req.query.awayElo === undefined) {
+      try {
+        logPrediction({
+          league: ctx.competition,
+          home,
+          away,
+          market: "fullTime",
+          model: {
+            probs: { home: probs.homeWin, draw: probs.draw, away: probs.awayWin },
+            homeElo,
+            awayElo,
+            drawFactor,
+            homeAdv,
+          },
+        });
+      } catch (e) {
+        console.error("failed to log prediction", e);
+      }
+    }
 
     res.json({
       competition: ctx.competition,
@@ -514,6 +562,11 @@ router.post("/bets/save", async (req, res) => {
     );
 
     const meta = betMeta(req.body, homeTeam, awayTeam);
+    try {
+      notePredictionBet(meta.league, homeTeam, awayTeam, meta.marketOdds);
+    } catch (e) {
+      console.error("failed to note bet on prediction log", e);
+    }
     const placedAt = now.toISOString();
     const key = `${homeTeam}__${awayTeam}_${dateStr}`;
     ensureLedger();
@@ -622,6 +675,11 @@ router.post("/bets/save-winner", async (req, res) => {
     fs.writeFileSync(filePath, JSON.stringify(winnerBets, null, 2));
 
     const meta = betMeta(req.body, homeTeam, awayTeam);
+    try {
+      notePredictionBet(meta.league, homeTeam, awayTeam, meta.marketOdds);
+    } catch (e) {
+      console.error("failed to note bet on prediction log", e);
+    }
     const key = `${homeTeam}__${awayTeam}_${dateStr}`;
     const ledgerMarket: LedgerMarket =
       market === "regulation" || market === "moneyline"
@@ -964,6 +1022,79 @@ router.post("/ledger/settle", async (req, res) => {
   } catch (e) {
     console.error("failed to settle", e);
     res.status(500).json({ error: "failed to settle" });
+  }
+});
+
+/** Closing odds of one or more lines: the price just before kick-off. */
+router.post("/ledger/closing", async (req, res) => {
+  try {
+    const { id, ids } = req.body;
+    const targets: string[] = Array.isArray(ids)
+      ? ids.filter((x: unknown) => typeof x === "string")
+      : typeof id === "string"
+      ? [id]
+      : [];
+    if (targets.length === 0)
+      return res.status(400).json({ error: "please provide id or ids" });
+    let closing: number | null = null;
+    if (req.body.closingOdds !== null && req.body.closingOdds !== undefined && req.body.closingOdds !== "") {
+      closing = Number(req.body.closingOdds);
+      if (!Number.isFinite(closing) || closing <= 1)
+        return res.status(400).json({ error: "closingOdds must be greater than 1" });
+      closing = round2(closing);
+    }
+    const updated = setClosingOdds(targets, closing);
+    if (updated.length === 0)
+      return res.status(404).json({ error: "no ledger line with that id" });
+    res.json({ success: true, rows: updated });
+  } catch (e) {
+    console.error("failed to set closing odds", e);
+    res.status(500).json({ error: "failed to set closing odds" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Prediction log: every 1X2 prediction shown, scored once the game is played.
+// ---------------------------------------------------------------------------
+
+router.get("/predictions", async (req, res) => {
+  try {
+    res.json(readPredictions().sort((a, b) => b.at.localeCompare(a.at)));
+  } catch (e) {
+    console.error("failed to read predictions", e);
+    res.status(500).json({ error: "failed to read predictions" });
+  }
+});
+
+/** Full 1X2 closing prices of a logged prediction ({home, draw, away} or null). */
+router.post("/predictions/closing", async (req, res) => {
+  try {
+    const id = String(req.body?.id ?? "");
+    let closing: Record<string, number> | null = null;
+    if (req.body?.closingOdds) {
+      closing = {};
+      for (const k of ["home", "draw", "away"]) {
+        const n = Number(req.body.closingOdds[k]);
+        if (!Number.isFinite(n) || n <= 1)
+          return res.status(400).json({ error: `closingOdds.${k} must be greater than 1` });
+        closing[k] = round2(n);
+      }
+    }
+    const row = setPredictionClosing(id, closing);
+    if (!row) return res.status(404).json({ error: "no prediction with that id" });
+    res.json(row);
+  } catch (e) {
+    console.error("failed to set prediction closing odds", e);
+    res.status(500).json({ error: "failed to set prediction closing odds" });
+  }
+});
+
+router.get("/metrics/predictions", async (req, res) => {
+  try {
+    res.json(await scorePredictions(readPredictions()));
+  } catch (e) {
+    console.error("failed to score predictions", e);
+    res.status(500).json({ error: "failed to score predictions" });
   }
 });
 

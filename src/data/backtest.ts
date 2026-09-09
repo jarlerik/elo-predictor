@@ -271,7 +271,7 @@ function brierOf(p: number[], y: number): number {
 
 const logLossOf = (p: number[], y: number) => -Math.log(Math.max(p[y], EPS));
 
-function emptyBuckets(): Bucket[] {
+export function emptyBuckets(): Bucket[] {
   return Array.from({ length: BUCKETS }, (_, i) => ({
     lo: i / BUCKETS,
     hi: (i + 1) / BUCKETS,
@@ -281,7 +281,7 @@ function emptyBuckets(): Bucket[] {
   }));
 }
 
-function addToBucket(buckets: Bucket[], p: number, hit: boolean) {
+export function addToBucket(buckets: Bucket[], p: number, hit: boolean) {
   const i = Math.min(BUCKETS - 1, Math.floor(p * BUCKETS));
   const b = buckets[i];
   b.count++;
@@ -289,7 +289,7 @@ function addToBucket(buckets: Bucket[], p: number, hit: boolean) {
   b.observed += hit ? 1 : 0;
 }
 
-function finishBuckets(buckets: Bucket[]): Bucket[] {
+export function finishBuckets(buckets: Bucket[]): Bucket[] {
   return buckets.map((b) => ({
     ...b,
     predicted: b.count ? round4(b.predicted / b.count) : 0,

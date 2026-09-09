@@ -12,6 +12,7 @@ export interface LedgerRow {
   stake: number;
   oddsTaken: number;
   probability: number;
+  closingOdds: number | null;
   settledAt: string | null;
   result: "win" | "loss" | "void" | null;
   return: number | null;
@@ -66,7 +67,24 @@ export function useLedger() {
     [refresh]
   );
 
-  return { rows, byId, error, refresh, settle };
+  /** Closing odds of one line (null clears it). */
+  const setClosingOdds = useCallback(
+    async (id: string, closingOdds: number | null) => {
+      const res = await fetch("/api/ledger/closing", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, closingOdds }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || "Failed to save closing odds");
+      }
+      await refresh();
+    },
+    [refresh]
+  );
+
+  return { rows, byId, error, refresh, settle, setClosingOdds };
 }
 
 const badgeStyle = (color: string): React.CSSProperties => ({
@@ -155,5 +173,89 @@ export const SettleRestButton: React.FC<{
     >
       {pendingIds.length} pending → lost
     </button>
+  );
+};
+
+/**
+ * Closing odds of a line: the bookmaker's price on the pick just before
+ * kick-off, typed by hand. Shown as "close 1.85" once set; click to change.
+ * Feeds CLV (odds taken / closing odds − 1).
+ */
+export const ClosingOdds: React.FC<{
+  row: LedgerRow | undefined;
+  onSave: (closingOdds: number | null) => Promise<void>;
+}> = ({ row, onSave }) => {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState("");
+  const [busy, setBusy] = useState(false);
+  if (!row) return null;
+
+  const save = async () => {
+    const n = Number(value.replace(",", "."));
+    if (value !== "" && !(n > 1)) return;
+    setBusy(true);
+    try {
+      await onSave(value === "" ? null : Math.round(n * 100) / 100);
+      setEditing(false);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (!editing) {
+    const clv =
+      row.closingOdds && row.closingOdds > 1
+        ? (row.oddsTaken / row.closingOdds - 1) * 100
+        : null;
+    return (
+      <button
+        style={{
+          ...smallButton(row.closingOdds ? "#a3a3a3" : "#525252"),
+          borderStyle: row.closingOdds ? "solid" : "dashed",
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          setValue(row.closingOdds ? String(row.closingOdds) : "");
+          setEditing(true);
+        }}
+        title={
+          row.closingOdds
+            ? `Closing odds ${row.closingOdds}; CLV ${clv! >= 0 ? "+" : ""}${clv!.toFixed(1)}%. Click to change.`
+            : "Enter the bookmaker's odds on this pick just before kick-off"
+        }
+      >
+        {row.closingOdds
+          ? `close ${row.closingOdds.toFixed(2)} (${clv! >= 0 ? "+" : ""}${clv!.toFixed(1)}%)`
+          : "close?"}
+      </button>
+    );
+  }
+  return (
+    <span
+      style={{ display: "inline-flex", gap: "0.35rem", alignItems: "center" }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <input
+        type="number"
+        min="1.01"
+        step="0.01"
+        inputMode="decimal"
+        value={value}
+        autoFocus
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") save();
+          if (e.key === "Escape") setEditing(false);
+        }}
+        placeholder="closing odds"
+        className="book-odds-input"
+      />
+      <button style={smallButton("#22c55e")} onClick={save} disabled={busy}>
+        Save
+      </button>
+      <button style={smallButton("#a3a3a3")} onClick={() => setEditing(false)}>
+        Cancel
+      </button>
+    </span>
   );
 };

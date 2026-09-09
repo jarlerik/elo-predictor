@@ -6,6 +6,7 @@ import {
   useSummary,
 } from "./metrics";
 import { CalibrationPanel } from "./Calibration";
+import { PredictionsPanel } from "./Predictions";
 import {
   BankrollPanel,
   OpenPositions,
@@ -18,7 +19,7 @@ import {
  * Betting dashboard (docs/METRICS_AND_DASHBOARD.md). Headline tiles and the
  * cumulative profit chart (step 3), model calibration per league (step 4),
  * the segment table (step 5), bankroll, open positions and the staking
- * chart (step 6).
+ * chart (step 6), the prediction log (step 7).
  */
 const Dashboard: React.FC = () => {
   const { summary, error, refresh } = useSummary();
@@ -52,6 +53,13 @@ const Dashboard: React.FC = () => {
         happened. Independent of the bets.
       </p>
       <CalibrationPanel />
+      <h2 className="panel-title calibration-heading">Logged predictions</h2>
+      <p className="panel-note">
+        Every 1X2 prediction shown on the league pages, bet or not, scored
+        once the game is played. Where a bet stored the book's prices, the
+        model is compared with the de-vigged book on the same games.
+      </p>
+      <PredictionsPanel />
       <h2 className="panel-title calibration-heading">Segments</h2>
       <p className="panel-note">
         The same figures as the tiles, sliced. Pick a slice to see where the

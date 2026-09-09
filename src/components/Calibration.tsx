@@ -428,10 +428,13 @@ const LeagueCalibration: React.FC<{ bt: Backtest }> = ({ bt }) => {
             check={seg.correctScore.topScore}
             hint="How often the model's most likely score happened, against what it thought"
           />
-          <div className="stat muted" title="Needs bookmaker odds for played games (step 7)">
+          <div
+            className="stat muted"
+            title="The history has no bookmaker prices; the logged predictions below compare the model with the book on the games that were bet"
+          >
             <div className="stat-label">Skill vs market</div>
             <div className="stat-value">—</div>
-            <div className="stat-sub">needs stored odds (step 7)</div>
+            <div className="stat-sub">see Logged predictions below</div>
           </div>
         </div>
       </div>

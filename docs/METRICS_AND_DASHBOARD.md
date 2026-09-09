@@ -336,6 +336,25 @@ tuned once there is data:
 7. **Prediction log and closing odds.** Lowest effort per step but needs the
    habit of filling them in; add once the rest is in use.
 
+   *Done (September 2026).* `data/predictions.jsonl` (`src/data/predictions.ts`)
+   gets a row every time a 1X2 prediction is shown on the NHL, Liiga, EPL,
+   Champions League or World Cup page: one row per league, pairing and
+   calendar day, replaced when the same game is shown again that day, with
+   the model snapshot. Saving a bet on the game marks the row as bet and
+   attaches the bookmaker's 1X2 prices when the bet carried them.
+   `GET /api/metrics/predictions` matches each row to the first played game
+   between the two teams within a fortnight of the showing and reports
+   Brier and log loss against the league average, calibration buckets, the
+   favourite hit rate, and skill vs market (model Brier against the
+   de-vigged book on the rows with prices); World Cup rows have no game
+   history and stay unscored. `POST /api/predictions/closing` stores full
+   closing prices for a row. Closing odds on bets: `POST /api/ledger/closing`
+   sets `closingOdds` on a line, and each line on the Played Bets pages has
+   a "close?" button that turns into the closing price and its CLV once
+   typed. The Dashboard gets a **Logged predictions** panel with the
+   calibration chart, the scores and a table of the rows; the CLV tile and
+   the segment table read the closing odds.
+
 ## Sample-size expectations
 
 - Backtest calibration: available immediately (three seasons ≈ 1,300 NHL

@@ -188,7 +188,7 @@ export const HeadlineTiles: React.FC<{ summary: Summary }> = ({ summary }) => {
         tone={toneOf(s.clv.mean)}
         sub={
           s.clv.mean === null ? (
-            "needs closing odds (step 7)"
+            "enter closing odds on the Played Bets pages"
           ) : (
             <>
               beat the close {pct(s.clv.beatCloseShare ?? 0)} · n=
@@ -519,8 +519,8 @@ export const SegmentTable: React.FC = () => {
       )}
       <p className="calibration-caption">
         Rows under {segments?.minSample ?? 30} settled bets are greyed out:
-        the number exists but does not mean much yet. CLV needs closing odds
-        (step 7).
+        the number exists but does not mean much yet. CLV covers the bets
+        with closing odds.
       </p>
     </div>
   );

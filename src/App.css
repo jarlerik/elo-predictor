@@ -1361,6 +1361,16 @@
   stroke-width: 1;
 }
 
+/* Dashboard: logged predictions */
+.predictions-table td.hit {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.predictions-table tr.muted td {
+  opacity: 0.6;
+}
+
 @media (max-width: 900px) {
   .calibration-body {
     grid-template-columns: 1fr;

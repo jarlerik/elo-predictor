@@ -302,6 +302,24 @@ export function settleRows(
   return updated;
 }
 
+/** Set (or clear with null) the closing odds of the given lines. */
+export function setClosingOdds(
+  ids: string[],
+  closingOdds: number | null
+): LedgerRow[] {
+  const rows = ensureLedger();
+  const wanted = new Set(ids);
+  const updated: LedgerRow[] = [];
+  const next = rows.map((row) => {
+    if (!wanted.has(row.id)) return row;
+    const changed = { ...row, closingOdds };
+    updated.push(changed);
+    return changed;
+  });
+  if (updated.length > 0) writeLedger(next);
+  return updated;
+}
+
 // ---------------------------------------------------------------------------
 // Migration from data/bets/*.json + data/results.json
 // ---------------------------------------------------------------------------
