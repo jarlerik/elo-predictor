@@ -138,7 +138,7 @@ router.get("/predict", async (req, res) => {
         .status(400)
         .json({ error: "please provide home and away (abbr)" });
 
-    const { elos, drawFactor } = await ensureLeague(league);
+    const { elos, drawFactor, homeAdv } = await ensureLeague(league);
     const homeTeamElo = findTeamElo(home, elos);
     const awayTeamElo = findTeamElo(away, elos);
     if (!homeTeamElo)
@@ -153,7 +153,7 @@ router.get("/predict", async (req, res) => {
     const probs = eloToWinProb(
       homeTeamElo.elo,
       awayTeamElo.elo,
-      undefined,
+      homeAdv,
       drawFactor
     );
 
@@ -161,6 +161,7 @@ router.get("/predict", async (req, res) => {
       league,
       market: sport === "hockey" ? "regulation" : "fullTime",
       drawFactor,
+      homeAdv,
       homeTeam: homeTeamElo.abbr,
       awayTeam: awayTeamElo.abbr,
       homeWinProbability: Math.round(probs.homeWin * 10000) / 10000,
@@ -178,7 +179,7 @@ router.get("/predict", async (req, res) => {
       const ml = eloToWinProb(
         homeTeamElo.elo,
         awayTeamElo.elo,
-        undefined,
+        homeAdv,
         NO_DRAW
       );
       body.moneyline = {
@@ -201,7 +202,7 @@ router.get("/predict", async (req, res) => {
           homeElo: homeTeamElo.elo,
           awayElo: awayTeamElo.elo,
           drawFactor,
-          homeAdv: 60,
+          homeAdv,
         },
       });
     } catch (e) {

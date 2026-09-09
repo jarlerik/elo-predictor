@@ -17,6 +17,8 @@ export interface Moneyline {
 
 export interface Prediction {
   league?: string;
+  /** Elo home advantage the probabilities were computed with. */
+  homeAdv?: number;
   homeTeam: string;
   awayTeam: string;
   /** "regulation": hockey 60-minute result; "fullTime": soccer. */
@@ -153,7 +155,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
             awayElo: prediction.awayElo ?? null,
             drawFactor:
               market === "moneyline" ? 0 : prediction.drawFactor ?? null,
-            homeAdv: 60,
+            homeAdv: prediction.homeAdv ?? 60,
           },
         }),
       });

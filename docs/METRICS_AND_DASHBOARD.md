@@ -297,6 +297,13 @@ tuned once there is data:
    the EPL and Liiga 1X2 models beat the baseline clearly, the NHL model only
    just; the Poisson score layer is worse than a constant Poisson in every
    league, and the NHL home-win rate is over-predicted by two points.
+
+   *Follow-up (September 2026).* The home advantage is now per league
+   (`LEAGUES[id].homeAdv`), fitted with `npm run fit:homeadv`, which reruns
+   the Elo walk and the backtest at every candidate. NHL set to 40: lowest
+   1X2 log loss (1.0639 against 1.0659 at 60) and predicted home-win rate
+   equal to the observed 42.4%. Liiga's optimum is the existing 60. EPL
+   scores best at 40–50 but stays at 60 until reviewed.
 5. **Segments table.**
 
    *Done (September 2026).* `GET /api/metrics/segments?by=` slices the

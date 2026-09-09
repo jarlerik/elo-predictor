@@ -7,6 +7,9 @@
  * moneyline, and the correct score from the recent-form Poisson layer. It
  * needs no bets.
  *
+ * The home advantage is the league's configured value (LEAGUES[id].homeAdv),
+ * fitted on this backtest with `npm run fit:homeadv`.
+ *
  * Two approximations, both deliberate:
  * - The draw factor is the league's fitted value over the whole history
  *   (one scalar), not refitted before each game.
@@ -522,7 +525,7 @@ const cache = new Map<LeagueId, { loadedAt: number; result: Backtest }>();
 export function backtestFor(league: LeagueId, state: LeagueState): Backtest {
   const hit = cache.get(league);
   if (hit && hit.loadedAt === state.loadedAt) return hit.result;
-  const result = backtestLeague(league, state);
+  const result = backtestLeague(league, state, state.homeAdv);
   cache.set(league, { loadedAt: state.loadedAt, result });
   return result;
 }

@@ -13,6 +13,14 @@ export interface LeagueInfo {
   icon: string;
   homeLabel: string;
   awayLabel: string;
+  /**
+   * Elo points added to the home team. Fitted per league on the backtest
+   * with `npm run fit:homeadv` (lowest 1X2 log loss, predicted home-win
+   * rate equal to the observed one). NHL: 40 (September 2026, 3,038
+   * games; 60 over-predicted home wins by two points). Liiga: 60 is the
+   * optimum. EPL: 40–50 scores best but is left at 60 until reviewed.
+   */
+  homeAdv: number;
 }
 
 export const LEAGUES: Record<LeagueId, LeagueInfo> = {
@@ -24,6 +32,7 @@ export const LEAGUES: Record<LeagueId, LeagueInfo> = {
     icon: "🏒",
     homeLabel: "Home Team",
     awayLabel: "Away Team",
+    homeAdv: 40,
   },
   liiga: {
     id: "liiga",
@@ -33,6 +42,7 @@ export const LEAGUES: Record<LeagueId, LeagueInfo> = {
     icon: "🇫🇮",
     homeLabel: "Home Team",
     awayLabel: "Away Team",
+    homeAdv: 60,
   },
   epl: {
     id: "epl",
@@ -42,6 +52,7 @@ export const LEAGUES: Record<LeagueId, LeagueInfo> = {
     icon: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     homeLabel: "Home Team",
     awayLabel: "Away Team",
+    homeAdv: 60,
   },
 };
 

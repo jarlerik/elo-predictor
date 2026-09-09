@@ -25,16 +25,19 @@ export interface LeagueState extends LeagueData {
    * from the league's own history.
    */
   drawFactor: number;
+  /** Elo home advantage the ratings and probabilities use (LEAGUES[id].homeAdv). */
+  homeAdv: number;
   loadedAt: number;
 }
 
 function drawFactorFor(
   league: LeagueId,
   games: GameRecord[],
-  elos: TeamElo[]
+  elos: TeamElo[],
+  homeAdv: number
 ): number {
   if (LEAGUES[league].sport === "soccer") return SOCCER_DRAW_FACTOR;
-  return fitDrawFactor(games, elos, isRegulationDraw);
+  return fitDrawFactor(games, elos, isRegulationDraw, { homeAdv });
 }
 
 async function loadLeagueData(league: LeagueId): Promise<LeagueData> {
@@ -69,14 +72,17 @@ export async function ensureLeague(league: LeagueId): Promise<LeagueState> {
   const p = (async () => {
     try {
       const data = await loadLeagueData(league);
+      const homeAdv = LEAGUES[league].homeAdv;
       const elos = computeElosFromGames(data.games, {
         currentTeams: data.currentTeams,
+        homeAdv,
       });
-      const drawFactor = drawFactorFor(league, data.games, elos);
+      const drawFactor = drawFactorFor(league, data.games, elos, homeAdv);
       const state: LeagueState = {
         ...data,
         elos,
         drawFactor,
+        homeAdv,
         loadedAt: Date.now(),
       };
       cache.set(league, state);

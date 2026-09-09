@@ -12,7 +12,8 @@
     "dev:server": "tsx watch src/server/index.ts",
     "dev:client": "vite",
     "dev:build": "npm run build:client && npm run dev:server",
-    "migrate:ledger": "tsx scripts/migrate-ledger.ts"
+    "migrate:ledger": "tsx scripts/migrate-ledger.ts",
+    "fit:homeadv": "tsx scripts/fit-home-advantage.ts"
   },
   "author": "Jarl-Erik Malmstr\u00f6m",
   "license": "ISC",
