@@ -16,11 +16,11 @@ export interface LeagueInfo {
   /**
    * Elo points added to the home team. Fitted per league on the backtest
    * with `npm run fit:homeadv` (lowest 1X2 log loss, predicted home-win
-   * rate equal to the observed one). NHL: 40 (September 2026, 3,038
-   * games; 60 over-predicted home wins by two points). Liiga: 60 is the
-   * optimum. EPL: 45 (September 2026, 790 games, with the draw factor
-   * fitted from the same history; log loss is flat from 35 to 60 and 45
-   * matches the observed home-win rate).
+   * rate equal to the observed one). NHL: 35 (September 2026, 3,038
+   * games on a 5-point grid; 60 over-predicted home wins by two points).
+   * Liiga: 60 is the optimum (983 games). EPL: 45 (790 games; log loss is
+   * flat from 35 to 60 and 45 matches the observed home-win rate). All
+   * fitted with the draw factor fitted from the same history.
    */
   homeAdv: number;
 }
@@ -34,7 +34,7 @@ export const LEAGUES: Record<LeagueId, LeagueInfo> = {
     icon: "🏒",
     homeLabel: "Home Team",
     awayLabel: "Away Team",
-    homeAdv: 40,
+    homeAdv: 35,
   },
   liiga: {
     id: "liiga",

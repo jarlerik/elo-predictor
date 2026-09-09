@@ -318,6 +318,10 @@ tuned once there is data:
    EPL home advantage is set to 45, where the log loss is lowest and the
    predicted home-win rate matches the observed 41.6%. World Cup and
    Champions League keep the 0.60 constant, having no comparable history.
+   Refitting the hockey leagues on a 5-point grid with the fitted draw
+   factors: NHL moves to 35 (log loss 1.0636, predicted home-win rate
+   42.3% against 42.4% observed); Liiga stays at 60 (1.0408, 44.9%
+   against 45.1%).
 5. **Segments table.**
 
    *Done (September 2026).* `GET /api/metrics/segments?by=` slices the
