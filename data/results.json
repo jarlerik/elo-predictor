@@ -19,5 +19,33 @@
     "odds": 3.59,
     "return": 0,
     "team": "INT"
+  },
+  {
+    "game": "ASS__JOK_09.09.2026",
+    "probability": 0.4612,
+    "odds": 2.17,
+    "return": 4.64,
+    "team": "ASS"
+  },
+  {
+    "game": "JUK__HIFK_09.09.2026",
+    "probability": 0.5697,
+    "odds": 1.76,
+    "return": 0,
+    "team": "HIFK"
+  },
+  {
+    "game": "LUK__JYP_09.09.2026",
+    "probability": 0.527,
+    "odds": 1.9,
+    "return": 0,
+    "team": "LUK"
+  },
+  {
+    "game": "SPO__TPS_09.09.2026",
+    "probability": 0.5812,
+    "odds": 1.72,
+    "return": 0,
+    "team": "TPS"
   }
 ]
