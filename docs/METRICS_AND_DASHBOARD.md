@@ -260,6 +260,20 @@ tuned once there is data:
    market comparisons.
 3. **Summary endpoint + headline tiles + profit chart.** Replaces the four
    lines on the Results page.
+
+   *Done (September 2026).* `GET /api/metrics/summary` (`src/data/metrics.ts`)
+   returns profit, turnover, yield, model-expected profit and yield, hit rate
+   vs expected hit rate, the profit z-score with its σ, max drawdown, CLV
+   (over rows with closing odds), pending stake and expectation, and the
+   cumulative series with one point per settled bet. Market-expected profit
+   is de-vigged from `marketOdds` and reported only on the bets whose price
+   list covers the whole market, next to the same bets' actual and
+   model-expected profit. Void lines are counted but excluded from turnover.
+   A new **Dashboard** page shows the headline tiles and the profit chart
+   (inline SVG: actual line, model-expected line, ±1σ band); tiles below the
+   30-bet sample are muted, and Bankroll and CLV say what they are waiting
+   for. The Results page shows the same tiles above its table instead of
+   the old totals.
 4. **Backtest endpoint + calibration panel.** Independent of bets; the most
    informative panel on day one because it has thousands of games behind it.
 5. **Segments table.**

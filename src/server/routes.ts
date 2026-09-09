@@ -30,6 +30,7 @@ import {
   round2,
   settleRows,
 } from "../data/ledger";
+import { summarize } from "../data/metrics";
 
 const router = express.Router();
 
@@ -955,6 +956,20 @@ router.post("/ledger/settle", async (req, res) => {
   } catch (e) {
     console.error("failed to settle", e);
     res.status(500).json({ error: "failed to settle" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Metrics: headline figures and the cumulative profit series, computed from
+// the ledger on every request. See docs/METRICS_AND_DASHBOARD.md section B.
+// ---------------------------------------------------------------------------
+
+router.get("/metrics/summary", async (req, res) => {
+  try {
+    res.json(summarize(ensureLedger()));
+  } catch (e) {
+    console.error("failed to compute summary", e);
+    res.status(500).json({ error: "failed to compute summary" });
   }
 });
 

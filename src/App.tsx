@@ -8,6 +8,7 @@ import KellyBet from "./components/KellyBet";
 import PlayedBets from "./components/PlayedBets";
 import PlayedWinnerBets from "./components/PlayedWinnerBets";
 import Results from "./components/Results";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   const [activePage, setActivePage] = useState<string>("prediction");
@@ -41,6 +42,7 @@ function App() {
         {activePage === "played-bets" && <PlayedBets />}
         {activePage === "played-winner-bets" && <PlayedWinnerBets />}
         {activePage === "results" && <Results />}
+        {activePage === "dashboard" && <Dashboard />}
       </main>
     </div>
   );

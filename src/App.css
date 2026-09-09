@@ -813,27 +813,158 @@
   border-bottom: none;
 }
 
-.results-summary {
-  margin-top: 1rem;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
+/* Dashboard: headline tiles and charts */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0 2rem;
+}
+
+.tile {
   background: #262626;
-  border-radius: 6px;
   border: 1px solid #171717;
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
+  border-radius: 6px;
+  padding: 0.9rem 1rem;
+  min-width: 0;
 }
 
-.results-summary p {
-  margin: 0;
+.tile.muted {
+  opacity: 0.55;
+}
+
+.tile-label {
+  font-size: 0.75rem;
   color: #a3a3a3;
-  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.35rem;
 }
 
-.results-summary strong {
-  color: #FFFFFF;
+.tile-value {
+  font-size: 1.4rem;
   font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tile-value.up {
+  color: #22c55e;
+}
+
+.tile-value.down {
+  color: #f85149;
+}
+
+.tile-sub {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  color: #a3a3a3;
+  line-height: 1.35;
+}
+
+.panel-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  margin: 0 0 0.75rem;
+}
+
+.chart-card {
+  background: #262626;
+  border: 1px solid #171717;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.chart-empty {
+  color: #a3a3a3;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: #a3a3a3;
+  margin-bottom: 0.5rem;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend-range {
+  margin-left: auto;
+}
+
+.swatch {
+  display: inline-block;
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.swatch.actual {
+  background: #22c55e;
+}
+
+.swatch.expected {
+  background: #60a5fa;
+}
+
+.swatch.band {
+  height: 10px;
+  background: rgba(96, 165, 250, 0.2);
+}
+
+.profit-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.profit-chart .grid {
+  stroke: #333333;
+  stroke-width: 1;
+}
+
+.profit-chart .grid.zero {
+  stroke: #737373;
+}
+
+.profit-chart .tick {
+  fill: #a3a3a3;
+  font-size: 11px;
+}
+
+.profit-chart .band {
+  fill: rgba(96, 165, 250, 0.15);
+  stroke: none;
+}
+
+.profit-chart .line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.profit-chart .line.actual {
+  stroke: #22c55e;
+}
+
+.profit-chart .line.expected {
+  stroke: #60a5fa;
+  stroke-dasharray: 5 4;
+}
+
+.profit-chart .dot.actual {
+  fill: #22c55e;
 }
 
 @media (max-width: 768px) {

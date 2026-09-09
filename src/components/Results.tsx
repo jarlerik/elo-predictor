@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { HeadlineTiles, useSummary } from "./metrics";
 
 interface Result {
   game: string;
@@ -15,16 +16,11 @@ const Results: React.FC = () => {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // Stakes in euros on bets whose game has a result, plus how many entries.
-  const [totalBets, setTotalBets] = useState<number>(0);
-  const [betCount, setBetCount] = useState<number>(0);
-  // Stakes on bets whose game has no result yet; not part of the return rate.
-  const [pendingStake, setPendingStake] = useState<number>(0);
-  const [pendingCount, setPendingCount] = useState<number>(0);
+  // Headline figures come from the same summary as the Dashboard.
+  const { summary, error: summaryError } = useSummary();
 
   useEffect(() => {
     fetchResults();
-    fetchTotalBets();
   }, []);
 
   const fetchResults = async () => {
@@ -41,22 +37,6 @@ const Results: React.FC = () => {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchTotalBets = async () => {
-    try {
-      const response = await fetch("/api/bets/total");
-      if (!response.ok) {
-        throw new Error("Failed to fetch total bets");
-      }
-      const data = await response.json();
-      setTotalBets(data.total || 0);
-      setBetCount(data.count || 0);
-      setPendingStake(data.pending || 0);
-      setPendingCount(data.pendingCount || 0);
-    } catch (err) {
-      console.error("Failed to fetch total bets:", err);
     }
   };
 
@@ -102,32 +82,16 @@ const Results: React.FC = () => {
     return `${value.toFixed(2)}€`;
   };
 
-  const totalResults = results.length;
-  const totalReturn = results.reduce((sum, r) => sum + r.return, 0);
-  const returnRate =
-    totalBets > 0 ? ((totalReturn - totalBets) / totalBets) * 100 : 0;
-
   return (
     <div className="page-content">
       <div className="page-header">
         <h1>Results</h1>
       </div>
-      <div className="results-summary">
-        <p>
-          Total staked: <strong>{formatCurrency(totalBets)}</strong>{" "}
-          <span style={{ opacity: 0.7 }}>({betCount} bets)</span>
-        </p>
-        <p>
-          Total Return: <strong>{formatCurrency(totalReturn)}</strong>
-        </p>
-        <p>
-          Return rate: <strong>{returnRate.toFixed(2)}%</strong>
-        </p>
-        <p>
-          Pending: <strong>{formatCurrency(pendingStake)}</strong>{" "}
-          <span style={{ opacity: 0.7 }}>({pendingCount} bets)</span>
-        </p>
-      </div>
+      {summaryError ? (
+        <p className="error">Error: {summaryError}</p>
+      ) : (
+        summary && <HeadlineTiles summary={summary} />
+      )}
       <div className="results-section">
         {loading ? (
           <p>Loading...</p>
