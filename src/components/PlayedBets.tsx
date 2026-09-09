@@ -13,6 +13,8 @@ interface Bet {
   score: string;
   probability: number;
   odds: number;
+  /** Stake in euros; bets saved before stakes were tracked have none (1€). */
+  stake?: number;
 }
 
 interface SelectedBet {
@@ -484,6 +486,9 @@ const PlayedBets: React.FC = () => {
                                 </span>
                                 <span className="bet-odds">
                                   {formatOdds(bet.odds)}
+                                </span>
+                                <span className="bet-stake">
+                                  {(bet.stake ?? 1).toFixed(2)}€
                                 </span>
                               </div>
                             );

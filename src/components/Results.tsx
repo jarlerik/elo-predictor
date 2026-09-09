@@ -12,7 +12,9 @@ const Results: React.FC = () => {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Sum of stakes in euros across all saved bets, plus how many entries.
   const [totalBets, setTotalBets] = useState<number>(0);
+  const [betCount, setBetCount] = useState<number>(0);
 
   useEffect(() => {
     fetchResults();
@@ -44,6 +46,7 @@ const Results: React.FC = () => {
       }
       const data = await response.json();
       setTotalBets(data.total || 0);
+      setBetCount(data.count || 0);
     } catch (err) {
       console.error("Failed to fetch total bets:", err);
     }
@@ -84,7 +87,8 @@ const Results: React.FC = () => {
       </div>
       <div className="results-summary">
         <p>
-          Total bets: <strong>{formatCurrency(totalBets)}</strong>
+          Total staked: <strong>{formatCurrency(totalBets)}</strong>{" "}
+          <span style={{ opacity: 0.7 }}>({betCount} bets)</span>
         </p>
         <p>
           Total Return: <strong>{formatCurrency(totalReturn)}</strong>

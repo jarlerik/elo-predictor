@@ -99,6 +99,8 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
     useState<ScorePredictionData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState<Outcome | null>(null);
+  // Stake in euros applied to the next 1X2 bet saved.
+  const [stake, setStake] = useState<string>("1");
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -199,6 +201,12 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
       return;
     }
 
+    const stakeValue = Number(stake);
+    if (!Number.isFinite(stakeValue) || stakeValue <= 0) {
+      setMessage({ type: "error", text: "Enter a stake greater than 0€" });
+      return;
+    }
+
     setSaving(outcome);
     setMessage(null);
     try {
@@ -211,13 +219,17 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
           team,
           probability,
           odds,
+          stake: stakeValue,
         }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body.error || "Failed to save bet");
       }
-      setMessage({ type: "success", text: `Bet saved for ${team}!` });
+      setMessage({
+        type: "success",
+        text: `Bet saved for ${team} (${stakeValue.toFixed(2)}€)!`,
+      });
     } catch (err) {
       setMessage({
         type: "error",
@@ -373,6 +385,19 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
                 </button>
               </div>
             )}
+
+            <label className="stake-field">
+              <span>Stake (€)</span>
+              <input
+                type="number"
+                min="0.01"
+                step="0.5"
+                inputMode="decimal"
+                value={stake}
+                onChange={(e) => setStake(e.target.value)}
+                className="stake-input"
+              />
+            </label>
 
             <div className="probabilities">
               <div className="probability-card home-win">

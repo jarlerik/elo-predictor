@@ -35,6 +35,8 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
     new Array(displayedScores.length).fill(false)
   );
   const [loading, setLoading] = useState(false);
+  // Stake in euros placed on each selected score line.
+  const [stake, setStake] = useState<string>("1");
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -83,6 +85,12 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
       return;
     }
 
+    const stakeValue = Number(stake);
+    if (!Number.isFinite(stakeValue) || stakeValue <= 0) {
+      setMessage({ type: "error", text: "Enter a stake greater than 0€" });
+      return;
+    }
+
     setLoading(true);
     setMessage(null);
 
@@ -96,6 +104,7 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
           homeTeam: scorePrediction.homeTeam,
           awayTeam: scorePrediction.awayTeam,
           scores: checkedScores,
+          stake: stakeValue,
         }),
       });
 
@@ -105,9 +114,10 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
       }
 
       const data = await response.json();
+      const total = (stakeValue * checkedScores.length).toFixed(2);
       setMessage({
         type: "success",
-        text: `Bets saved successfully! (${data.filename})`,
+        text: `Bets saved successfully, ${total}€ total (${data.filename})`,
       });
     } catch (err) {
       setMessage({
@@ -134,15 +144,29 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
         }}
       >
         <h3>Top 10 Score Value Bets</h3>
-        <button
-          className="predict-button"
-          onClick={handlePlayBets}
-          disabled={loading}
-        >
-          {loading
-            ? "Saving..."
-            : `Play top ${checkedBets.filter(Boolean).length} bets`}
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <label className="stake-field">
+            <span>Stake per score (€)</span>
+            <input
+              type="number"
+              min="0.01"
+              step="0.5"
+              inputMode="decimal"
+              value={stake}
+              onChange={(e) => setStake(e.target.value)}
+              className="stake-input"
+            />
+          </label>
+          <button
+            className="predict-button"
+            onClick={handlePlayBets}
+            disabled={loading}
+          >
+            {loading
+              ? "Saving..."
+              : `Play top ${checkedBets.filter(Boolean).length} bets`}
+          </button>
+        </div>
       </div>
 
       {message && (

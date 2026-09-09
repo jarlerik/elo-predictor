@@ -15,6 +15,8 @@ interface WinnerBet {
   odds: number;
   homeTeam: string;
   awayTeam: string;
+  /** Stake in euros; bets saved before stakes were tracked have none (1€). */
+  stake?: number;
   timestamp: string;
 }
 
@@ -489,6 +491,9 @@ const PlayedWinnerBets: React.FC = () => {
                                 </span>
                                 <span className="bet-odds">
                                   {formatOdds(bet.odds)}
+                                </span>
+                                <span className="bet-stake">
+                                  {(bet.stake ?? 1).toFixed(2)}€
                                 </span>
                               </div>
                             );

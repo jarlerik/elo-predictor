@@ -43,6 +43,8 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
     type: "success" | "error";
     text: string;
   } | null>(null);
+  // Stake in euros applied to the next bet saved from this card.
+  const [stake, setStake] = useState<string>("1");
 
   // Soccer draws at full time; hockey draws on the 60-minute score (the
   // game goes to OT/SO). Knockout markets can return 0 -> no draw card.
@@ -73,6 +75,12 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
       return;
     }
 
+    const stakeValue = Number(stake);
+    if (!Number.isFinite(stakeValue) || stakeValue <= 0) {
+      setMessage({ type: "error", text: "Enter a stake greater than 0€" });
+      return;
+    }
+
     setBusy(true);
     setMessage(null);
 
@@ -89,6 +97,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
           probability,
           odds,
           market,
+          stake: stakeValue,
         }),
       });
 
@@ -100,7 +109,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
       await response.json();
       setMessage({
         type: "success",
-        text: `Bet saved for ${label}!`,
+        text: `Bet saved for ${label} (${stakeValue.toFixed(2)}€)!`,
       });
     } catch (err) {
       console.error("Failed to save bet:", err);
@@ -212,6 +221,19 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
           </button>
         </div>
       )}
+
+      <label className="stake-field">
+        <span>Stake (€)</span>
+        <input
+          type="number"
+          min="0.01"
+          step="0.5"
+          inputMode="decimal"
+          value={stake}
+          onChange={(e) => setStake(e.target.value)}
+          className="stake-input"
+        />
+      </label>
 
       <div className="probabilities">
         <div className="probability-card home-win">

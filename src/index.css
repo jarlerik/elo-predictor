@@ -300,6 +300,40 @@ body {
   transform: none;
 }
 
+.stake-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.stake-input {
+  width: 6rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #262626;
+  border-radius: 6px;
+  background: #171717;
+  color: #FFFFFF;
+  font-size: 1rem;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+.stake-input:focus {
+  outline: none;
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.bet-stake {
+  color: #a3a3a3;
+  font-size: 0.9rem;
+  margin-left: auto;
+}
+
 @media (max-width: 768px) {
   .probability-card {
     padding: 0.75rem;

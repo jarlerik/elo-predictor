@@ -20,6 +20,26 @@ import {
 
 const router = express.Router();
 
+// Stake in euros for a bet entry. Bets saved before stakes were tracked have
+// no stake field and are counted as 1€ each.
+const DEFAULT_STAKE = 1;
+
+function parseStake(value: unknown): number | null {
+  if (value === undefined || value === null || value === "") {
+    return DEFAULT_STAKE;
+  }
+  const n = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(n) || n <= 0) {
+    return null;
+  }
+  return Math.round(n * 100) / 100;
+}
+
+function betStake(bet: any): number {
+  const n = Number(bet?.stake);
+  return Number.isFinite(n) && n > 0 ? n : DEFAULT_STAKE;
+}
+
 // Game-history leagues (NHL, Liiga, Premier League) share the endpoints
 // below and are selected with ?league=nhl|liiga|epl (default: nhl).
 function leagueFrom(req: express.Request): LeagueId | null {
@@ -378,12 +398,19 @@ router.get("/predict/score", async (req, res) => {
 
 router.post("/bets/save", async (req, res) => {
   try {
-    const { homeTeam, awayTeam, scores } = req.body;
+    const { homeTeam, awayTeam, scores, stake } = req.body;
 
     if (!homeTeam || !awayTeam || !scores || !Array.isArray(scores)) {
       return res
         .status(400)
         .json({ error: "please provide homeTeam, awayTeam, and scores array" });
+    }
+
+    // One stake per score line; a per-line `stake` on a score overrides the
+    // shared one.
+    const sharedStake = parseStake(stake);
+    if (sharedStake === null) {
+      return res.status(400).json({ error: "stake must be a positive number" });
     }
 
     // Format date as DD.MM.YYYY
@@ -407,6 +434,7 @@ router.post("/bets/save", async (req, res) => {
       score: score.score,
       probability: score.probability,
       odds: score.minOdd,
+      stake: parseStake(score.stake) ?? sharedStake,
     }));
 
     // Write JSON file
@@ -422,12 +450,18 @@ router.post("/bets/save", async (req, res) => {
 
 router.post("/bets/save-winner", async (req, res) => {
   try {
-    const { homeTeam, awayTeam, team, probability, odds, market } = req.body;
+    const { homeTeam, awayTeam, team, probability, odds, market, stake } =
+      req.body;
 
     if (!homeTeam || !awayTeam || !team || probability === undefined || !odds) {
       return res.status(400).json({
         error: "please provide homeTeam, awayTeam, team, probability, and odds",
       });
+    }
+
+    const stakeValue = parseStake(stake);
+    if (stakeValue === null) {
+      return res.status(400).json({ error: "stake must be a positive number" });
     }
 
     // Format date as DD.MM.YYYY
@@ -476,6 +510,7 @@ router.post("/bets/save-winner", async (req, res) => {
       homeTeam,
       awayTeam,
       ...(typeof market === "string" && market ? { market } : {}),
+      stake: stakeValue,
       timestamp: new Date().toISOString(),
     };
 
@@ -566,21 +601,26 @@ router.get("/bets/total", async (req, res) => {
     const files = fs.readdirSync(betsDir);
     const jsonFiles = files.filter((file) => file.endsWith(".json"));
 
-    let totalBets = 0;
+    // Sum of stakes in euros across every saved bet entry.
+    let totalStake = 0;
+    let betCount = 0;
     for (const filename of jsonFiles) {
       try {
         const filePath = path.join(betsDir, filename);
         const fileContent = fs.readFileSync(filePath, "utf-8");
         const bets = JSON.parse(fileContent);
         if (Array.isArray(bets)) {
-          totalBets += bets.length;
+          for (const bet of bets) {
+            totalStake += betStake(bet);
+            betCount += 1;
+          }
         }
       } catch (e) {
         console.error(`Failed to read bet file ${filename}:`, e);
       }
     }
 
-    res.json({ total: totalBets });
+    res.json({ total: Math.round(totalStake * 100) / 100, count: betCount });
   } catch (e) {
     console.error("failed to calculate total bets", e);
     res.status(500).json({ error: "failed to calculate total bets" });
