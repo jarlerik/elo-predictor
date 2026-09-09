@@ -1,23 +1,12 @@
 import React, { useEffect, useState } from "react";
 import TeamSelector from "./TeamSelector";
-import PredictionResult from "./PredictionResult";
+import PredictionResult, { Prediction } from "./PredictionResult";
 import ScorePrediction from "./ScorePrediction";
 import { LeagueId, LEAGUES } from "../utils/leagues";
 
 interface Team {
   abbr: string;
   elo: number;
-}
-
-interface Prediction {
-  homeTeam: string;
-  awayTeam: string;
-  homeWinProbability: number;
-  drawProbability: number;
-  awayWinProbability: number;
-  minHomeOdd?: number;
-  minDrawOdd?: number;
-  minAwayOdd?: number;
 }
 
 interface GamePredictionProps {
@@ -122,7 +111,7 @@ const GamePrediction: React.FC<GamePredictionProps> = ({ league }) => {
         <p>
           {info.sport === "soccer"
             ? "1X2 (home / draw / away) and correct-score odds from Elo"
-            : "Calculate probabilities for betting"}
+            : "1X2 on the 60-minute score, winner incl. OT/SO, and correct-score odds from Elo"}
         </p>
       </div>
 

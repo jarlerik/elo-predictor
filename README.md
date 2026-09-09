@@ -4,7 +4,7 @@ A full-stack web application that predicts game outcomes using ELO ratings. Cove
 
 ## Features
 
-- 🏒 **NHL & SM-liiga Predictions**: Win probabilities and correct-score odds from ELO computed over the last three seasons
+- 🏒 **NHL & SM-liiga Predictions**: 1X2 on the 60-minute score (a game that goes to OT/SO is the draw), winner incl. OT/SO, and correct-score odds from ELO computed over the last three seasons. The hockey draw factor is fitted from each league's OT/SO rate
 - ⚽ **Premier League Predictions**: 1X2 (home / draw / away) and correct-score odds, with draws modelled via the Davidson tie model
 - ⭐ **Champions League**: 1X2 and correct-score odds for the 36 participants, seeded from clubelo.com (cross-league calibrated) and updated with every played Champions League game
 - 🏆 **World Cup**: 1X2 odds for national teams from seeded eloratings.net ratings
@@ -126,7 +126,7 @@ All game-history endpoints take an optional `league=nhl|liiga|epl` query paramet
 
 - `GET /api/leagues` - List supported leagues
 - `GET /api/teams?league=` - Get all teams with current ELO ratings
-- `GET /api/predict?league=&home=TEAM&away=TEAM` - Win / draw / loss probabilities and fair odds
+- `GET /api/predict?league=&home=TEAM&away=TEAM` - 1X2 probabilities and fair odds. `market` is `fullTime` for soccer and `regulation` for hockey, where the draw is a game tied after 60 minutes; hockey responses also carry a two-way `moneyline` (winner incl. OT/SO)
 - `GET /api/predict/score?league=&home=TEAM&away=TEAM` - Correct-score probabilities
 - `GET /api/soccer/teams`, `GET /api/predict/soccer`, `GET /api/predict/soccer/score` - Seeded soccer competitions; `competition=worldcup` (default, neutral venues) or `competition=ucl` (home advantage on). `neutral=true|false` and `drawFactor=0` override per request.
 - `GET /api/ucl/teams` - Champions League clubs with seed rating, current rating and games played

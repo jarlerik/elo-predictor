@@ -39,7 +39,8 @@ the wrong name.
 - **Played-game filter:** only `gameStateId` 6 (final) or 7 (official final)
   count. The feed includes the whole schedule with 0-0 placeholders.
 - **OT / shootout:** `period` 4 = overtime, 5 = shootout. These games are
-  down-weighted (`otFactor` 0.75). `gameType` is *not* the OT flag; it is
+  down-weighted (`otFactor` 0.75) and count as regulation-time draws when the
+  hockey 1X2 draw factor is fitted (`fitDrawFactor`). `gameType` is *not* the OT flag; it is
   1 preseason / 2 regular season / 3 playoffs.
 - **Upkeep:** the tri-code set in `CURRENT_NHL_TEAMS` decides which teams are
   returned. Update it and `NHL_TEAM_NAMES` when the league expands or a

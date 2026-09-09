@@ -1,10 +1,15 @@
 import { GameRecord, TeamElo } from "../utils/types";
-import { LeagueId } from "../utils/leagues";
+import { LeagueId, LEAGUES } from "../utils/leagues";
 import { CURRENT_NHL_TEAMS } from "../utils/teamData";
 import { fetchNhlGames } from "./nhlFetcher";
 import { fetchLiigaData } from "./liigaFetcher";
 import { fetchEplData } from "./eplFetcher";
 import { computeElosFromGames } from "../elo/calculator";
+import {
+  fitDrawFactor,
+  isRegulationDraw,
+  SOCCER_DRAW_FACTOR,
+} from "../elo/probabilities";
 
 /** Raw game history plus the teams that make up the league right now. */
 export interface LeagueData {
@@ -14,7 +19,22 @@ export interface LeagueData {
 
 export interface LeagueState extends LeagueData {
   elos: TeamElo[];
+  /**
+   * Davidson draw factor for the league's 1X2 market. Soccer: full-time
+   * draws. Hockey: regulation-time draws (games that went to OT/SO), fitted
+   * from the league's own history.
+   */
+  drawFactor: number;
   loadedAt: number;
+}
+
+function drawFactorFor(
+  league: LeagueId,
+  games: GameRecord[],
+  elos: TeamElo[]
+): number {
+  if (LEAGUES[league].sport === "soccer") return SOCCER_DRAW_FACTOR;
+  return fitDrawFactor(games, elos, isRegulationDraw);
 }
 
 async function loadLeagueData(league: LeagueId): Promise<LeagueData> {
@@ -52,7 +72,13 @@ export async function ensureLeague(league: LeagueId): Promise<LeagueState> {
       const elos = computeElosFromGames(data.games, {
         currentTeams: data.currentTeams,
       });
-      const state: LeagueState = { ...data, elos, loadedAt: Date.now() };
+      const drawFactor = drawFactorFor(league, data.games, elos);
+      const state: LeagueState = {
+        ...data,
+        elos,
+        drawFactor,
+        loadedAt: Date.now(),
+      };
       cache.set(league, state);
       return state;
     } catch (e) {

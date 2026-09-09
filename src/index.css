@@ -360,6 +360,63 @@ body {
   transition: width 0.8s ease;
 }
 
+.market-note {
+  margin: 1rem 0 0;
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+.moneyline {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  background: #262626;
+  border-radius: 6px;
+  border-left: 3px solid #737373;
+}
+
+.moneyline h4 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.moneyline-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.moneyline-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 1rem;
+}
+
+.moneyline-row .percentage {
+  font-weight: 700;
+}
+
+.moneyline-row .odds {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  min-width: 7.5rem;
+  text-align: right;
+}
+
+@media (max-width: 480px) {
+  .moneyline-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .moneyline-row .odds {
+    grid-column: 1;
+    text-align: left;
+    min-width: 0;
+  }
+}
+
 .prediction-summary {
   margin-top: 1.5rem;
   padding: 1rem;

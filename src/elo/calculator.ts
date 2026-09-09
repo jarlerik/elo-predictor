@@ -60,7 +60,8 @@ export function computeElosFromGames(
     const expectedHome =
       1 / (1 + Math.pow(10, (awayRating - homeRating) / 400));
 
-    // actual result: win 1, loss 0, draw 0.5 (soccer only; hockey never ties)
+    // actual result: win 1, loss 0, draw 0.5 (soccer only; hockey always has a
+    // winner incl. OT/SO -- the regulation-time draw lives in probabilities.ts)
     let actualHome = 0.5;
     if (g.homeGoals > g.awayGoals) actualHome = 1;
     else if (g.awayGoals > g.homeGoals) actualHome = 0;

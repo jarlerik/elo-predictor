@@ -58,7 +58,7 @@ router.get("/predict", async (req, res) => {
         .status(400)
         .json({ error: "please provide home and away (abbr)" });
 
-    const { elos } = await ensureLeague(league);
+    const { elos, drawFactor } = await ensureLeague(league);
     const homeTeamElo = findTeamElo(home, elos);
     const awayTeamElo = findTeamElo(away, elos);
     if (!homeTeamElo)
@@ -66,9 +66,10 @@ router.get("/predict", async (req, res) => {
     if (!awayTeamElo)
       return res.status(404).json({ error: `team not found: ${away}` });
 
-    // Hockey can't end level (OT/SO), league soccer draws ~1 in 4.
-    const drawFactor =
-      LEAGUES[league].sport === "soccer" ? SOCCER_DRAW_FACTOR : NO_DRAW;
+    // 1X2 market. Soccer: full-time result. Hockey: 60-minute result, where
+    // a game tied after regulation (goes to OT/SO) is the draw; the league's
+    // draw factor is fitted from its OT/SO rate.
+    const sport = LEAGUES[league].sport;
     const probs = eloToWinProb(
       homeTeamElo.elo,
       awayTeamElo.elo,
@@ -76,8 +77,10 @@ router.get("/predict", async (req, res) => {
       drawFactor
     );
 
-    res.json({
+    const body: Record<string, unknown> = {
       league,
+      market: sport === "hockey" ? "regulation" : "fullTime",
+      drawFactor,
       homeTeam: homeTeamElo.abbr,
       awayTeam: awayTeamElo.abbr,
       homeWinProbability: Math.round(probs.homeWin * 10000) / 10000,
@@ -88,7 +91,25 @@ router.get("/predict", async (req, res) => {
       minAwayOdd: fairOdd(probs.awayWin),
       homeElo: homeTeamElo.elo,
       awayElo: awayTeamElo.elo,
-    });
+    };
+
+    // Hockey also has a two-way market that includes OT/SO (moneyline).
+    if (sport === "hockey") {
+      const ml = eloToWinProb(
+        homeTeamElo.elo,
+        awayTeamElo.elo,
+        undefined,
+        NO_DRAW
+      );
+      body.moneyline = {
+        homeWinProbability: Math.round(ml.homeWin * 10000) / 10000,
+        awayWinProbability: Math.round(ml.awayWin * 10000) / 10000,
+        minHomeOdd: fairOdd(ml.homeWin),
+        minAwayOdd: fairOdd(ml.awayWin),
+      };
+    }
+
+    res.json(body);
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "failed" });
@@ -401,7 +422,7 @@ router.post("/bets/save", async (req, res) => {
 
 router.post("/bets/save-winner", async (req, res) => {
   try {
-    const { homeTeam, awayTeam, team, probability, odds } = req.body;
+    const { homeTeam, awayTeam, team, probability, odds, market } = req.body;
 
     if (!homeTeam || !awayTeam || !team || probability === undefined || !odds) {
       return res.status(400).json({
@@ -445,12 +466,16 @@ router.post("/bets/save-winner", async (req, res) => {
     }
 
     // Add new winner bet
+    // `market` says how the bet settles: "regulation" (hockey 60-minute
+    // result, tie = DRAW), "fullTime" (soccer) or "moneyline" (hockey incl.
+    // OT/SO). Older bets have no market and were all moneyline/fullTime.
     const newBet = {
       team,
       probability,
       odds,
       homeTeam,
       awayTeam,
+      ...(typeof market === "string" && market ? { market } : {}),
       timestamp: new Date().toISOString(),
     };
 

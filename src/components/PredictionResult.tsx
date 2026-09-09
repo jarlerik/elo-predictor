@@ -1,18 +1,30 @@
 import React, { useState } from "react";
 import { TEAM_FULL_NAMES } from "../utils/teamData";
 
-interface Prediction {
+export interface Moneyline {
+  homeWinProbability: number;
+  awayWinProbability: number;
+  minHomeOdd?: number;
+  minAwayOdd?: number;
+}
+
+export interface Prediction {
   homeTeam: string;
   awayTeam: string;
+  /** "regulation": hockey 60-minute result; "fullTime": soccer. */
+  market?: "regulation" | "fullTime";
   homeWinProbability: number;
   drawProbability: number;
   awayWinProbability: number;
   minHomeOdd?: number;
   minDrawOdd?: number;
   minAwayOdd?: number;
+  /** Hockey only: two-way market including OT/SO. */
+  moneyline?: Moneyline;
 }
 
 type Outcome = "home" | "draw" | "away";
+type MoneylineSide = "home" | "away";
 
 interface PredictionResultProps {
   prediction: Prediction;
@@ -24,19 +36,87 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
     draw: false,
     away: false,
   });
+  const [savingMoneyline, setSavingMoneyline] = useState<
+    Record<MoneylineSide, boolean>
+  >({ home: false, away: false });
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
   } | null>(null);
 
-  // Soccer leagues return a draw probability; hockey returns 0 (no draws).
+  // Soccer draws at full time; hockey draws on the 60-minute score (the
+  // game goes to OT/SO). Knockout markets can return 0 -> no draw card.
   const hasDraw = prediction.drawProbability > 0;
+  const isRegulation = prediction.market === "regulation";
+  const drawLabel = isRegulation ? "Draw (60 min)" : "Draw";
+  const homeName = TEAM_FULL_NAMES[prediction.homeTeam] || prediction.homeTeam;
+  const awayName = TEAM_FULL_NAMES[prediction.awayTeam] || prediction.awayTeam;
+  const moneyline = prediction.moneyline;
 
   const homePercent = (prediction.homeWinProbability * 100).toFixed(1);
   const drawPercent = (prediction.drawProbability * 100).toFixed(1);
   const awayPercent = (prediction.awayWinProbability * 100).toFixed(1);
 
-  const handleBet = async (team: Outcome) => {
+  const saveBet = async (
+    teamAbbr: string,
+    probability: number,
+    odds: number | undefined,
+    market: string,
+    label: string,
+    setBusy: (busy: boolean) => void
+  ) => {
+    if (!odds) {
+      setMessage({
+        type: "error",
+        text: "Odds not available for this bet",
+      });
+      return;
+    }
+
+    setBusy(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch("/api/bets/save-winner", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          homeTeam: prediction.homeTeam,
+          awayTeam: prediction.awayTeam,
+          team: teamAbbr,
+          probability,
+          odds,
+          market,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to save bet");
+      }
+
+      await response.json();
+      setMessage({
+        type: "success",
+        text: `Bet saved for ${label}!`,
+      });
+    } catch (err) {
+      console.error("Failed to save bet:", err);
+      setMessage({
+        type: "error",
+        text:
+          err instanceof Error
+            ? err.message
+            : "An error occurred while saving bet",
+      });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleBet = (team: Outcome) => {
     const teamAbbr =
       team === "home"
         ? prediction.homeTeam
@@ -55,57 +135,32 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
         : team === "away"
         ? prediction.minAwayOdd
         : prediction.minDrawOdd;
+    const label =
+      team === "draw" ? drawLabel : team === "home" ? homeName : awayName;
 
-    if (!odds) {
-      setMessage({
-        type: "error",
-        text: "Odds not available for this bet",
-      });
-      return;
-    }
+    return saveBet(
+      teamAbbr,
+      probability,
+      odds,
+      prediction.market ?? "fullTime",
+      label,
+      (busy) => setSaving((prev) => ({ ...prev, [team]: busy }))
+    );
+  };
 
-    setSaving((prev) => ({ ...prev, [team]: true }));
-    setMessage(null);
-
-    try {
-      const response = await fetch("/api/bets/save-winner", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          homeTeam: prediction.homeTeam,
-          awayTeam: prediction.awayTeam,
-          team: teamAbbr,
-          probability,
-          odds,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to save bet");
-      }
-
-      const data = await response.json();
-      const teamName =
-        teamAbbr === "DRAW" ? "Draw" : TEAM_FULL_NAMES[teamAbbr] || teamAbbr;
-      setMessage({
-        type: "success",
-        text: `Bet saved for ${teamName}!`,
-      });
-    } catch (err) {
-      console.error("Failed to save bet:", err);
-      setMessage({
-        type: "error",
-        text:
-          err instanceof Error
-            ? err.message
-            : "An error occurred while saving bet",
-      });
-    } finally {
-      setSaving((prev) => ({ ...prev, [team]: false }));
-    }
+  const handleMoneylineBet = (side: MoneylineSide) => {
+    if (!moneyline) return;
+    const teamAbbr = side === "home" ? prediction.homeTeam : prediction.awayTeam;
+    return saveBet(
+      teamAbbr,
+      side === "home"
+        ? moneyline.homeWinProbability
+        : moneyline.awayWinProbability,
+      side === "home" ? moneyline.minHomeOdd : moneyline.minAwayOdd,
+      "moneyline",
+      `${side === "home" ? homeName : awayName} (incl. OT/SO)`,
+      (busy) => setSavingMoneyline((prev) => ({ ...prev, [side]: busy }))
+    );
   };
 
   return (
@@ -189,7 +244,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
         {hasDraw && (
           <div className="probability-card draw">
             <div className="probability-content">
-              <div className="team-name">Draw</div>
+              <div className="team-name">{drawLabel}</div>
               <div className="percentage">{drawPercent}%</div>
               {prediction.minDrawOdd && (
                 <div className="odds">
@@ -208,7 +263,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
               onClick={() => handleBet("draw")}
               disabled={saving.draw || !prediction.minDrawOdd}
             >
-              {saving.draw ? "Saving..." : "Bet on Draw"}
+              {saving.draw ? "Saving..." : `Bet on ${drawLabel}`}
             </button>
           </div>
         )}
@@ -241,12 +296,63 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
         </div>
       </div>
 
+      {isRegulation && (
+        <p className="market-note">
+          1X2 is settled on the 60-minute score: a game that goes to overtime
+          or a shootout counts as a draw.
+        </p>
+      )}
+
+      {moneyline && (
+        <div className="moneyline">
+          <h4>Winner incl. OT/SO</h4>
+          <div className="moneyline-rows">
+            <div className="moneyline-row">
+              <span className="team-name">{homeName}</span>
+              <span className="percentage">
+                {(moneyline.homeWinProbability * 100).toFixed(1)}%
+              </span>
+              <span className="odds">
+                {moneyline.minHomeOdd
+                  ? `Min Odds: ${moneyline.minHomeOdd.toFixed(2)}`
+                  : ""}
+              </span>
+              <button
+                className="bet-button"
+                onClick={() => handleMoneylineBet("home")}
+                disabled={savingMoneyline.home || !moneyline.minHomeOdd}
+              >
+                {savingMoneyline.home ? "Saving..." : "Bet"}
+              </button>
+            </div>
+            <div className="moneyline-row">
+              <span className="team-name">{awayName}</span>
+              <span className="percentage">
+                {(moneyline.awayWinProbability * 100).toFixed(1)}%
+              </span>
+              <span className="odds">
+                {moneyline.minAwayOdd
+                  ? `Min Odds: ${moneyline.minAwayOdd.toFixed(2)}`
+                  : ""}
+              </span>
+              <button
+                className="bet-button"
+                onClick={() => handleMoneylineBet("away")}
+                disabled={savingMoneyline.away || !moneyline.minAwayOdd}
+              >
+                {savingMoneyline.away ? "Saving..." : "Bet"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="prediction-summary">
         <p>
           <strong>Most Likely Outcome:</strong>{" "}
           {prediction.drawProbability > prediction.homeWinProbability &&
           prediction.drawProbability > prediction.awayWinProbability
-            ? "Draw"
+            ? drawLabel
             : prediction.homeWinProbability > prediction.awayWinProbability
             ? `${
                 TEAM_FULL_NAMES[prediction.homeTeam] || prediction.homeTeam
