@@ -500,7 +500,9 @@ router.get("/bets/list", async (req, res) => {
     }
 
     const files = fs.readdirSync(betsDir);
-    const jsonFiles = files.filter((file) => file.endsWith(".json"));
+    const jsonFiles = files.filter(
+      (file) => file.endsWith(".json") && !file.endsWith("_winner.json")
+    );
 
     const betsList = jsonFiles
       .map((filename) => {
