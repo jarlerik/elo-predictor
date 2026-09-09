@@ -15,9 +15,12 @@ const Results: React.FC = () => {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // Sum of stakes in euros across all saved bets, plus how many entries.
+  // Stakes in euros on bets whose game has a result, plus how many entries.
   const [totalBets, setTotalBets] = useState<number>(0);
   const [betCount, setBetCount] = useState<number>(0);
+  // Stakes on bets whose game has no result yet; not part of the return rate.
+  const [pendingStake, setPendingStake] = useState<number>(0);
+  const [pendingCount, setPendingCount] = useState<number>(0);
 
   useEffect(() => {
     fetchResults();
@@ -50,6 +53,8 @@ const Results: React.FC = () => {
       const data = await response.json();
       setTotalBets(data.total || 0);
       setBetCount(data.count || 0);
+      setPendingStake(data.pending || 0);
+      setPendingCount(data.pendingCount || 0);
     } catch (err) {
       console.error("Failed to fetch total bets:", err);
     }
@@ -117,6 +122,10 @@ const Results: React.FC = () => {
         </p>
         <p>
           Return rate: <strong>{returnRate.toFixed(2)}%</strong>
+        </p>
+        <p>
+          Pending: <strong>{formatCurrency(pendingStake)}</strong>{" "}
+          <span style={{ opacity: 0.7 }}>({pendingCount} bets)</span>
         </p>
       </div>
       <div className="results-section">

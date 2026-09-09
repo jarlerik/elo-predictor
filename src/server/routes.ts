@@ -601,18 +601,44 @@ router.get("/bets/total", async (req, res) => {
     const files = fs.readdirSync(betsDir);
     const jsonFiles = files.filter((file) => file.endsWith(".json"));
 
-    // Sum of stakes in euros across every saved bet entry.
-    let totalStake = 0;
-    let betCount = 0;
+    // A bet is settled once its game has any entry in results.json. Losing
+    // lines are not recorded there, so settlement is per game, not per line.
+    // Result game keys are the bet filename minus ".json" / "_winner.json".
+    const settledGames = new Set<string>();
+    const resultsPath = path.join(process.cwd(), "data", "results.json");
+    if (fs.existsSync(resultsPath)) {
+      try {
+        const results = JSON.parse(fs.readFileSync(resultsPath, "utf-8"));
+        if (Array.isArray(results)) {
+          for (const r of results) {
+            if (typeof r?.game === "string") settledGames.add(r.game);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to read results file:", e);
+      }
+    }
+
+    // Stakes in euros, split by whether the game has a result yet.
+    let settledStake = 0;
+    let settledCount = 0;
+    let pendingStake = 0;
+    let pendingCount = 0;
     for (const filename of jsonFiles) {
       try {
         const filePath = path.join(betsDir, filename);
         const fileContent = fs.readFileSync(filePath, "utf-8");
         const bets = JSON.parse(fileContent);
-        if (Array.isArray(bets)) {
-          for (const bet of bets) {
-            totalStake += betStake(bet);
-            betCount += 1;
+        if (!Array.isArray(bets)) continue;
+        const game = filename.replace(/(_winner)?\.json$/, "");
+        const settled = settledGames.has(game);
+        for (const bet of bets) {
+          if (settled) {
+            settledStake += betStake(bet);
+            settledCount += 1;
+          } else {
+            pendingStake += betStake(bet);
+            pendingCount += 1;
           }
         }
       } catch (e) {
@@ -620,7 +646,12 @@ router.get("/bets/total", async (req, res) => {
       }
     }
 
-    res.json({ total: Math.round(totalStake * 100) / 100, count: betCount });
+    res.json({
+      total: Math.round(settledStake * 100) / 100,
+      count: settledCount,
+      pending: Math.round(pendingStake * 100) / 100,
+      pendingCount,
+    });
   } catch (e) {
     console.error("failed to calculate total bets", e);
     res.status(500).json({ error: "failed to calculate total bets" });
