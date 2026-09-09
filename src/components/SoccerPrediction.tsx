@@ -6,6 +6,7 @@ import {
   parseOdds,
   useBookmaker,
 } from "./BookOdds";
+import { useBankroll } from "./bankroll";
 import { COUNTRY_NAMES } from "../utils/soccerTeams";
 import { UCL_TEAM_NAMES } from "../utils/leagues";
 
@@ -116,6 +117,9 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
   const setBookOdds = (key: Outcome, value: string) =>
     setBook((prev) => ({ ...prev, [key]: value }));
   const [bookmaker, setBookmaker] = useBookmaker();
+  // Bankroll and Kelly divider for the stake hint and the ledger snapshot.
+  const { bankroll, kelly } = useBankroll();
+  const useStake = (v: number) => setStake(v.toFixed(2));
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -241,6 +245,8 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
           stake: stakeValue,
           league: competition,
           bookmaker: bookmaker || undefined,
+          bankrollBefore: bankroll?.current ?? undefined,
+          kellyDivider: bankroll?.kellyDivider,
           marketOdds,
           // Snapshot of the model at bet time for the ledger.
           model: {
@@ -447,6 +453,8 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
                     </div>
                   )}
                   <OddsInput
+                    kelly={kelly}
+                    onUseStake={useStake}
                     value={book.home}
                     onChange={(v) => setBookOdds("home", v)}
                     probability={prediction.homeWinProbability}
@@ -481,6 +489,8 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
                     </div>
                   )}
                   <OddsInput
+                    kelly={kelly}
+                    onUseStake={useStake}
                     value={book.draw}
                     onChange={(v) => setBookOdds("draw", v)}
                     probability={prediction.drawProbability}
@@ -513,6 +523,8 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
                     </div>
                   )}
                   <OddsInput
+                    kelly={kelly}
+                    onUseStake={useStake}
                     value={book.away}
                     onChange={(v) => setBookOdds("away", v)}
                     probability={prediction.awayWinProbability}

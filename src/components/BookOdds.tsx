@@ -1,4 +1,6 @@
 import React, { useSyncExternalStore } from "react";
+import { kellyStake } from "../utils/kelly";
+import { KellySettings, kellyLabel } from "./bankroll";
 
 /**
  * Bookmaker price inputs shared by the bet forms. The odds typed here are
@@ -80,9 +82,17 @@ export const OddsInput: React.FC<{
   onChange: (v: string) => void;
   probability: number;
   label?: string;
-}> = ({ value, onChange, probability, label = "Book odds" }) => {
+  /** With a bankroll, the fractional-Kelly stake is shown under the edge. */
+  kelly?: KellySettings | null;
+  /** Clicking the Kelly stake puts it in the form's stake input. */
+  onUseStake?: (stake: number) => void;
+}> = ({ value, onChange, probability, label = "Book odds", kelly, onUseStake }) => {
   const odds = parseOdds(value);
   const positive = odds !== null && probability * odds - 1 >= 0;
+  const stake =
+    kelly && odds !== null && positive
+      ? Math.round(kellyStake(kelly.bankroll, probability, odds, kelly.divider) * 100) / 100
+      : null;
   return (
     <label className="book-odds-field" onClick={(e) => e.stopPropagation()}>
       <span className="book-odds-label">{label}</span>
@@ -103,6 +113,19 @@ export const OddsInput: React.FC<{
       >
         {odds === null ? "" : edgePercent(probability, odds)}
       </span>
+      {stake !== null && kelly && (
+        <button
+          type="button"
+          className="kelly-hint"
+          title={`${kellyLabel(kelly.divider)} of ${kelly.bankroll.toFixed(2)}€ at these odds. Click to use as the stake.`}
+          onClick={(e) => {
+            e.preventDefault();
+            onUseStake?.(stake);
+          }}
+        >
+          {kellyLabel(kelly.divider)} {stake.toFixed(2)}€
+        </button>
+      )}
     </label>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { kellyFraction } from "../utils/kelly";
 
 const KellyBet: React.FC = () => {
   const [probability, setProbability] = useState<string>("");
@@ -25,8 +26,8 @@ const KellyBet: React.FC = () => {
       return;
     }
 
-    if (oddsValue <= 0) {
-      setError("Odds must be greater than 0");
+    if (oddsValue <= 1) {
+      setError("Decimal odds must be greater than 1");
       return;
     }
 
@@ -35,13 +36,13 @@ const KellyBet: React.FC = () => {
       return;
     }
 
-    // Kelly criterion formula: f* = (bp - q) / b
-    // Where: b = odds, p = probability of win, q = probability of loss (1-p)
-    const q = 1 - prob;
-    const kellyFraction = (oddsValue * prob - q) / oddsValue;
+    // Kelly criterion for decimal odds (src/utils/kelly.ts):
+    // f* = (p × odds − 1) / (odds − 1), i.e. (bp − q) / b with b = odds − 1.
+    const edge = prob * oddsValue - 1;
+    const fullKelly = edge < 0 ? edge / (oddsValue - 1) : kellyFraction(prob, oddsValue);
 
     // Apply Kelly divider for fractional Kelly
-    const fractionalKelly = kellyFraction / divider;
+    const fractionalKelly = fullKelly / divider;
 
     // Convert to percentage
     const kellyPercent = fractionalKelly * 100;
@@ -225,7 +226,8 @@ const KellyBet: React.FC = () => {
               <p>Where:</p>
               <ul>
                 <li>
-                  <strong>b</strong> = decimal odds
+                  <strong>b</strong> = decimal odds − 1 (the net return per
+                  unit staked)
                 </li>
                 <li>
                   <strong>p</strong> = probability of winning

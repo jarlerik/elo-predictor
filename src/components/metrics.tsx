@@ -105,9 +105,13 @@ export const HeadlineTiles: React.FC<{ summary: Summary }> = ({ summary }) => {
       <Tile
         label="Bankroll"
         value={s.bankroll === null ? "—" : eur(s.bankroll)}
-        sub={s.bankroll === null ? "not tracked yet" : undefined}
+        sub={
+          s.bankroll === null
+            ? "not tracked yet"
+            : `${eur(s.pending.stake)} open in pending bets`
+        }
         muted={s.bankroll === null}
-        hint="Set up in step 6 of the metrics plan"
+        hint="Set the starting amount in the Bankroll panel on the Dashboard"
       />
       <Tile
         label="Yield"

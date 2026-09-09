@@ -6,6 +6,7 @@ import {
   parseOdds,
   useBookmaker,
 } from "./BookOdds";
+import { useBankroll } from "./bankroll";
 
 interface ScoreProbability {
   home: number;
@@ -49,6 +50,9 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
   // Bookmaker price per score line, keyed by score so "Show more" keeps it.
   const [book, setBook] = useState<Record<string, string>>({});
   const [bookmaker, setBookmaker] = useBookmaker();
+  // Bankroll and Kelly divider for the stake hint and the ledger snapshot.
+  const { bankroll, kelly } = useBankroll();
+  const useStake = (v: number) => setStake(v.toFixed(2));
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -140,6 +144,8 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
           scores: lines,
           stake: stakeValue,
           bookmaker: bookmaker || undefined,
+          bankrollBefore: bankroll?.current ?? undefined,
+          kellyDivider: bankroll?.kellyDivider,
           marketOdds,
           league: scorePrediction.league ?? scorePrediction.competition,
           // Snapshot of the model at bet time for the ledger.
@@ -301,6 +307,8 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
               </div>
               <div className="odds">Min Odds: {bet.minOdd.toFixed(2)}</div>
               <OddsInput
+                kelly={kelly}
+                onUseStake={useStake}
                 value={book[bet.score] ?? ""}
                 onChange={(v) =>
                   setBook((prev) => ({ ...prev, [bet.score]: v }))

@@ -311,6 +311,28 @@ tuned once there is data:
    with a button row to switch it; rows under 30 settled bets are greyed
    out rather than hidden.
 6. **Bankroll + staking panel**, and Kelly stake shown on the bet forms.
+
+   *Done (September 2026).* `data/bankroll.json` (`src/data/bankroll.ts`)
+   holds the start amount as of a date, the Kelly divider, the daily
+   exposure limit and a list of deposits and withdrawals; the current
+   bankroll adds the profit of bets settled since the start date.
+   `GET /api/bankroll`, `POST /api/bankroll` (start and settings),
+   `POST /api/bankroll/movement` and `DELETE /api/bankroll/movement/:index`
+   manage it. `GET /api/metrics/staking` gives every bet's stake against the
+   fractional-Kelly stake its own snapshot implied (rows saved before the
+   bankroll existed are measured against today's and flagged), the open
+   exposure by day and by position, and the over-limit days. The summary
+   endpoint now fills the Bankroll tile and the drawdown as a share of it.
+   Every "Book odds" input shows the fractional-Kelly stake once a price
+   with an edge is typed; clicking it fills the stake, and the bet is saved
+   with `bankrollBefore` and `kellyDivider`. The Dashboard gets a Bankroll
+   panel (setup form, movements), an Open positions table with the daily
+   exposure warning, and the stake-vs-Kelly scatter. The Kelly page now uses
+   the same formula as the stake hint, with b = decimal odds − 1; it used
+   the decimal odds as b before, which understated the stake at short odds
+   and overstated it at long odds. Days since last game and exposure by
+   game date still wait for fixtures to be stored: pending bets without a
+   game date are grouped by the day they were placed.
 7. **Prediction log and closing odds.** Lowest effort per step but needs the
    habit of filling them in; add once the rest is in use.
 

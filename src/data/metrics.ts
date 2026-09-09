@@ -12,6 +12,7 @@
  *   only, next to the actual and model-expected profit of the same subset.
  */
 import { LedgerLeague, LedgerMarket, LedgerRow, round2 } from "./ledger";
+import { kellyFraction } from "../utils/kelly";
 
 /** Settled bets below this count are shown muted on the dashboard. */
 export const MIN_SAMPLE = 30;
@@ -406,4 +407,226 @@ export function segments(rows: LedgerRow[], by: SegmentBy): Segments {
     (a, b) => a.order - b.order || a.row.label.localeCompare(b.row.label)
   );
   return { by, minSample: MIN_SAMPLE, rows: out.map((o) => o.row) };
+}
+
+// ---------------------------------------------------------------------------
+// Staking discipline (section D of the plan): every bet against the Kelly
+// stake its own snapshot implied, and the open exposure by day and by game.
+// ---------------------------------------------------------------------------
+
+export interface StakingBet {
+  id: string;
+  positionId: string;
+  placedAt: string | null;
+  league: string | null;
+  market: string;
+  home: string;
+  away: string;
+  gameDate: string | null;
+  pick: string;
+  stake: number;
+  oddsTaken: number;
+  probability: number;
+  /** p × odds − 1 */
+  edge: number;
+  /** Full-Kelly fraction of the bankroll. */
+  kellyFraction: number;
+  /** Bankroll the Kelly stake is measured against. */
+  bankroll: number | null;
+  /** True when the row had no bankroll of its own and the current one is used. */
+  bankrollAssumed: boolean;
+  kellyDivider: number;
+  kellyStake: number | null;
+  /** stake / kellyStake; null when there is no bankroll or no edge. */
+  ratio: number | null;
+  bankrollFraction: number | null;
+  status: "pending" | "win" | "loss" | "void";
+  /** Saved at the model's fair odds (flag oddsIsMinOdd): no edge to size by. */
+  noPrice: boolean;
+}
+
+export interface ExposureDay {
+  date: string;
+  stake: number;
+  fraction: number | null;
+  bets: number;
+  positions: number;
+  overLimit: boolean;
+}
+
+export interface ExposurePosition {
+  positionId: string;
+  league: string | null;
+  home: string;
+  away: string;
+  gameDate: string | null;
+  market: string;
+  lines: number;
+  stake: number;
+  fraction: number | null;
+  expectedProfit: number;
+  picks: string[];
+}
+
+export interface Staking {
+  bankroll: number | null;
+  kellyDivider: number;
+  dailyExposureLimit: number;
+  bets: StakingBet[];
+  summary: {
+    withRatio: number;
+    meanRatio: number | null;
+    medianRatio: number | null;
+    /** Bets staked above the fractional-Kelly stake. */
+    overKelly: number;
+    /** Bets with a book price the model gave no edge at. */
+    noEdge: number;
+    /** Bets saved at the model's own odds, so without a measured edge. */
+    noPrice: number;
+    /** Bets without a bankroll of their own (measured against today's). */
+    assumed: number;
+  };
+  open: {
+    bets: number;
+    stake: number;
+    expectedProfit: number;
+    fraction: number | null;
+    byDay: ExposureDay[];
+    byPosition: ExposurePosition[];
+  };
+}
+
+export function staking(
+  rows: LedgerRow[],
+  bankroll: number | null,
+  kellyDivider: number,
+  dailyExposureLimit: number
+): Staking {
+  const ordered = [...rows].sort(
+    (a, b) =>
+      (a.placedAt ?? "").localeCompare(b.placedAt ?? "") ||
+      a.id.localeCompare(b.id)
+  );
+  const bets: StakingBet[] = ordered.map((r) => {
+    // Rows saved at the model's own fair odds have no measured edge.
+    const noPrice = r.flags?.includes("oddsIsMinOdd") ?? false;
+    const f = noPrice ? 0 : kellyFraction(r.probability, r.oddsTaken);
+    const own = r.bankrollBefore && r.bankrollBefore > 0 ? r.bankrollBefore : null;
+    const base = own ?? bankroll;
+    const divider = r.kellyDivider && r.kellyDivider > 0 ? r.kellyDivider : kellyDivider;
+    const kStake = base !== null ? (base * f) / divider : null;
+    return {
+      id: r.id,
+      positionId: r.positionId,
+      placedAt: r.placedAt,
+      league: r.league,
+      market: r.market,
+      home: r.game.home,
+      away: r.game.away,
+      gameDate: r.game.date,
+      pick: r.pick,
+      stake: r.stake,
+      oddsTaken: r.oddsTaken,
+      probability: r.probability,
+      edge: r.probability * r.oddsTaken - 1,
+      kellyFraction: f,
+      bankroll: base,
+      bankrollAssumed: own === null && base !== null,
+      kellyDivider: divider,
+      kellyStake: kStake === null ? null : round2(kStake),
+      ratio: kStake !== null && kStake > 0 ? r.stake / kStake : null,
+      bankrollFraction: base ? r.stake / base : null,
+      status: !r.settledAt ? "pending" : (r.result ?? "void"),
+      noPrice,
+    };
+  });
+
+  const ratios = bets.map((b) => b.ratio).filter((x): x is number => x !== null);
+  const sorted = [...ratios].sort((a, b) => a - b);
+  const median =
+    sorted.length === 0
+      ? null
+      : sorted.length % 2
+      ? sorted[(sorted.length - 1) / 2]
+      : (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2;
+
+  const pending = bets.filter((b) => b.status === "pending");
+  const openStake = pending.reduce((s, b) => s + b.stake, 0);
+  const fractionOf = (stake: number) =>
+    bankroll && bankroll > 0 ? stake / bankroll : null;
+
+  const days = new Map<string, { stake: number; bets: number; positions: Set<string> }>();
+  const positions = new Map<string, ExposurePosition>();
+  for (const b of pending) {
+    // Game date when known; otherwise the day the bet was placed.
+    const day = (b.gameDate ?? b.placedAt ?? "").slice(0, 10) || "unknown";
+    const d = days.get(day) ?? { stake: 0, bets: 0, positions: new Set<string>() };
+    d.stake += b.stake;
+    d.bets++;
+    d.positions.add(b.positionId);
+    days.set(day, d);
+
+    const pos = positions.get(b.positionId) ?? {
+      positionId: b.positionId,
+      league: b.league,
+      home: b.home,
+      away: b.away,
+      gameDate: b.gameDate,
+      market: b.market,
+      lines: 0,
+      stake: 0,
+      fraction: null,
+      expectedProfit: 0,
+      picks: [],
+    };
+    pos.lines++;
+    pos.stake += b.stake;
+    pos.expectedProfit += b.stake * b.edge;
+    pos.picks.push(b.pick);
+    if (pos.market !== b.market) pos.market = "mixed";
+    positions.set(b.positionId, pos);
+  }
+
+  return {
+    bankroll,
+    kellyDivider,
+    dailyExposureLimit,
+    bets,
+    summary: {
+      withRatio: ratios.length,
+      meanRatio: ratios.length ? ratios.reduce((s, x) => s + x, 0) / ratios.length : null,
+      medianRatio: median,
+      overKelly: ratios.filter((x) => x > 1).length,
+      noEdge: bets.filter((b) => !b.noPrice && b.kellyFraction === 0).length,
+      noPrice: bets.filter((b) => b.noPrice).length,
+      assumed: bets.filter((b) => b.bankrollAssumed).length,
+    },
+    open: {
+      bets: pending.length,
+      stake: round2(openStake),
+      expectedProfit: round2(pending.reduce((s, b) => s + b.stake * b.edge, 0)),
+      fraction: fractionOf(openStake),
+      byDay: [...days.entries()]
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([date, d]) => {
+          const fraction = fractionOf(d.stake);
+          return {
+            date,
+            stake: round2(d.stake),
+            fraction,
+            bets: d.bets,
+            positions: d.positions.size,
+            overLimit: fraction !== null && fraction > dailyExposureLimit,
+          };
+        }),
+      byPosition: [...positions.values()]
+        .sort((a, b) => b.stake - a.stake)
+        .map((p) => ({
+          ...p,
+          stake: round2(p.stake),
+          fraction: fractionOf(p.stake),
+          expectedProfit: round2(p.expectedProfit),
+        })),
+    },
+  };
 }

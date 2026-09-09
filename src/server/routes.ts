@@ -30,7 +30,14 @@ import {
   round2,
   settleRows,
 } from "../data/ledger";
-import { isSegmentBy, segments, summarize } from "../data/metrics";
+import { isSegmentBy, segments, staking, summarize } from "../data/metrics";
+import {
+  bankrollState,
+  DEFAULT_DAILY_EXPOSURE_LIMIT,
+  DEFAULT_KELLY_DIVIDER,
+  readBankroll,
+  writeBankroll,
+} from "../data/bankroll";
 import { backtestFor } from "../data/backtest";
 
 const router = express.Router();
@@ -967,10 +974,107 @@ router.post("/ledger/settle", async (req, res) => {
 
 router.get("/metrics/summary", async (req, res) => {
   try {
-    res.json(summarize(ensureLedger()));
+    const rows = ensureLedger();
+    res.json(summarize(rows, bankrollState(readBankroll(), rows).current));
   } catch (e) {
     console.error("failed to compute summary", e);
     res.status(500).json({ error: "failed to compute summary" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Bankroll (data/bankroll.json) and staking discipline.
+// ---------------------------------------------------------------------------
+
+router.get("/bankroll", async (req, res) => {
+  try {
+    res.json(bankrollState(readBankroll(), ensureLedger()));
+  } catch (e) {
+    console.error("failed to read bankroll", e);
+    res.status(500).json({ error: "failed to read bankroll" });
+  }
+});
+
+/** Set the starting amount and settings; keeps existing movements. */
+router.post("/bankroll", async (req, res) => {
+  try {
+    const existing = readBankroll();
+    const start = Number(req.body?.start);
+    if (!Number.isFinite(start) || start < 0)
+      return res.status(400).json({ error: "start must be a number ≥ 0" });
+    const startedAt = String(req.body?.startedAt ?? "").slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(startedAt))
+      return res.status(400).json({ error: "startedAt must be YYYY-MM-DD" });
+    const divider = Number(req.body?.kellyDivider ?? existing?.kellyDivider ?? DEFAULT_KELLY_DIVIDER);
+    if (!Number.isFinite(divider) || divider < 1 || divider > 20)
+      return res.status(400).json({ error: "kellyDivider must be 1–20" });
+    const limit = Number(
+      req.body?.dailyExposureLimit ?? existing?.dailyExposureLimit ?? DEFAULT_DAILY_EXPOSURE_LIMIT
+    );
+    if (!Number.isFinite(limit) || limit <= 0 || limit > 1)
+      return res.status(400).json({ error: "dailyExposureLimit must be within (0, 1]" });
+    writeBankroll({
+      start: round2(start),
+      startedAt,
+      kellyDivider: divider,
+      dailyExposureLimit: limit,
+      movements: existing?.movements ?? [],
+    });
+    res.json(bankrollState(readBankroll(), ensureLedger()));
+  } catch (e) {
+    console.error("failed to write bankroll", e);
+    res.status(500).json({ error: "failed to write bankroll" });
+  }
+});
+
+/** Deposit (positive amount) or withdrawal (negative amount). */
+router.post("/bankroll/movement", async (req, res) => {
+  try {
+    const file = readBankroll();
+    if (!file) return res.status(400).json({ error: "set the bankroll first" });
+    const amount = Number(req.body?.amount);
+    if (!Number.isFinite(amount) || amount === 0)
+      return res.status(400).json({ error: "amount must be a non-zero number" });
+    const at = req.body?.at ? new Date(req.body.at) : new Date();
+    if (Number.isNaN(at.getTime()))
+      return res.status(400).json({ error: "at must be a date" });
+    const note =
+      typeof req.body?.note === "string" && req.body.note.trim()
+        ? req.body.note.trim()
+        : null;
+    file.movements.push({ at: at.toISOString(), amount: round2(amount), note });
+    writeBankroll(file);
+    res.json(bankrollState(file, ensureLedger()));
+  } catch (e) {
+    console.error("failed to add movement", e);
+    res.status(500).json({ error: "failed to add movement" });
+  }
+});
+
+router.delete("/bankroll/movement/:index", async (req, res) => {
+  try {
+    const file = readBankroll();
+    const index = Number(req.params.index);
+    if (!file || !Number.isInteger(index) || index < 0 || index >= file.movements.length)
+      return res.status(404).json({ error: "movement not found" });
+    file.movements.splice(index, 1);
+    writeBankroll(file);
+    res.json(bankrollState(file, ensureLedger()));
+  } catch (e) {
+    console.error("failed to delete movement", e);
+    res.status(500).json({ error: "failed to delete movement" });
+  }
+});
+
+/** Every bet against its Kelly stake, plus the open exposure by day and game. */
+router.get("/metrics/staking", async (req, res) => {
+  try {
+    const rows = ensureLedger();
+    const b = bankrollState(readBankroll(), rows);
+    res.json(staking(rows, b.current, b.kellyDivider, b.dailyExposureLimit));
+  } catch (e) {
+    console.error("failed to compute staking", e);
+    res.status(500).json({ error: "failed to compute staking" });
   }
 });
 
