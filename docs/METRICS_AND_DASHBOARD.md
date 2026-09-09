@@ -303,7 +303,11 @@ tuned once there is data:
    the Elo walk and the backtest at every candidate. NHL set to 40: lowest
    1X2 log loss (1.0639 against 1.0659 at 60) and predicted home-win rate
    equal to the observed 42.4%. Liiga's optimum is the existing 60. EPL
-   scores best at 40–50 but stays at 60 until reviewed.
+   set to 40: on a 5-point grid the log loss is flat from 35 to 55 (1.0301
+   at 45 against 1.0308 at 60), and 40 is the tied value nearest the
+   observed home-win rate (43.1% predicted against 41.6%). The EPL draw
+   rate is still under-predicted by four points, which is the soccer draw
+   factor, not the home advantage.
 5. **Segments table.**
 
    *Done (September 2026).* `GET /api/metrics/segments?by=` slices the

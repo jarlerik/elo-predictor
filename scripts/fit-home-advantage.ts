@@ -3,8 +3,9 @@
  * Elo walk and draw-factor refit at each candidate, scored by 1X2 log loss
  * and Brier, with the predicted vs observed home-win rate alongside.
  *
- *   npm run fit:homeadv            # all three leagues
- *   npm run fit:homeadv -- nhl     # one league
+ *   npm run fit:homeadv              # all three leagues, steps of 10
+ *   npm run fit:homeadv -- nhl       # one league
+ *   npm run fit:homeadv -- epl 5     # finer grid
  *
  * The chosen values live in LEAGUES[id].homeAdv (src/utils/leagues.ts).
  */
@@ -22,6 +23,7 @@ const arg = process.argv[2];
 const leagues: LeagueId[] = arg
   ? arg.split(",").filter(isLeagueId)
   : LEAGUE_IDS;
+const step = Number(process.argv[3]) || 10;
 
 const pct = (x: number) => `${(x * 100).toFixed(1)}%`;
 
@@ -34,7 +36,7 @@ for (const league of leagues) {
     "homeAdv  logLoss   brier    home pred/obs   draw pred/obs   drawFactor"
   );
   const scores: { homeAdv: number; logLoss: number }[] = [];
-  for (let homeAdv = 0; homeAdv <= 120; homeAdv += 10) {
+  for (let homeAdv = 0; homeAdv <= 120; homeAdv += step) {
     const elos = computeElosFromGames(state.games, {
       currentTeams: state.currentTeams,
       homeAdv,
