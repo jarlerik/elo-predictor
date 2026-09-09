@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 
 interface Result {
   game: string;
-  score: string;
+  /** Correct-score bets. */
+  score?: string;
+  /** Winner bets: picked team abbreviation, or "DRAW". */
+  team?: string;
   probability: number;
   odds: number;
   return: number;
@@ -67,6 +70,25 @@ const Results: React.FC = () => {
     return game;
   };
 
+  // Game key is HOME__AWAY_DD.MM.YYYY.
+  const parseTeams = (game: string): { home: string; away: string } | null => {
+    const parts = game.split("__");
+    if (parts.length !== 2) return null;
+    const away = parts[1].split("_")[0];
+    return away ? { home: parts[0], away } : null;
+  };
+
+  // Score bets show the score; winner bets show the 1X2 pick.
+  const formatPick = (result: Result): string => {
+    if (result.score) return result.score;
+    if (!result.team) return "";
+    if (result.team === "DRAW") return "X";
+    const teams = parseTeams(result.game);
+    if (teams?.home === result.team) return `1 (${result.team})`;
+    if (teams?.away === result.team) return `2 (${result.team})`;
+    return result.team;
+  };
+
   const formatPercentage = (value: number): string => {
     return `${(value * 100).toFixed(2)}%`;
   };
@@ -108,7 +130,7 @@ const Results: React.FC = () => {
           <div className="results-table-container">
             <div className="results-table">
               <div className="results-cell results-header-cell">Game</div>
-              <div className="results-cell results-header-cell">Score</div>
+              <div className="results-cell results-header-cell">Pick</div>
               <div className="results-cell results-header-cell">
                 Probability
               </div>
@@ -119,8 +141,8 @@ const Results: React.FC = () => {
                   <div className="results-cell" data-label="Game">
                     {formatGameName(result.game)}
                   </div>
-                  <div className="results-cell" data-label="Score">
-                    {result.score}
+                  <div className="results-cell" data-label="Pick">
+                    {formatPick(result)}
                   </div>
                   <div className="results-cell" data-label="Probability">
                     {formatPercentage(result.probability)}
