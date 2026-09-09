@@ -64,8 +64,10 @@ export function useSummary() {
 
 export const eur = (n: number, signed = false) =>
   `${signed && n > 0 ? "+" : ""}${n.toFixed(2)}€`;
-export const pct = (x: number, signed = false) =>
-  `${signed && x > 0 ? "+" : ""}${(x * 100).toFixed(1)}%`;
+export const pct = (x: number, signed = false) => {
+  const v = Math.round(x * 1000) / 10 || 0; // no "-0.0%"
+  return `${signed && v > 0 ? "+" : ""}${v.toFixed(1)}%`;
+};
 
 const toneOf = (n: number | null): "" | "up" | "down" =>
   n === null || n === 0 ? "" : n > 0 ? "up" : "down";
@@ -360,3 +362,162 @@ export const ProfitChart: React.FC<{ series: SeriesPoint[] }> = ({
 };
 
 const round = (v: number) => Math.round(v * 100) / 100;
+
+// ---------------------------------------------------------------------------
+// Segment table: the summary figures sliced by league × market, league,
+// market, pick, odds band, edge band or Elo gap (section C of the plan).
+// ---------------------------------------------------------------------------
+
+export type SegmentBy =
+  | "leagueMarket"
+  | "league"
+  | "market"
+  | "pick"
+  | "oddsBand"
+  | "edgeBand"
+  | "eloGap";
+
+export type SegmentRow = Omit<Summary, "series" | "minSample" | "bankroll"> & {
+  key: string;
+  label: string;
+};
+
+export interface Segments {
+  by: SegmentBy;
+  minSample: number;
+  rows: SegmentRow[];
+}
+
+const SLICES: { by: SegmentBy; label: string }[] = [
+  { by: "leagueMarket", label: "League × market" },
+  { by: "league", label: "League" },
+  { by: "market", label: "Market" },
+  { by: "pick", label: "Pick" },
+  { by: "oddsBand", label: "Odds band" },
+  { by: "edgeBand", label: "Model edge" },
+  { by: "eloGap", label: "Elo gap" },
+];
+
+export function useSegments(by: SegmentBy) {
+  const [segments, setSegments] = useState<Segments | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`/api/metrics/segments?by=${by}`)
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Failed to load segments");
+        return (await res.json()) as Segments;
+      })
+      .then((data) => {
+        if (cancelled) return;
+        setSegments(data);
+        setError(null);
+      })
+      .catch((e) => {
+        if (!cancelled)
+          setError(e instanceof Error ? e.message : "Failed to load segments");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [by]);
+
+  return { segments, error };
+}
+
+const signedClass = (n: number | null) =>
+  n === null || n === 0 ? "" : n > 0 ? "up" : "down";
+
+export const SegmentTable: React.FC = () => {
+  const [by, setBy] = useState<SegmentBy>("leagueMarket");
+  const { segments, error } = useSegments(by);
+
+  return (
+    <div className="chart-card">
+      <div className="segment-controls">
+        {SLICES.map((s) => (
+          <button
+            key={s.by}
+            type="button"
+            className={`slice-button ${s.by === by ? "active" : ""}`}
+            onClick={() => setBy(s.by)}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+      {error ? (
+        <p className="error">Error: {error}</p>
+      ) : !segments ? (
+        <p className="chart-empty">Loading...</p>
+      ) : segments.rows.length === 0 ? (
+        <p className="chart-empty">No bets yet.</p>
+      ) : (
+        <div className="season-table-wrap">
+          <table className="season-table segment-table">
+            <thead>
+              <tr>
+                <th>Segment</th>
+                <th>Settled</th>
+                <th>Pending</th>
+                <th>Turnover</th>
+                <th>Profit</th>
+                <th>Yield</th>
+                <th>Expected yield</th>
+                <th>Hit rate</th>
+                <th>Expected hit</th>
+                <th>z</th>
+                <th>CLV</th>
+              </tr>
+            </thead>
+            <tbody>
+              {segments.rows.map((r) => {
+                const n = r.counts.settled;
+                const small = n < segments.minSample;
+                return (
+                  <tr
+                    key={r.key}
+                    className={small ? "muted" : ""}
+                    title={
+                      small
+                        ? `${n} settled bets; ${segments.minSample} needed before this means much`
+                        : `${n} settled bets`
+                    }
+                  >
+                    <td>{r.label}</td>
+                    <td>{n}</td>
+                    <td>{r.counts.pending || ""}</td>
+                    <td>{n ? eur(r.turnover) : ""}</td>
+                    <td className={signedClass(n ? r.profit : null)}>
+                      {n ? eur(r.profit, true) : ""}
+                    </td>
+                    <td className={signedClass(r.yield)}>
+                      {r.yield === null ? "" : pct(r.yield, true)}
+                    </td>
+                    <td>
+                      {r.expectedYield === null ? "" : pct(r.expectedYield, true)}
+                    </td>
+                    <td>{r.hitRate === null ? "" : pct(r.hitRate)}</td>
+                    <td>
+                      {r.expectedHitRate === null ? "" : pct(r.expectedHitRate)}
+                    </td>
+                    <td>{r.zScore === null ? "" : r.zScore.toFixed(2)}</td>
+                    <td className={signedClass(r.clv.mean)}>
+                      {r.clv.mean === null ? "—" : pct(r.clv.mean, true)}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <p className="calibration-caption">
+        Rows under {segments?.minSample ?? 30} settled bets are greyed out:
+        the number exists but does not mean much yet. CLV needs closing odds
+        (step 7).
+      </p>
+    </div>
+  );
+};

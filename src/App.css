@@ -1215,6 +1215,45 @@
   stroke-dasharray: 5 4;
 }
 
+/* Dashboard: segment table */
+.segment-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.slice-button {
+  background: #171717;
+  border: 1px solid #262626;
+  border-radius: 6px;
+  color: #a3a3a3;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.slice-button:hover {
+  color: #ffffff;
+}
+
+.slice-button.active {
+  color: #ffffff;
+  border-color: #f97316;
+}
+
+.segment-table tr.muted td {
+  opacity: 0.5;
+}
+
+.segment-table td.up {
+  color: #22c55e;
+}
+
+.segment-table td.down {
+  color: #f85149;
+}
+
 @media (max-width: 900px) {
   .calibration-body {
     grid-template-columns: 1fr;

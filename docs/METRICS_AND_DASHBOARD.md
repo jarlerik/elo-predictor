@@ -298,6 +298,18 @@ tuned once there is data:
    just; the Poisson score layer is worse than a constant Poisson in every
    league, and the NHL home-win rate is over-predicted by two points.
 5. **Segments table.**
+
+   *Done (September 2026).* `GET /api/metrics/segments?by=` slices the
+   ledger by `leagueMarket` (default), `league`, `market`, `pick`,
+   `oddsBand`, `edgeBand` or `eloGap` and returns the full summary figures
+   of each group (counts, turnover, profit, yield, expected yield, hit rate
+   vs expected, z-score, CLV, market view). Bands follow section C; rows
+   saved at the model's own fair odds go to a "No book price" edge group,
+   and rows without a model snapshot to a "No model snapshot" Elo-gap group.
+   Games played this season and days since last game wait for fixtures to
+   be stored. The Dashboard's **Segments** panel shows the slice as a table
+   with a button row to switch it; rows under 30 settled bets are greyed
+   out rather than hidden.
 6. **Bankroll + staking panel**, and Kelly stake shown on the bet forms.
 7. **Prediction log and closing odds.** Lowest effort per step but needs the
    habit of filling them in; add once the rest is in use.

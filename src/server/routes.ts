@@ -30,7 +30,7 @@ import {
   round2,
   settleRows,
 } from "../data/ledger";
-import { summarize } from "../data/metrics";
+import { isSegmentBy, segments, summarize } from "../data/metrics";
 import { backtestFor } from "../data/backtest";
 
 const router = express.Router();
@@ -971,6 +971,18 @@ router.get("/metrics/summary", async (req, res) => {
   } catch (e) {
     console.error("failed to compute summary", e);
     res.status(500).json({ error: "failed to compute summary" });
+  }
+});
+
+/** Summary figures sliced by ?by=leagueMarket|league|market|pick|oddsBand|edgeBand|eloGap. */
+router.get("/metrics/segments", async (req, res) => {
+  const by = req.query.by === undefined ? "leagueMarket" : req.query.by;
+  if (!isSegmentBy(by)) return res.status(400).json({ error: "unknown slice" });
+  try {
+    res.json(segments(ensureLedger(), by));
+  } catch (e) {
+    console.error("failed to compute segments", e);
+    res.status(500).json({ error: "failed to compute segments" });
   }
 });
 

@@ -1,11 +1,16 @@
 import React from "react";
-import { HeadlineTiles, ProfitChart, useSummary } from "./metrics";
+import {
+  HeadlineTiles,
+  ProfitChart,
+  SegmentTable,
+  useSummary,
+} from "./metrics";
 import { CalibrationPanel } from "./Calibration";
 
 /**
  * Betting dashboard (docs/METRICS_AND_DASHBOARD.md). Headline tiles and the
- * cumulative profit chart (step 3), model calibration per league (step 4).
- * Segments, staking and open positions follow in later steps.
+ * cumulative profit chart (step 3), model calibration per league (step 4),
+ * the segment table (step 5). Staking and open positions follow later.
  */
 const Dashboard: React.FC = () => {
   const { summary, error } = useSummary();
@@ -37,6 +42,12 @@ const Dashboard: React.FC = () => {
         happened. Independent of the bets.
       </p>
       <CalibrationPanel />
+      <h2 className="panel-title calibration-heading">Segments</h2>
+      <p className="panel-note">
+        The same figures as the tiles, sliced. Pick a slice to see where the
+        bets are and which of them carry the result.
+      </p>
+      <SegmentTable />
     </div>
   );
 };

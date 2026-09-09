@@ -11,7 +11,7 @@
  *   market so the overround can be removed. It is reported on that subset
  *   only, next to the actual and model-expected profit of the same subset.
  */
-import { LedgerRow, round2 } from "./ledger";
+import { LedgerLeague, LedgerMarket, LedgerRow, round2 } from "./ledger";
 
 /** Settled bets below this count are shown muted on the dashboard. */
 export const MIN_SAMPLE = 30;
@@ -241,4 +241,169 @@ export function summarize(
     series,
     minSample: MIN_SAMPLE,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Segments (section C of the plan): the summary figures, sliced. Each slice
+// is a list of groups; a group's figures are the plain summary of its rows,
+// so everything on the headline tiles can be read per segment.
+// ---------------------------------------------------------------------------
+
+export type SegmentBy =
+  | "leagueMarket"
+  | "league"
+  | "market"
+  | "pick"
+  | "oddsBand"
+  | "edgeBand"
+  | "eloGap";
+
+export const SEGMENT_KEYS: SegmentBy[] = [
+  "leagueMarket",
+  "league",
+  "market",
+  "pick",
+  "oddsBand",
+  "edgeBand",
+  "eloGap",
+];
+
+export const isSegmentBy = (v: unknown): v is SegmentBy =>
+  typeof v === "string" && (SEGMENT_KEYS as string[]).includes(v);
+
+export type SegmentRow = Omit<Summary, "series" | "minSample" | "bankroll"> & {
+  key: string;
+  label: string;
+};
+
+export interface Segments {
+  by: SegmentBy;
+  minSample: number;
+  rows: SegmentRow[];
+}
+
+const LEAGUE_LABELS: Record<LedgerLeague, string> = {
+  nhl: "NHL",
+  liiga: "Liiga",
+  epl: "EPL",
+  ucl: "UCL",
+  worldcup: "World Cup",
+};
+const MARKET_LABELS: Record<LedgerMarket, string> = {
+  regulation: "60-min 1X2",
+  moneyline: "Moneyline",
+  fullTime: "Full-time 1X2",
+  correctScore: "Correct score",
+};
+const LEAGUE_ORDER = Object.keys(LEAGUE_LABELS);
+const MARKET_ORDER = Object.keys(MARKET_LABELS);
+
+/** Odds bands from the plan; correct-score lines land in the top two. */
+const ODDS_BANDS: [number, string][] = [
+  [1.5, "< 1.5"],
+  [2, "1.5–2"],
+  [3, "2–3"],
+  [5, "3–5"],
+  [10, "5–10"],
+  [Infinity, "> 10"],
+];
+const EDGE_BANDS: [number, string][] = [
+  [-1e-9, "< 0%"],
+  [0.05, "0–5%"],
+  [0.1, "5–10%"],
+  [0.2, "10–20%"],
+  [Infinity, "> 20%"],
+];
+const ELO_GAP_BANDS: [number, string][] = [
+  [25, "0–25"],
+  [50, "25–50"],
+  [100, "50–100"],
+  [Infinity, "> 100"],
+];
+
+/** First band whose upper bound the value is at or below. */
+function band(bands: [number, string][], v: number): [number, string] {
+  const i = bands.findIndex(([hi]) => v <= hi);
+  const idx = i < 0 ? bands.length - 1 : i;
+  return [idx, bands[idx][1]];
+}
+
+/** Group key, order and label of one row under a slice. */
+function groupOf(row: LedgerRow, by: SegmentBy): {
+  key: string;
+  order: number;
+  label: string;
+} {
+  const league = row.league ?? "unknown";
+  const leagueLabel = row.league ? LEAGUE_LABELS[row.league] : "Unknown league";
+  const leagueOrder = row.league ? LEAGUE_ORDER.indexOf(row.league) : 99;
+  const marketOrder = MARKET_ORDER.indexOf(row.market);
+  switch (by) {
+    case "league":
+      return { key: league, order: leagueOrder, label: leagueLabel };
+    case "market":
+      return {
+        key: row.market,
+        order: marketOrder,
+        label: MARKET_LABELS[row.market],
+      };
+    case "leagueMarket":
+      return {
+        key: `${league}:${row.market}`,
+        order: leagueOrder * 10 + marketOrder,
+        label: `${leagueLabel} · ${MARKET_LABELS[row.market]}`,
+      };
+    case "pick": {
+      if (row.market === "correctScore")
+        return { key: "score", order: 3, label: "Score line" };
+      const side = pickSide(row);
+      const order = side === "home" ? 0 : side === "draw" ? 1 : side === "away" ? 2 : 4;
+      const label =
+        side === "home" ? "Home" : side === "draw" ? "Draw" : side === "away" ? "Away" : "Unknown";
+      return { key: side ?? "unknown", order, label };
+    }
+    case "oddsBand": {
+      const [order, label] = band(ODDS_BANDS, row.oddsTaken);
+      return { key: `odds${order}`, order, label };
+    }
+    case "edgeBand": {
+      // Rows saved at the model's own fair odds have no measured edge.
+      if (row.flags?.includes("oddsIsMinOdd"))
+        return { key: "noPrice", order: 99, label: "No book price" };
+      const edge = row.probability * row.oddsTaken - 1;
+      const [order, label] = band(EDGE_BANDS, edge < -1e-9 ? edge : Math.max(0, edge));
+      return { key: `edge${order}`, order, label };
+    }
+    case "eloGap": {
+      const h = row.model?.homeElo;
+      const a = row.model?.awayElo;
+      if (typeof h !== "number" || typeof a !== "number")
+        return { key: "noSnapshot", order: 99, label: "No model snapshot" };
+      const [order, label] = band(ELO_GAP_BANDS, Math.abs(h - a));
+      return { key: `gap${order}`, order, label };
+    }
+  }
+}
+
+export function segments(rows: LedgerRow[], by: SegmentBy): Segments {
+  const groups = new Map<
+    string,
+    { order: number; label: string; rows: LedgerRow[] }
+  >();
+  for (const row of rows) {
+    const g = groupOf(row, by);
+    const existing = groups.get(g.key);
+    if (existing) existing.rows.push(row);
+    else groups.set(g.key, { order: g.order, label: g.label, rows: [row] });
+  }
+  const out: { order: number; row: SegmentRow }[] = [];
+  for (const [key, g] of groups) {
+    const { series: _series, minSample: _min, bankroll: _b, ...rest } =
+      summarize(g.rows);
+    out.push({ order: g.order, row: { key, label: g.label, ...rest } });
+  }
+  out.sort(
+    (a, b) => a.order - b.order || a.row.label.localeCompare(b.row.label)
+  );
+  return { by, minSample: MIN_SAMPLE, rows: out.map((o) => o.row) };
 }
