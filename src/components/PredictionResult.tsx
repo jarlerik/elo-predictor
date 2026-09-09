@@ -1,5 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TEAM_FULL_NAMES } from "../utils/teamData";
+import {
+  BookmakerField,
+  OddsInput,
+  parseOdds,
+  useBookmaker,
+} from "./BookOdds";
 
 export interface Moneyline {
   homeWinProbability: number;
@@ -49,6 +55,23 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
   } | null>(null);
   // Stake in euros applied to the next bet saved from this card.
   const [stake, setStake] = useState<string>("1");
+  // Bookmaker prices typed for each outcome; the bet is saved at these odds.
+  type BookKey = "home" | "draw" | "away" | "mlHome" | "mlAway";
+  const emptyBook: Record<BookKey, string> = {
+    home: "",
+    draw: "",
+    away: "",
+    mlHome: "",
+    mlAway: "",
+  };
+  const [book, setBook] = useState<Record<BookKey, string>>(emptyBook);
+  const setBookOdds = (key: BookKey, value: string) =>
+    setBook((prev) => ({ ...prev, [key]: value }));
+  const [bookmaker, setBookmaker] = useBookmaker();
+  useEffect(() => {
+    setBook(emptyBook);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prediction.homeTeam, prediction.awayTeam]);
 
   // Soccer draws at full time; hockey draws on the 60-minute score (the
   // game goes to OT/SO). Knockout markets can return 0 -> no draw card.
@@ -66,7 +89,8 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
   const saveBet = async (
     teamAbbr: string,
     probability: number,
-    odds: number | undefined,
+    odds: number | null,
+    marketOdds: Record<string, number>,
     market: string,
     label: string,
     setBusy: (busy: boolean) => void
@@ -74,7 +98,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
     if (!odds) {
       setMessage({
         type: "error",
-        text: "Odds not available for this bet",
+        text: `Enter the bookmaker's odds for ${label} before saving`,
       });
       return;
     }
@@ -103,6 +127,8 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
           market,
           stake: stakeValue,
           league: prediction.league,
+          bookmaker: bookmaker || undefined,
+          marketOdds,
           // Snapshot of the model at bet time for the ledger.
           model: {
             probs:
@@ -150,6 +176,18 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
     }
   };
 
+  // Every outcome of the market that has a valid price typed.
+  const filledOdds = (
+    inputs: Record<string, string>
+  ): Record<string, number> => {
+    const out: Record<string, number> = {};
+    for (const [k, v] of Object.entries(inputs)) {
+      const n = parseOdds(v);
+      if (n !== null) out[k] = n;
+    }
+    return out;
+  };
+
   const handleBet = (team: Outcome) => {
     const teamAbbr =
       team === "home"
@@ -163,19 +201,14 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
         : team === "away"
         ? prediction.awayWinProbability
         : prediction.drawProbability;
-    const odds =
-      team === "home"
-        ? prediction.minHomeOdd
-        : team === "away"
-        ? prediction.minAwayOdd
-        : prediction.minDrawOdd;
     const label =
       team === "draw" ? drawLabel : team === "home" ? homeName : awayName;
 
     return saveBet(
       teamAbbr,
       probability,
-      odds,
+      parseOdds(book[team]),
+      filledOdds({ home: book.home, draw: book.draw, away: book.away }),
       prediction.market ?? "fullTime",
       label,
       (busy) => setSaving((prev) => ({ ...prev, [team]: busy }))
@@ -190,7 +223,8 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
       side === "home"
         ? moneyline.homeWinProbability
         : moneyline.awayWinProbability,
-      side === "home" ? moneyline.minHomeOdd : moneyline.minAwayOdd,
+      parseOdds(side === "home" ? book.mlHome : book.mlAway),
+      filledOdds({ home: book.mlHome, away: book.mlAway }),
       "moneyline",
       `${side === "home" ? homeName : awayName} (incl. OT/SO)`,
       (busy) => setSavingMoneyline((prev) => ({ ...prev, [side]: busy }))
@@ -258,7 +292,8 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
           onChange={(e) => setStake(e.target.value)}
           className="stake-input"
         />
-      </label>
+      </label>{" "}
+      <BookmakerField value={bookmaker} onChange={setBookmaker} />
 
       <div className="probabilities">
         <div className="probability-card home-win">
@@ -272,6 +307,11 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
                 Min Odds: {prediction.minHomeOdd.toFixed(2)}
               </div>
             )}
+            <OddsInput
+              value={book.home}
+              onChange={(v) => setBookOdds("home", v)}
+              probability={prediction.homeWinProbability}
+            />
             <div className="bar">
               <div
                 className="bar-fill"
@@ -282,7 +322,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
           <button
             className="bet-button"
             onClick={() => handleBet("home")}
-            disabled={saving.home || !prediction.minHomeOdd}
+            disabled={saving.home || !parseOdds(book.home)}
           >
             {saving.home ? "Saving..." : "Bet on " + (TEAM_FULL_NAMES[prediction.homeTeam] || prediction.homeTeam)}
           </button>
@@ -298,6 +338,11 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
                   Min Odds: {prediction.minDrawOdd.toFixed(2)}
                 </div>
               )}
+              <OddsInput
+                value={book.draw}
+                onChange={(v) => setBookOdds("draw", v)}
+                probability={prediction.drawProbability}
+              />
               <div className="bar">
                 <div
                   className="bar-fill"
@@ -308,7 +353,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
             <button
               className="bet-button"
               onClick={() => handleBet("draw")}
-              disabled={saving.draw || !prediction.minDrawOdd}
+              disabled={saving.draw || !parseOdds(book.draw)}
             >
               {saving.draw ? "Saving..." : `Bet on ${drawLabel}`}
             </button>
@@ -326,6 +371,11 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
                 Min Odds: {prediction.minAwayOdd.toFixed(2)}
               </div>
             )}
+            <OddsInput
+              value={book.away}
+              onChange={(v) => setBookOdds("away", v)}
+              probability={prediction.awayWinProbability}
+            />
             <div className="bar">
               <div
                 className="bar-fill"
@@ -336,7 +386,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
           <button
             className="bet-button"
             onClick={() => handleBet("away")}
-            disabled={saving.away || !prediction.minAwayOdd}
+            disabled={saving.away || !parseOdds(book.away)}
           >
             {saving.away ? "Saving..." : "Bet on " + (TEAM_FULL_NAMES[prediction.awayTeam] || prediction.awayTeam)}
           </button>
@@ -364,10 +414,15 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
                   ? `Min Odds: ${moneyline.minHomeOdd.toFixed(2)}`
                   : ""}
               </span>
+              <OddsInput
+                value={book.mlHome}
+                onChange={(v) => setBookOdds("mlHome", v)}
+                probability={moneyline.homeWinProbability}
+              />
               <button
                 className="bet-button"
                 onClick={() => handleMoneylineBet("home")}
-                disabled={savingMoneyline.home || !moneyline.minHomeOdd}
+                disabled={savingMoneyline.home || !parseOdds(book.mlHome)}
               >
                 {savingMoneyline.home ? "Saving..." : "Bet"}
               </button>
@@ -382,10 +437,15 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
                   ? `Min Odds: ${moneyline.minAwayOdd.toFixed(2)}`
                   : ""}
               </span>
+              <OddsInput
+                value={book.mlAway}
+                onChange={(v) => setBookOdds("mlAway", v)}
+                probability={moneyline.awayWinProbability}
+              />
               <button
                 className="bet-button"
                 onClick={() => handleMoneylineBet("away")}
-                disabled={savingMoneyline.away || !moneyline.minAwayOdd}
+                disabled={savingMoneyline.away || !parseOdds(book.mlAway)}
               >
                 {savingMoneyline.away ? "Saving..." : "Bet"}
               </button>

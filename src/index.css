@@ -334,6 +334,54 @@ body {
   margin-left: auto;
 }
 
+.book-name-input {
+  width: 9rem;
+}
+
+/* Bookmaker odds for one outcome, with the model edge at that price. */
+.book-odds-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.4rem 0;
+  font-size: 0.85rem;
+  color: #a3a3a3;
+}
+
+.book-odds-label {
+  white-space: nowrap;
+}
+
+.book-odds-input {
+  width: 4.5rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #262626;
+  border-radius: 6px;
+  background: #171717;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+
+.book-odds-input:focus {
+  outline: none;
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.book-odds-edge {
+  min-width: 3.5rem;
+  font-weight: 600;
+}
+
+.book-odds-edge.positive {
+  color: #22c55e;
+}
+
+.book-odds-edge.negative {
+  color: #f85149;
+}
+
 @media (max-width: 768px) {
   .probability-card {
     padding: 0.75rem;
@@ -423,7 +471,7 @@ body {
 
 .moneyline-row {
   display: grid;
-  grid-template-columns: 1fr auto auto auto;
+  grid-template-columns: 1fr auto auto auto auto;
   align-items: center;
   gap: 1rem;
 }

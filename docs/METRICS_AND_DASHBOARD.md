@@ -247,6 +247,17 @@ tuned once there is data:
    bankroll fields exist in the row but stay null until steps 2 and 6.
 2. **Market odds at bet time.** Add the other outcomes' odds and the
    bookmaker to the bet forms. This unblocks expected-vs-market and CLV.
+
+   *Done (September 2026).* Every outcome card and score line has a "Book
+   odds" input (`src/components/BookOdds.tsx`) that shows the model edge at
+   that price as soon as it is typed; the bet button stays disabled until
+   the picked outcome has a price. The bet is saved at the typed odds
+   (`oddsTaken`), every price typed for the market goes into `marketOdds`,
+   and the bookmaker name is one shared field remembered in the browser.
+   Score-bet files now keep both `odds` (taken) and `minOdd` (model).
+   Rows saved without a bookmaker price, including all migrated ones, carry
+   the `oddsIsMinOdd` flag so the metrics can exclude them from CLV and
+   market comparisons.
 3. **Summary endpoint + headline tiles + profit chart.** Replaces the four
    lines on the Results page.
 4. **Backtest endpoint + calibration panel.** Independent of bets; the most

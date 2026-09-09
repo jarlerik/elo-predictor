@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { TEAM_FULL_NAMES } from "../utils/teamData";
+import {
+  BookmakerField,
+  OddsInput,
+  parseOdds,
+  useBookmaker,
+} from "./BookOdds";
 
 interface ScoreProbability {
   home: number;
@@ -40,6 +46,9 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
   const [loading, setLoading] = useState(false);
   // Stake in euros placed on each selected score line.
   const [stake, setStake] = useState<string>("1");
+  // Bookmaker price per score line, keyed by score so "Show more" keeps it.
+  const [book, setBook] = useState<Record<string, string>>({});
+  const [bookmaker, setBookmaker] = useBookmaker();
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
@@ -49,6 +58,7 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
   useEffect(() => {
     setDisplayCount(10);
     setCheckedBets(new Array(10).fill(false));
+    setBook({});
   }, [scorePrediction.homeTeam, scorePrediction.awayTeam]);
 
   useEffect(() => {
@@ -94,6 +104,27 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
       return;
     }
 
+    // Every selected line is saved at the bookmaker's price for that score.
+    const missing = checkedScores
+      .filter((s) => parseOdds(book[s.score]) === null)
+      .map((s) => s.score);
+    if (missing.length > 0) {
+      setMessage({
+        type: "error",
+        text: `Enter the bookmaker's odds for ${missing.join(", ")}`,
+      });
+      return;
+    }
+    const marketOdds: Record<string, number> = {};
+    for (const [score, v] of Object.entries(book)) {
+      const n = parseOdds(v);
+      if (n !== null) marketOdds[score] = n;
+    }
+    const lines = checkedScores.map((s) => ({
+      ...s,
+      odds: parseOdds(book[s.score]),
+    }));
+
     setLoading(true);
     setMessage(null);
 
@@ -106,8 +137,10 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
         body: JSON.stringify({
           homeTeam: scorePrediction.homeTeam,
           awayTeam: scorePrediction.awayTeam,
-          scores: checkedScores,
+          scores: lines,
           stake: stakeValue,
+          bookmaker: bookmaker || undefined,
+          marketOdds,
           league: scorePrediction.league ?? scorePrediction.competition,
           // Snapshot of the model at bet time for the ledger.
           model: {
@@ -153,7 +186,15 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
         }}
       >
         <h3>Top 10 Score Value Bets</h3>
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "1rem",
+            flexWrap: "wrap",
+          }}
+        >
+          <BookmakerField value={bookmaker} onChange={setBookmaker} />
           <label className="stake-field">
             <span>Stake per score (€)</span>
             <input
@@ -259,6 +300,13 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
                 {(bet.probability * 100).toFixed(2)}%
               </div>
               <div className="odds">Min Odds: {bet.minOdd.toFixed(2)}</div>
+              <OddsInput
+                value={book[bet.score] ?? ""}
+                onChange={(v) =>
+                  setBook((prev) => ({ ...prev, [bet.score]: v }))
+                }
+                probability={bet.probability}
+              />
               {bet.expectedValue && (
                 <div className="value">
                   Expected Value: {bet.expectedValue.toFixed(2)}

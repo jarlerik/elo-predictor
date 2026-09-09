@@ -472,11 +472,18 @@ router.post("/bets/save", async (req, res) => {
       fs.mkdirSync(betsDir, { recursive: true });
     }
 
-    // Format scores for JSON: score, probability, odds (where odds maps to minOdd)
-    const formattedScores = scores.map((score: any) => ({
+    // One line per score. `odds` is the bookmaker price when the form sent
+    // one, else the model's min odd (older clients), which is flagged in
+    // the ledger; `minOdd` keeps the model's break-even price either way.
+    const takenOdds = scores.map((score: any) => {
+      const n = Number(score.odds);
+      return Number.isFinite(n) && n > 1 ? Math.round(n * 100) / 100 : null;
+    });
+    const formattedScores = scores.map((score: any, i: number) => ({
       score: score.score,
       probability: score.probability,
-      odds: score.minOdd,
+      odds: takenOdds[i] ?? score.minOdd,
+      minOdd: score.minOdd,
       stake: parseStake(score.stake) ?? sharedStake,
     }));
 
@@ -521,8 +528,7 @@ router.post("/bets/save", async (req, res) => {
           model: meta.model,
           bankrollBefore: meta.bankrollBefore,
           kellyDivider: meta.kellyDivider,
-          // The form still saves the model's min odd, not a bookmaker price.
-          flags: meta.marketOdds ? [] : ["oddsIsMinOdd"],
+          flags: takenOdds[i] === null ? ["oddsIsMinOdd"] : [],
         })
       )
     );
@@ -632,6 +638,8 @@ router.post("/bets/save-winner", async (req, res) => {
         model: meta.model,
         bankrollBefore: meta.bankrollBefore,
         kellyDivider: meta.kellyDivider,
+        // Without bookmaker prices the client sent the model's min odd.
+        flags: meta.marketOdds ? [] : ["oddsIsMinOdd"],
       }),
     ]);
 
