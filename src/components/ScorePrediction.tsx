@@ -11,6 +11,9 @@ interface ScoreProbability {
 }
 
 interface ScorePrediction {
+  /** League id (NHL, Liiga, EPL) or soccer competition (ucl, worldcup). */
+  league?: string;
+  competition?: string;
   homeTeam: string;
   awayTeam: string;
   lambdaHome: number;
@@ -105,6 +108,12 @@ const ScorePrediction: React.FC<ScorePredictionProps> = ({
           awayTeam: scorePrediction.awayTeam,
           scores: checkedScores,
           stake: stakeValue,
+          league: scorePrediction.league ?? scorePrediction.competition,
+          // Snapshot of the model at bet time for the ledger.
+          model: {
+            lambdaHome: scorePrediction.lambdaHome,
+            lambdaAway: scorePrediction.lambdaAway,
+          },
         }),
       });
 

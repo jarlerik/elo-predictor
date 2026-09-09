@@ -9,10 +9,14 @@ export interface Moneyline {
 }
 
 export interface Prediction {
+  league?: string;
   homeTeam: string;
   awayTeam: string;
   /** "regulation": hockey 60-minute result; "fullTime": soccer. */
   market?: "regulation" | "fullTime";
+  drawFactor?: number;
+  homeElo?: number;
+  awayElo?: number;
   homeWinProbability: number;
   drawProbability: number;
   awayWinProbability: number;
@@ -98,6 +102,27 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
           odds,
           market,
           stake: stakeValue,
+          league: prediction.league,
+          // Snapshot of the model at bet time for the ledger.
+          model: {
+            probs:
+              market === "moneyline" && moneyline
+                ? {
+                    home: moneyline.homeWinProbability,
+                    draw: 0,
+                    away: moneyline.awayWinProbability,
+                  }
+                : {
+                    home: prediction.homeWinProbability,
+                    draw: prediction.drawProbability,
+                    away: prediction.awayWinProbability,
+                  },
+            homeElo: prediction.homeElo ?? null,
+            awayElo: prediction.awayElo ?? null,
+            drawFactor:
+              market === "moneyline" ? 0 : prediction.drawFactor ?? null,
+            homeAdv: 60,
+          },
         }),
       });
 

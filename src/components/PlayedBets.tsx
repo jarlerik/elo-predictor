@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { TEAM_FULL_NAMES } from "../utils/teamData";
+import {
+  LineStatus,
+  SettleButtons,
+  SettleRestButton,
+  ledgerId,
+  useLedger,
+} from "./ledger";
 
 interface BetFile {
   filename: string;
@@ -36,10 +43,37 @@ const PlayedBets: React.FC = () => {
     type: "success" | "error";
     text: string;
   } | null>(null);
+  const ledger = useLedger();
 
   useEffect(() => {
     fetchBetFiles();
   }, []);
+
+  // Per-line settlement straight into the ledger (loss / void, or all
+  // pending lines of a game lost). Wins go through the return form below.
+  const selectedId = (sel: SelectedBet) =>
+    ledgerId(sel.filename, sel.betIndex);
+  const settleLines = async (ids: string[], result: "loss" | "void") => {
+    setMessage(null);
+    try {
+      await ledger.settle(ids, result);
+      if (selectedBet && ids.includes(selectedId(selectedBet))) {
+        setSelectedBet(null);
+        setReturnValue("");
+      }
+      setMessage({
+        type: "success",
+        text: `${ids.length} line${ids.length === 1 ? "" : "s"} marked ${
+          result === "loss" ? "lost" : "void"
+        }`,
+      });
+    } catch (err) {
+      setMessage({
+        type: "error",
+        text: err instanceof Error ? err.message : "Failed to settle",
+      });
+    }
+  };
 
   const parseDate = (dateStr: string): Date => {
     // Date format: DD.MM.YYYY
@@ -119,6 +153,8 @@ const PlayedBets: React.FC = () => {
     event.stopPropagation(); // Prevent row expansion/collapse
     const betFile = betFiles.find((f) => f.filename === filename);
     if (!betFile) return;
+    // Settled lines cannot be settled again.
+    if (ledger.byId.get(ledgerId(filename, betIndex))?.settledAt) return;
 
     // If clicking the same score, deselect it
     if (
@@ -177,6 +213,7 @@ const PlayedBets: React.FC = () => {
       const gameNameDisplay = selectedBet.filename.replace(".json", "");
       setSelectedBet(null);
       setReturnValue("");
+      await ledger.refresh();
       setMessage({
         type: "success",
         text: `Result added successfully! (${gameNameDisplay})`,
@@ -215,6 +252,15 @@ const PlayedBets: React.FC = () => {
     );
   }
 
+  // Ledger ids of the lines in a bet file that have no settlement yet.
+  const pendingIdsOf = (betFile: BetFile): string[] =>
+    Array.from({ length: betFile.betCount }, (_, i) =>
+      ledgerId(betFile.filename, i)
+    ).filter((id) => {
+      const row = ledger.byId.get(id);
+      return row !== undefined && !row.settledAt;
+    });
+
   // Group bets by date
   const groupedByDate = betFiles.reduce((acc, betFile) => {
     const date = betFile.date;
@@ -238,6 +284,10 @@ const PlayedBets: React.FC = () => {
         <h1>Played Score Bets</h1>
         <p>View all your saved score bet files</p>
       </div>
+
+      {ledger.error && (
+        <p className="error">Ledger: {ledger.error}</p>
+      )}
 
       {message && (
         <div
@@ -290,7 +340,7 @@ const PlayedBets: React.FC = () => {
               fontSize: "1.1rem",
             }}
           >
-            Add result for {getTeamName(selectedBet.betFile.homeTeam)} vs{" "}
+            Won: enter the payout for {getTeamName(selectedBet.betFile.homeTeam)} vs{" "}
             {getTeamName(selectedBet.betFile.awayTeam)}
           </h3>
           <div
@@ -391,7 +441,7 @@ const PlayedBets: React.FC = () => {
                   e.currentTarget.style.backgroundColor = "#f97316";
                 }}
               >
-                Add result
+                Won
               </button>
             </div>
           </div>
@@ -439,6 +489,10 @@ const PlayedBets: React.FC = () => {
                         <span className="bet-date">{betFile.date}</span>
                         <span className="bet-count">
                           {betFile.betCount} bets
+                          <SettleRestButton
+                            pendingIds={pendingIdsOf(betFile)}
+                            onSettle={(ids) => settleLines(ids, "loss")}
+                          />
                         </span>
                       </div>
                       {isExpanded && (
@@ -490,6 +544,22 @@ const PlayedBets: React.FC = () => {
                                 <span className="bet-stake">
                                   {(bet.stake ?? 1).toFixed(2)}€
                                 </span>
+                                <LineStatus
+                                  row={ledger.byId.get(
+                                    ledgerId(betFile.filename, index)
+                                  )}
+                                />
+                                <SettleButtons
+                                  row={ledger.byId.get(
+                                    ledgerId(betFile.filename, index)
+                                  )}
+                                  onSettle={(result) =>
+                                    settleLines(
+                                      [ledgerId(betFile.filename, index)],
+                                      result
+                                    )
+                                  }
+                                />
                               </div>
                             );
                           })}

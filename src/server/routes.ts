@@ -17,8 +17,56 @@ import {
   soccerExpectedGoals,
   SOCCER_BASE_TOTAL,
 } from "../score/soccerGoals";
+import {
+  appendLedger,
+  ensureLedger,
+  inferLeague,
+  isLedgerLeague,
+  LedgerLeague,
+  LedgerMarket,
+  LedgerRow,
+  ModelSnapshot,
+  newRow,
+  round2,
+  settleRows,
+} from "../data/ledger";
 
 const router = express.Router();
+
+// Optional bet metadata shared by both save endpoints. Everything here is
+// nullable: the bet forms send what they have and the ledger keeps the gaps.
+function betMeta(body: any, home: string, away: string) {
+  const league: LedgerLeague | null = isLedgerLeague(body.league)
+    ? body.league
+    : inferLeague(home, away);
+  const bookmaker =
+    typeof body.bookmaker === "string" && body.bookmaker.trim()
+      ? body.bookmaker.trim()
+      : null;
+  let marketOdds: Record<string, number> | null = null;
+  if (body.marketOdds && typeof body.marketOdds === "object") {
+    marketOdds = {};
+    for (const [k, v] of Object.entries(body.marketOdds)) {
+      const n = Number(v);
+      if (Number.isFinite(n) && n > 1) marketOdds[k] = n;
+    }
+    if (Object.keys(marketOdds).length === 0) marketOdds = null;
+  }
+  const model: ModelSnapshot | null =
+    body.model && typeof body.model === "object" ? body.model : null;
+  const numOrNull = (v: unknown) => {
+    const n = Number(v);
+    return v !== undefined && v !== null && Number.isFinite(n) ? n : null;
+  };
+  return {
+    league,
+    bookmaker,
+    marketOdds,
+    model,
+    bankrollBefore: numOrNull(body.bankrollBefore),
+    kellyDivider: numOrNull(body.kellyDivider),
+  };
+}
 
 // Stake in euros for a bet entry. Bets saved before stakes were tracked have
 // no stake field and are counted as 1€ each.
@@ -33,11 +81,6 @@ function parseStake(value: unknown): number | null {
     return null;
   }
   return Math.round(n * 100) / 100;
-}
-
-function betStake(bet: any): number {
-  const n = Number(bet?.stake);
-  return Number.isFinite(n) && n > 0 ? n : DEFAULT_STAKE;
 }
 
 // Game-history leagues (NHL, Liiga, Premier League) share the endpoints
@@ -437,9 +480,52 @@ router.post("/bets/save", async (req, res) => {
       stake: parseStake(score.stake) ?? sharedStake,
     }));
 
-    // Write JSON file
+    // Lines saved earlier today for the same game stay in the file; new
+    // lines are appended so ledger ids (file stem + index) stay unique.
     const filePath = path.join(betsDir, filename);
-    fs.writeFileSync(filePath, JSON.stringify(formattedScores, null, 2));
+    let existing: any[] = [];
+    if (fs.existsSync(filePath)) {
+      try {
+        const parsed = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+        if (Array.isArray(parsed)) existing = parsed;
+      } catch (e) {
+        console.error("Failed to read score bet file, starting new:", e);
+      }
+    }
+    fs.writeFileSync(
+      filePath,
+      JSON.stringify([...existing, ...formattedScores], null, 2)
+    );
+
+    const meta = betMeta(req.body, homeTeam, awayTeam);
+    const placedAt = now.toISOString();
+    const key = `${homeTeam}__${awayTeam}_${dateStr}`;
+    ensureLedger();
+    appendLedger(
+      formattedScores.map((line: any, i: number) =>
+        newRow({
+          fileStem: key,
+          index: existing.length + i,
+          key,
+          home: homeTeam,
+          away: awayTeam,
+          placedAt,
+          league: meta.league,
+          market: "correctScore",
+          pick: String(line.score),
+          stake: line.stake,
+          oddsTaken: Number(line.odds),
+          probability: Number(line.probability),
+          bookmaker: meta.bookmaker,
+          marketOdds: meta.marketOdds,
+          model: meta.model,
+          bankrollBefore: meta.bankrollBefore,
+          kellyDivider: meta.kellyDivider,
+          // The form still saves the model's min odd, not a bookmaker price.
+          flags: meta.marketOdds ? [] : ["oddsIsMinOdd"],
+        })
+      )
+    );
 
     res.json({ success: true, filename });
   } catch (e) {
@@ -514,10 +600,40 @@ router.post("/bets/save-winner", async (req, res) => {
       timestamp: new Date().toISOString(),
     };
 
+    const index = winnerBets.length;
     winnerBets.push(newBet);
 
     // Write JSON file
     fs.writeFileSync(filePath, JSON.stringify(winnerBets, null, 2));
+
+    const meta = betMeta(req.body, homeTeam, awayTeam);
+    const key = `${homeTeam}__${awayTeam}_${dateStr}`;
+    const ledgerMarket: LedgerMarket =
+      market === "regulation" || market === "moneyline"
+        ? market
+        : "fullTime";
+    ensureLedger();
+    appendLedger([
+      newRow({
+        fileStem: `${key}_winner`,
+        index,
+        key,
+        home: homeTeam,
+        away: awayTeam,
+        placedAt: newBet.timestamp,
+        league: meta.league,
+        market: ledgerMarket,
+        pick: String(team),
+        stake: stakeValue,
+        oddsTaken: Number(odds),
+        probability: Number(probability),
+        bookmaker: meta.bookmaker,
+        marketOdds: meta.marketOdds,
+        model: meta.model,
+        bankrollBefore: meta.bankrollBefore,
+        kellyDivider: meta.kellyDivider,
+      }),
+    ]);
 
     res.json({ success: true, filename, bet: newBet });
   } catch (e) {
@@ -592,64 +708,25 @@ router.get("/bets/list", async (req, res) => {
 
 router.get("/bets/total", async (req, res) => {
   try {
-    const betsDir = path.join(process.cwd(), "data", "bets");
-
-    if (!fs.existsSync(betsDir)) {
-      return res.json({ total: 0 });
-    }
-
-    const files = fs.readdirSync(betsDir);
-    const jsonFiles = files.filter((file) => file.endsWith(".json"));
-
-    // A bet is settled once its game has any entry in results.json. Losing
-    // lines are not recorded there, so settlement is per game, not per line.
-    // Result game keys are the bet filename minus ".json" / "_winner.json".
-    const settledGames = new Set<string>();
-    const resultsPath = path.join(process.cwd(), "data", "results.json");
-    if (fs.existsSync(resultsPath)) {
-      try {
-        const results = JSON.parse(fs.readFileSync(resultsPath, "utf-8"));
-        if (Array.isArray(results)) {
-          for (const r of results) {
-            if (typeof r?.game === "string") settledGames.add(r.game);
-          }
-        }
-      } catch (e) {
-        console.error("Failed to read results file:", e);
-      }
-    }
-
-    // Stakes in euros, split by whether the game has a result yet.
+    // Stakes in euros from the ledger, split by whether the line is settled.
     let settledStake = 0;
     let settledCount = 0;
     let pendingStake = 0;
     let pendingCount = 0;
-    for (const filename of jsonFiles) {
-      try {
-        const filePath = path.join(betsDir, filename);
-        const fileContent = fs.readFileSync(filePath, "utf-8");
-        const bets = JSON.parse(fileContent);
-        if (!Array.isArray(bets)) continue;
-        const game = filename.replace(/(_winner)?\.json$/, "");
-        const settled = settledGames.has(game);
-        for (const bet of bets) {
-          if (settled) {
-            settledStake += betStake(bet);
-            settledCount += 1;
-          } else {
-            pendingStake += betStake(bet);
-            pendingCount += 1;
-          }
-        }
-      } catch (e) {
-        console.error(`Failed to read bet file ${filename}:`, e);
+    for (const row of ensureLedger()) {
+      if (row.settledAt) {
+        settledStake += row.stake;
+        settledCount += 1;
+      } else {
+        pendingStake += row.stake;
+        pendingCount += 1;
       }
     }
 
     res.json({
-      total: Math.round(settledStake * 100) / 100,
+      total: round2(settledStake),
       count: settledCount,
-      pending: Math.round(pendingStake * 100) / 100,
+      pending: round2(pendingStake),
       pendingCount,
     });
   } catch (e) {
@@ -740,106 +817,136 @@ router.get("/bets/:filename", async (req, res) => {
   }
 });
 
+// Settled ledger lines in the shape the Results page has always used, plus
+// the ledger id, stake and result so the page can grow into the dashboard.
 router.get("/results", async (req, res) => {
   try {
-    const resultsDir = path.join(process.cwd(), "data");
-    const resultsPath = path.join(resultsDir, "results.json");
-
-    if (!fs.existsSync(resultsPath)) {
-      return res.json([]);
-    }
-
-    const fileContent = fs.readFileSync(resultsPath, "utf-8");
-    const results = JSON.parse(fileContent);
-
-    if (!Array.isArray(results)) {
-      return res.json([]);
-    }
-
-    res.json(results);
+    const rows = ensureLedger()
+      .filter((r) => r.settledAt)
+      .map((r) => ({
+        id: r.id,
+        game: r.game.key,
+        ...(r.market === "correctScore" ? { score: r.pick } : { team: r.pick }),
+        market: r.market,
+        league: r.league,
+        probability: r.probability,
+        odds: r.oddsTaken,
+        stake: r.stake,
+        result: r.result,
+        return: r.return ?? 0,
+        settledAt: r.settledAt,
+      }));
+    res.json(rows);
   } catch (e) {
     console.error("failed to fetch results", e);
     res.status(500).json({ error: "failed to fetch results" });
   }
 });
 
+// Legacy settlement call from the Played Bets pages: game key + pick +
+// return. Settles the matching unsettled ledger line (win when the return
+// is positive, otherwise loss).
 router.post("/results/add", async (req, res) => {
   try {
-    const {
-      game,
-      score,
-      team,
-      probability,
-      odds,
-      return: returnValue,
-    } = req.body;
-
-    // Validate: either score (for score bets) or team (for winner bets) must be provided
-    if (
-      !game ||
-      (!score && !team) ||
-      probability === undefined ||
-      odds === undefined ||
-      returnValue === undefined
-    ) {
+    const { game, score, team, odds, return: returnValue } = req.body;
+    if (!game || (!score && !team) || returnValue === undefined) {
       return res.status(400).json({
-        error:
-          "please provide game, score or team, probability, odds, and return",
+        error: "please provide game, score or team, and return",
       });
     }
-
-    const resultsDir = path.join(process.cwd(), "data");
-    const resultsPath = path.join(resultsDir, "results.json");
-
-    // Read existing results or initialize empty array
-    let results: any[] = [];
-    if (fs.existsSync(resultsPath)) {
-      try {
-        const fileContent = fs.readFileSync(resultsPath, "utf-8");
-        results = JSON.parse(fileContent);
-        if (!Array.isArray(results)) {
-          results = [];
-        }
-      } catch (e) {
-        console.error(
-          "Failed to read results file, initializing new array:",
-          e
-        );
-        results = [];
-      }
-    } else {
-      // Create data directory if it doesn't exist
-      if (!fs.existsSync(resultsDir)) {
-        fs.mkdirSync(resultsDir, { recursive: true });
-      }
+    const payout = Number(returnValue);
+    if (!Number.isFinite(payout) || payout < 0) {
+      return res.status(400).json({ error: "return must be a number >= 0" });
     }
-
-    // Create new result item
-    const newResult: any = {
-      game,
-      probability,
-      odds,
-      return: returnValue,
-    };
-
-    // Add score for score bets or team for winner bets
-    if (score) {
-      newResult.score = score;
+    const pick = String(score ?? team);
+    const candidates = ensureLedger().filter(
+      (r) => r.game.key === game && r.pick === pick && !r.settledAt
+    );
+    if (candidates.length === 0) {
+      return res
+        .status(404)
+        .json({ error: `no unsettled bet line for ${game} / ${pick}` });
     }
-    if (team) {
-      newResult.team = team;
-    }
-
-    // Append to array
-    results.push(newResult);
-
-    // Write back to file
-    fs.writeFileSync(resultsPath, JSON.stringify(results, null, 2));
-
-    res.json({ success: true, result: newResult });
+    const oddsNum = Number(odds);
+    const target =
+      candidates.find((r) => r.oddsTaken === oddsNum) ?? candidates[0];
+    const [updated] = settleRows([target.id], {
+      result: payout > 0 ? "win" : "loss",
+      return: payout,
+    });
+    res.json({ success: true, result: updated });
   } catch (e) {
     console.error("failed to save result", e);
     res.status(500).json({ error: "failed to save result" });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Ledger: every bet line with its settlement state. See docs/METRICS_AND_DASHBOARD.md.
+// ---------------------------------------------------------------------------
+
+router.get("/ledger", async (req, res) => {
+  try {
+    let rows: LedgerRow[] = ensureLedger();
+    const game = req.query.game;
+    if (typeof game === "string" && game) {
+      rows = rows.filter((r) => r.game.key === game);
+    }
+    if (req.query.pending === "true") rows = rows.filter((r) => !r.settledAt);
+    res.json(rows);
+  } catch (e) {
+    console.error("failed to read ledger", e);
+    res.status(500).json({ error: "failed to read ledger" });
+  }
+});
+
+// Settle one or more lines: { id | ids, result: win|loss|void, return?,
+// finalScore?, decidedInOTorSO? }. A win needs a return; loss pays 0 and
+// void pays the stake back.
+router.post("/ledger/settle", async (req, res) => {
+  try {
+    const { id, ids, result, finalScore, decidedInOTorSO } = req.body;
+    const targets: string[] = Array.isArray(ids)
+      ? ids.filter((x) => typeof x === "string")
+      : typeof id === "string"
+      ? [id]
+      : [];
+    if (targets.length === 0) {
+      return res.status(400).json({ error: "please provide id or ids" });
+    }
+    if (result !== "win" && result !== "loss" && result !== "void") {
+      return res
+        .status(400)
+        .json({ error: "result must be win, loss or void" });
+    }
+    let payout: number | null = null;
+    if (result === "win") {
+      payout = Number(req.body.return);
+      if (!Number.isFinite(payout) || payout <= 0) {
+        return res
+          .status(400)
+          .json({ error: "a win needs a return greater than 0" });
+      }
+      if (targets.length > 1) {
+        return res
+          .status(400)
+          .json({ error: "settle wins one line at a time" });
+      }
+    }
+    const updated = settleRows(targets, {
+      result,
+      return: payout,
+      finalScore: typeof finalScore === "string" ? finalScore : null,
+      decidedInOTorSO:
+        typeof decidedInOTorSO === "boolean" ? decidedInOTorSO : null,
+    });
+    if (updated.length === 0) {
+      return res.status(404).json({ error: "no ledger line with that id" });
+    }
+    res.json({ success: true, rows: updated });
+  } catch (e) {
+    console.error("failed to settle", e);
+    res.status(500).json({ error: "failed to settle" });
   }
 });
 

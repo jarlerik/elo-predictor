@@ -219,7 +219,21 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
           team,
           probability,
           odds,
+          market: "fullTime",
           stake: stakeValue,
+          league: competition,
+          // Snapshot of the model at bet time for the ledger.
+          model: {
+            probs: {
+              home: prediction.homeWinProbability,
+              draw: prediction.drawProbability,
+              away: prediction.awayWinProbability,
+            },
+            homeElo: prediction.homeElo,
+            awayElo: prediction.awayElo,
+            drawFactor: prediction.drawFactor,
+            homeAdv: prediction.homeAdv,
+          },
         }),
       });
       if (!res.ok) {

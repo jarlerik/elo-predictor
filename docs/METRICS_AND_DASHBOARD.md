@@ -232,6 +232,19 @@ tuned once there is data:
    two save endpoints, migrate the existing bet files and `results.json`
    into it with a one-off script (missing fields stay null). Settlement UI
    writes result and return per line.
+
+   *Done (September 2026).* `src/data/ledger.ts` owns the row type and file
+   access; `npm run migrate:ledger` imports the bet files and `results.json`
+   (also runs by itself the first time the server needs a ledger that does
+   not exist). `GET /api/ledger` lists lines, `POST /api/ledger/settle`
+   settles one or many (win with return, loss, void). The Played Bets pages
+   show each line's status with Lost / Void buttons and a "pending → lost"
+   button per game; the return form settles a win. `/api/bets/total` and
+   `/api/results` now read the ledger, so `data/results.json` is no longer
+   written and stays only as the migration source. Bet forms send the
+   league and a model snapshot (1X2 probabilities, Elos, draw factor, or
+   Poisson means for score lines); bookmaker, market odds, closing odds and
+   bankroll fields exist in the row but stay null until steps 2 and 6.
 2. **Market odds at bet time.** Add the other outcomes' odds and the
    bookmaker to the bet forms. This unblocks expected-vs-market and CLV.
 3. **Summary endpoint + headline tiles + profit chart.** Replaces the four
