@@ -967,6 +967,260 @@
   fill: #22c55e;
 }
 
+/* Dashboard: model calibration (backtest) */
+.panel-note {
+  color: #a3a3a3;
+  font-size: 0.85rem;
+  margin: -0.25rem 0 0.75rem;
+  max-width: 70ch;
+}
+
+.calibration-heading {
+  margin-top: 2rem;
+}
+
+.calibration-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.calibration-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.calibration-title {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+  color: #ffffff;
+}
+
+.calibration-meta {
+  color: #a3a3a3;
+  font-size: 0.8rem;
+}
+
+.calibration-controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.calibration-controls .kelly-select {
+  flex: 0 0 auto;
+  width: auto;
+  min-height: 36px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.calibration-body {
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.calibration-chart-wrap {
+  min-width: 0;
+}
+
+.calibration-caption {
+  color: #a3a3a3;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  margin-top: 0.25rem;
+}
+
+.calibration-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.calibration-chart .grid {
+  stroke: #333333;
+  stroke-width: 1;
+}
+
+.calibration-chart .tick {
+  fill: #a3a3a3;
+  font-size: 10px;
+}
+
+.calibration-chart .diagonal {
+  stroke: #737373;
+  stroke-dasharray: 4 4;
+}
+
+.calibration-chart .line {
+  fill: none;
+  stroke: #60a5fa;
+  stroke-width: 1.5;
+}
+
+.calibration-chart .dot {
+  fill: #60a5fa;
+}
+
+.calibration-chart .bar {
+  fill: rgba(96, 165, 250, 0.35);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 0.6rem;
+}
+
+.stat {
+  background: #1f1f1f;
+  border: 1px solid #171717;
+  border-radius: 6px;
+  padding: 0.6rem 0.75rem;
+  min-width: 0;
+}
+
+.stat.muted {
+  opacity: 0.55;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  color: #a3a3a3;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.stat-value.up {
+  color: #22c55e;
+}
+
+.stat-value.down {
+  color: #f85149;
+}
+
+.stat-vs {
+  color: #737373;
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
+.stat-sub {
+  margin-top: 0.2rem;
+  font-size: 0.75rem;
+  color: #a3a3a3;
+  line-height: 1.35;
+}
+
+.season-table-wrap {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.season-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.season-table th,
+.season-table td {
+  padding: 0.4rem 0.6rem;
+  text-align: right;
+  border-bottom: 1px solid #333333;
+}
+
+.season-table th:first-child,
+.season-table td:first-child {
+  text-align: left;
+}
+
+.season-table th {
+  color: #a3a3a3;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.7rem;
+}
+
+.season-table td.up {
+  color: #22c55e;
+}
+
+.season-table td.down {
+  color: #f85149;
+}
+
+.season-table tr.total td {
+  font-weight: 600;
+  color: #ffffff;
+  border-top: 1px solid #737373;
+}
+
+.rolling-legend {
+  margin-top: 0.5rem;
+}
+
+.swatch.model {
+  background: #60a5fa;
+}
+
+.swatch.baseline {
+  background: #737373;
+}
+
+.rolling-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.rolling-chart .grid {
+  stroke: #333333;
+  stroke-width: 1;
+}
+
+.rolling-chart .tick {
+  fill: #a3a3a3;
+  font-size: 11px;
+}
+
+.rolling-chart .line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.rolling-chart .line.model {
+  stroke: #60a5fa;
+}
+
+.rolling-chart .line.baseline {
+  stroke: #737373;
+  stroke-dasharray: 5 4;
+}
+
+@media (max-width: 900px) {
+  .calibration-body {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 768px) {
   .results-table {
     grid-template-columns: 1fr;

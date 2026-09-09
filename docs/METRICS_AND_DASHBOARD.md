@@ -276,6 +276,27 @@ tuned once there is data:
    the old totals.
 4. **Backtest endpoint + calibration panel.** Independent of bets; the most
    informative panel on day one because it has thousands of games behind it.
+
+   *Done (September 2026).* `GET /api/metrics/model?league=nhl|liiga|epl`
+   (`src/data/backtest.ts`) replays the league's history in the same Elo
+   walk that produces the live ratings (`computeElosFromGames` now takes an
+   `onGame` hook that sees both ratings before each game) and scores, per
+   game, the 1X2 probabilities, the hockey moneyline and the correct score
+   from the recent-form Poisson layer. It returns Brier and log loss against
+   the "always the league's outcome frequencies" baseline, ten calibration
+   buckets (pooled and per outcome), predicted vs observed draw, home and
+   away rates, correct-score log loss against a constant Poisson at the
+   league's mean goals, the top-score hit rate, all of that per season, and
+   a rolling 100-game Brier series. The result is cached with the league's
+   Elo state, so it is recomputed on the same 6-hour refresh. Skill vs
+   market stays null until odds are stored for played games (step 7). The
+   Dashboard has a **Model calibration** panel with one card per league:
+   calibration chart (predicted vs observed with bucket sizes as bars,
+   season and outcome selectors), the scores against their baselines, a
+   per-season table and the rolling Brier chart. First run over two seasons:
+   the EPL and Liiga 1X2 models beat the baseline clearly, the NHL model only
+   just; the Poisson score layer is worse than a constant Poisson in every
+   league, and the NHL home-win rate is over-predicted by two points.
 5. **Segments table.**
 6. **Bankroll + staking panel**, and Kelly stake shown on the bet forms.
 7. **Prediction log and closing odds.** Lowest effort per step but needs the

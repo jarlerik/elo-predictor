@@ -31,6 +31,7 @@ import {
   settleRows,
 } from "../data/ledger";
 import { summarize } from "../data/metrics";
+import { backtestFor } from "../data/backtest";
 
 const router = express.Router();
 
@@ -970,6 +971,24 @@ router.get("/metrics/summary", async (req, res) => {
   } catch (e) {
     console.error("failed to compute summary", e);
     res.status(500).json({ error: "failed to compute summary" });
+  }
+});
+
+/**
+ * Model quality on the league's full game history (section A of the plan):
+ * Brier and log loss against the league-average baseline, calibration
+ * buckets, draw and home-advantage checks, per season and rolling. Cached
+ * with the league's Elo state, so it is recomputed on the same 6h refresh.
+ */
+router.get("/metrics/model", async (req, res) => {
+  const league = leagueFrom(req);
+  if (!league) return res.status(400).json({ error: "unknown league" });
+  try {
+    const state = await ensureLeague(league);
+    res.json(backtestFor(league, state));
+  } catch (e) {
+    console.error(`failed to backtest ${league}`, e);
+    res.status(500).json({ error: "failed to backtest" });
   }
 });
 

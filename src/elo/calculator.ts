@@ -11,6 +11,12 @@ export interface EloOptions {
   homeAdv?: number;
   /** Starting rating per abbreviation (e.g. an external seed); others start at 1500. */
   initialElos?: Record<string, number>;
+  /**
+   * Called for every game with both teams' ratings as they stand before the
+   * game is applied. Lets a backtest score predictions in the same walk that
+   * produces the live ratings.
+   */
+  onGame?: (game: GameRecord, homeElo: number, awayElo: number) => void;
 }
 
 function marginMultiplier(goalDiff: number, eloDiff: number): number {
@@ -53,6 +59,7 @@ export function computeElosFromGames(
 
     const homeElo = elos.get(g.homeAbbr)!;
     const awayElo = elos.get(g.awayAbbr)!;
+    options.onGame?.(g, homeElo, awayElo);
 
     const homeRating = homeElo + homeAdv;
     const awayRating = awayElo;

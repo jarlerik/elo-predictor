@@ -1,10 +1,11 @@
 import React from "react";
 import { HeadlineTiles, ProfitChart, useSummary } from "./metrics";
+import { CalibrationPanel } from "./Calibration";
 
 /**
- * Betting dashboard (docs/METRICS_AND_DASHBOARD.md). Step 3: headline
- * tiles and the cumulative profit chart. Calibration, segments, staking and
- * open positions follow in later steps.
+ * Betting dashboard (docs/METRICS_AND_DASHBOARD.md). Headline tiles and the
+ * cumulative profit chart (step 3), model calibration per league (step 4).
+ * Segments, staking and open positions follow in later steps.
  */
 const Dashboard: React.FC = () => {
   const { summary, error } = useSummary();
@@ -29,6 +30,13 @@ const Dashboard: React.FC = () => {
           <ProfitChart series={summary.series} />
         </>
       )}
+      <h2 className="panel-title calibration-heading">Model calibration</h2>
+      <p className="panel-note">
+        Backtest over every played game in the history: the probabilities the
+        model would have shown before each game, scored against what
+        happened. Independent of the bets.
+      </p>
+      <CalibrationPanel />
     </div>
   );
 };
