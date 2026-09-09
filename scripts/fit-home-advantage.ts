@@ -9,13 +9,8 @@
  *
  * The chosen values live in LEAGUES[id].homeAdv (src/utils/leagues.ts).
  */
-import { ensureLeague } from "../src/data/leagueData";
+import { drawFactorFor, ensureLeague } from "../src/data/leagueData";
 import { computeElosFromGames } from "../src/elo/calculator";
-import {
-  fitDrawFactor,
-  isRegulationDraw,
-  SOCCER_DRAW_FACTOR,
-} from "../src/elo/probabilities";
 import { backtestLeague } from "../src/data/backtest";
 import { LEAGUE_IDS, LEAGUES, LeagueId, isLeagueId } from "../src/utils/leagues";
 
@@ -41,10 +36,7 @@ for (const league of leagues) {
       currentTeams: state.currentTeams,
       homeAdv,
     });
-    const drawFactor =
-      LEAGUES[league].sport === "soccer"
-        ? SOCCER_DRAW_FACTOR
-        : fitDrawFactor(state.games, elos, isRegulationDraw, { homeAdv });
+    const drawFactor = drawFactorFor(league, state.games, state.currentTeams, homeAdv);
     const o = backtestLeague(league, { ...state, elos, drawFactor, homeAdv }, homeAdv)
       .overall;
     scores.push({ homeAdv, logLoss: o.logLoss });

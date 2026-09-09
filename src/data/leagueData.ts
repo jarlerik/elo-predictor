@@ -6,7 +6,9 @@ import { fetchLiigaData } from "./liigaFetcher";
 import { fetchEplData } from "./eplFetcher";
 import { computeElosFromGames } from "../elo/calculator";
 import {
-  fitDrawFactor,
+  fitDrawFactorFromHistory,
+  HOCKEY_DRAW_FACTOR,
+  isFullTimeDraw,
   isRegulationDraw,
   SOCCER_DRAW_FACTOR,
 } from "../elo/probabilities";
@@ -30,14 +32,28 @@ export interface LeagueState extends LeagueData {
   loadedAt: number;
 }
 
-function drawFactorFor(
+/**
+ * Davidson draw factor fitted from the league's own games, using the
+ * ratings as they stood before each game: full-time draws for soccer,
+ * games that went to OT/SO for hockey. Falls back to the sport constant
+ * with too little history.
+ */
+export function drawFactorFor(
   league: LeagueId,
   games: GameRecord[],
-  elos: TeamElo[],
+  currentTeams: Set<string>,
   homeAdv: number
 ): number {
-  if (LEAGUES[league].sport === "soccer") return SOCCER_DRAW_FACTOR;
-  return fitDrawFactor(games, elos, isRegulationDraw, { homeAdv });
+  const soccer = LEAGUES[league].sport === "soccer";
+  return fitDrawFactorFromHistory(
+    games,
+    soccer ? isFullTimeDraw : isRegulationDraw,
+    {
+      homeAdv,
+      currentTeams,
+      fallback: soccer ? SOCCER_DRAW_FACTOR : HOCKEY_DRAW_FACTOR,
+    }
+  );
 }
 
 async function loadLeagueData(league: LeagueId): Promise<LeagueData> {
@@ -77,7 +93,12 @@ export async function ensureLeague(league: LeagueId): Promise<LeagueState> {
         currentTeams: data.currentTeams,
         homeAdv,
       });
-      const drawFactor = drawFactorFor(league, data.games, elos, homeAdv);
+      const drawFactor = drawFactorFor(
+        league,
+        data.games,
+        data.currentTeams,
+        homeAdv
+      );
       const state: LeagueState = {
         ...data,
         elos,

@@ -48,7 +48,7 @@ correct-score probabilities. This is a backtest; it needs no bets.
 | Brier score (1X2)         | mean over games of Σ (p_outcome − actual)²                                          | Headline accuracy; compare against the "always league average" baseline          |
 | Log loss (1X2)            | −mean log p(actual outcome)                                                         | Punishes confident misses; the score Kelly growth actually depends on             |
 | Calibration table         | bucket predictions by p (0–10 %, 10–20 %, …); show predicted vs observed frequency | Shows *where* the model is over/under confident (e.g. draws, heavy favourites)    |
-| Draw rate: model vs actual| mean predicted draw prob vs share of games drawn                                    | Validates `SOCCER_DRAW_FACTOR` and the fitted hockey factor                       |
+| Draw rate: model vs actual| mean predicted draw prob vs share of games drawn                                    | Validates the fitted draw factor; the seeded soccer competitions use a constant   |
 | Home advantage check      | mean predicted home-win prob vs observed home-win rate                              | Validates `HOME_ADV` = 60 per league; Liiga and EPL likely differ                 |
 | Correct-score log loss    | −mean log p(actual score)                                                           | Scores the Poisson layer separately from Elo                                      |
 | Skill vs market (when odds stored) | model Brier − de-vigged bookmaker Brier                                     | Negative = model is sharper than the book on that segment. This is the edge test  |
@@ -305,9 +305,19 @@ tuned once there is data:
    equal to the observed 42.4%. Liiga's optimum is the existing 60. EPL
    set to 40: on a 5-point grid the log loss is flat from 35 to 55 (1.0301
    at 45 against 1.0308 at 60), and 40 is the tied value nearest the
-   observed home-win rate (43.1% predicted against 41.6%). The EPL draw
-   rate is still under-predicted by four points, which is the soccer draw
-   factor, not the home advantage.
+   observed home-win rate (43.1% predicted against 41.6%).
+
+   *Follow-up (September 2026), draw factor.* The draw factor is now fitted
+   for every league with a game history, soccer included (full-time draws),
+   and the fit uses the ratings as they stood before each game rather than
+   today's ratings, so the backtest's predicted draw rate equals the
+   observed one by construction. EPL: 0.75 instead of the fixed 0.60
+   (draws were under-predicted by four points; log loss 1.0257 against
+   1.0302). The hockey factors move a little with the more accurate fit:
+   NHL 0.61 (was 0.64), Liiga 0.59 (was 0.63). With the fitted factor the
+   EPL home advantage is set to 45, where the log loss is lowest and the
+   predicted home-win rate matches the observed 41.6%. World Cup and
+   Champions League keep the 0.60 constant, having no comparable history.
 5. **Segments table.**
 
    *Done (September 2026).* `GET /api/metrics/segments?by=` slices the

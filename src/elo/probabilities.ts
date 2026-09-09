@@ -1,4 +1,5 @@
 import { GameRecord, TeamElo } from "../utils/types";
+import { computeElosFromGames } from "./calculator";
 
 /**
  * Draw factor (ν) for the Davidson tie model.
@@ -13,10 +14,12 @@ import { GameRecord, TeamElo } from "../utils/types";
  *
  * Hockey has no draws once OT/SO is included, but the common 1X2 market is
  * settled on the 60-minute score, where a game tied after regulation is a
- * draw. Roughly a quarter of NHL / Liiga regular-season games go to OT/SO;
- * the exact factor is fitted from each league's game history with
- * `fitDrawFactor`, and HOCKEY_DRAW_FACTOR is only the fallback when there
- * is no history to fit against.
+ * draw. Roughly a quarter of NHL / Liiga regular-season games go to OT/SO.
+ *
+ * Leagues with a game history (NHL, Liiga, EPL) fit the factor from their
+ * own games with `fitDrawFactor`; the constants are the fallbacks when
+ * there is no history to fit against and the values for the seeded
+ * competitions (World Cup, Champions League).
  */
 export const NO_DRAW = 0;
 export const SOCCER_DRAW_FACTOR = 0.6;
@@ -25,13 +28,17 @@ export const HOCKEY_DRAW_FACTOR = 0.6;
 /** Regulation-time draw: the game needed OT or a shootout. */
 export const isRegulationDraw = (g: GameRecord) => g.decidedInOTorSO;
 
+/** Full-time draw (soccer). */
+export const isFullTimeDraw = (g: GameRecord) => g.homeGoals === g.awayGoals;
+
 /**
  * Fit the Davidson draw factor so that the model's expected number of draws
- * over the played games equals the number actually observed. Uses the
- * current ratings as an approximation of the ratings at the time of each
- * game, which is good enough for a single scalar.
+ * over the played games equals the number actually observed.
  *
- * Returns `fallback` when there are too few games to fit.
+ * `fitDrawFactor` approximates the ratings at the time of each game with
+ * the current ones; `fitDrawFactorFromHistory` walks the games and uses
+ * the ratings as they stood before each game, which is what the backtest
+ * and the live model see. Both return `fallback` with too few games.
  */
 export function fitDrawFactor(
   games: GameRecord[],
@@ -40,9 +47,6 @@ export function fitDrawFactor(
   options: { homeAdv?: number; fallback?: number; minGames?: number } = {}
 ): number {
   const homeAdv = options.homeAdv ?? 60;
-  const fallback = options.fallback ?? HOCKEY_DRAW_FACTOR;
-  const minGames = options.minGames ?? 50;
-
   const rating = new Map(elos.map((t) => [t.abbr, t.elo]));
   const diffs: number[] = [];
   let observed = 0;
@@ -53,6 +57,41 @@ export function fitDrawFactor(
     diffs.push(h + homeAdv - a);
     if (isDraw(g)) observed++;
   }
+  return fitDrawFactorToDiffs(diffs, observed, options);
+}
+
+export function fitDrawFactorFromHistory(
+  games: GameRecord[],
+  isDraw: (g: GameRecord) => boolean,
+  options: {
+    homeAdv?: number;
+    fallback?: number;
+    minGames?: number;
+    currentTeams?: Set<string>;
+  } = {}
+): number {
+  const homeAdv = options.homeAdv ?? 60;
+  const diffs: number[] = [];
+  let observed = 0;
+  computeElosFromGames(games, {
+    currentTeams: options.currentTeams ?? new Set(),
+    homeAdv,
+    onGame: (g, homeElo, awayElo) => {
+      diffs.push(homeElo + homeAdv - awayElo);
+      if (isDraw(g)) observed++;
+    },
+  });
+  return fitDrawFactorToDiffs(diffs, observed, options);
+}
+
+/** Bisection on ν: expected draws over the rating gaps is monotonic in ν. */
+function fitDrawFactorToDiffs(
+  diffs: number[],
+  observed: number,
+  options: { fallback?: number; minGames?: number }
+): number {
+  const fallback = options.fallback ?? HOCKEY_DRAW_FACTOR;
+  const minGames = options.minGames ?? 50;
   if (diffs.length < minGames || observed === 0) return fallback;
   if (observed === diffs.length) return fallback;
 
@@ -66,7 +105,6 @@ export function fitDrawFactor(
     return sum;
   };
 
-  // expectedDraws is monotonic in ν -> bisection.
   let lo = 0;
   let hi = 10;
   for (let i = 0; i < 60; i++) {
