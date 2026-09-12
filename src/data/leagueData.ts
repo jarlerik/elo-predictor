@@ -1,7 +1,7 @@
-import { GameRecord, TeamElo } from "../utils/types";
+import { GameRecord, TeamElo, UpcomingGame } from "../utils/types";
 import { LeagueId, LEAGUES } from "../utils/leagues";
 import { CURRENT_NHL_TEAMS } from "../utils/teamData";
-import { fetchNhlGames } from "./nhlFetcher";
+import { fetchNhlData } from "./nhlFetcher";
 import { fetchLiigaData } from "./liigaFetcher";
 import { fetchEplData } from "./eplFetcher";
 import { computeElosFromGames } from "../elo/calculator";
@@ -17,6 +17,36 @@ import {
 export interface LeagueData {
   games: GameRecord[]; // sorted ascending by date, played games only
   currentTeams: Set<string>;
+  /** Fixtures still to be played, sorted ascending by date. */
+  upcoming: UpcomingGame[];
+}
+
+/** How long after its start time a fixture still resolves as "the next one". */
+const KICKOFF_GRACE_MS = 12 * 60 * 60 * 1000;
+
+/**
+ * Scheduled start of the next game between two teams, ISO, or null when the
+ * pairing is not on the schedule. A game that started within the last
+ * `KICKOFF_GRACE_MS` still counts, so a bet saved during a game is stamped
+ * with that game rather than the next meeting.
+ */
+export function kickoffOf(
+  upcoming: UpcomingGame[],
+  home: string,
+  away: string,
+  now = Date.now()
+): string | null {
+  const h = home.toUpperCase();
+  const a = away.toUpperCase();
+  let best: { date: string; t: number } | null = null;
+  for (const g of upcoming) {
+    if (g.homeAbbr.toUpperCase() !== h || g.awayAbbr.toUpperCase() !== a)
+      continue;
+    const t = new Date(g.date).getTime();
+    if (!Number.isFinite(t) || t < now - KICKOFF_GRACE_MS) continue;
+    if (!best || t < best.t) best = { date: g.date, t };
+  }
+  return best?.date ?? null;
 }
 
 export interface LeagueState extends LeagueData {
@@ -58,11 +88,10 @@ export function drawFactorFor(
 
 async function loadLeagueData(league: LeagueId): Promise<LeagueData> {
   switch (league) {
-    case "nhl":
-      return {
-        games: await fetchNhlGames(),
-        currentTeams: CURRENT_NHL_TEAMS,
-      };
+    case "nhl": {
+      const { games, upcoming } = await fetchNhlData();
+      return { games, currentTeams: CURRENT_NHL_TEAMS, upcoming };
+    }
     case "liiga":
       return fetchLiigaData();
     case "epl":

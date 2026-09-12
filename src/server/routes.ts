@@ -1,7 +1,7 @@
 import express from "express";
 import fs from "fs";
 import path from "path";
-import { ensureLeague } from "../data/leagueData";
+import { ensureLeague, kickoffOf } from "../data/leagueData";
 import { ensureUcl } from "../data/uclFetcher";
 import {
   eloToWinProb,
@@ -83,6 +83,41 @@ function betMeta(body: any, home: string, away: string) {
     bankrollBefore: numOrNull(body.bankrollBefore),
     kellyDivider: numOrNull(body.kellyDivider),
   };
+}
+
+/** An explicit kickoff sent by the client, ISO, or null when absent / unusable. */
+function parseGameDate(value: unknown): string | null {
+  if (typeof value !== "string" || !value.trim()) return null;
+  const t = new Date(value).getTime();
+  return Number.isFinite(t) ? new Date(t).toISOString() : null;
+}
+
+/**
+ * Scheduled start of the game a bet refers to: what the client sent, else the
+ * next fixture for the pairing on the league schedule. Never throws — a bet
+ * must save even when the schedule cannot be reached.
+ */
+async function kickoffFor(
+  league: LedgerLeague | null,
+  home: string,
+  away: string,
+  explicit: unknown
+): Promise<string | null> {
+  const given = parseGameDate(explicit);
+  if (given) return given;
+  try {
+    if (league === "nhl" || league === "liiga" || league === "epl") {
+      const state = await ensureLeague(league);
+      return kickoffOf(state.upcoming, home, away);
+    }
+    if (league === "ucl") {
+      const state = await ensureUcl();
+      return kickoffOf(state.upcoming, home, away);
+    }
+  } catch (e) {
+    console.error("failed to look up kickoff for", home, away, e);
+  }
+  return null;
 }
 
 // Stake in euros for a bet entry. Bets saved before stakes were tracked have
@@ -569,6 +604,12 @@ router.post("/bets/save", async (req, res) => {
       console.error("failed to note bet on prediction log", e);
     }
     const placedAt = now.toISOString();
+    const gameDate = await kickoffFor(
+      meta.league,
+      homeTeam,
+      awayTeam,
+      req.body.gameDate
+    );
     const key = `${homeTeam}__${awayTeam}_${dateStr}`;
     ensureLedger();
     appendLedger(
@@ -579,6 +620,7 @@ router.post("/bets/save", async (req, res) => {
           key,
           home: homeTeam,
           away: awayTeam,
+          date: gameDate,
           placedAt,
           league: meta.league,
           market: "correctScore",
@@ -681,6 +723,12 @@ router.post("/bets/save-winner", async (req, res) => {
     } catch (e) {
       console.error("failed to note bet on prediction log", e);
     }
+    const gameDate = await kickoffFor(
+      meta.league,
+      homeTeam,
+      awayTeam,
+      req.body.gameDate
+    );
     const key = `${homeTeam}__${awayTeam}_${dateStr}`;
     const ledgerMarket: LedgerMarket =
       market === "regulation" || market === "moneyline"
@@ -694,6 +742,7 @@ router.post("/bets/save-winner", async (req, res) => {
         key,
         home: homeTeam,
         away: awayTeam,
+        date: gameDate,
         placedAt: newBet.timestamp,
         league: meta.league,
         market: ledgerMarket,

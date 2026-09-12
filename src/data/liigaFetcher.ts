@@ -1,6 +1,6 @@
 import axios from "axios";
 import NodeCache from "node-cache";
-import { GameRecord } from "../utils/types";
+import { GameRecord, UpcomingGame } from "../utils/types";
 import { LIIGA_TEAMS, apiNameToAbbr } from "../utils/leagues";
 import { LeagueData } from "./leagueData";
 
@@ -27,7 +27,11 @@ function teamIdOf(team: { teamId: string }): number | string {
   return Number.isNaN(n) ? team.teamId : n;
 }
 
-type LiigaSeason = { games: GameRecord[]; teams: Set<string> };
+type LiigaSeason = {
+  games: GameRecord[];
+  teams: Set<string>;
+  upcoming: UpcomingGame[];
+};
 
 async function fetchSeason(season: number): Promise<LiigaSeason> {
   const cacheKey = `liiga_${season}`;
@@ -44,6 +48,7 @@ async function fetchSeason(season: number): Promise<LiigaSeason> {
 
   const games: GameRecord[] = [];
   const teams = new Set<string>();
+  const upcoming: UpcomingGame[] = [];
 
   for (const g of raw) {
     const homeAbbr = abbrFor(g.homeTeam);
@@ -51,8 +56,12 @@ async function fetchSeason(season: number): Promise<LiigaSeason> {
     teams.add(homeAbbr);
     teams.add(awayAbbr);
 
-    // Skip fixtures not yet played (also guards against live games).
-    if (!g.ended) continue;
+    // Fixtures not yet played (also guards against live games) are the
+    // schedule, not results.
+    if (!g.ended) {
+      if (g.start) upcoming.push({ homeAbbr, awayAbbr, date: String(g.start) });
+      continue;
+    }
 
     const finished = String(g.finishedType ?? "");
     const decidedInOTorSO =
@@ -73,7 +82,7 @@ async function fetchSeason(season: number): Promise<LiigaSeason> {
     });
   }
 
-  const result = { games, teams };
+  const result = { games, teams, upcoming };
   cache.set(cacheKey, result);
   return result;
 }
@@ -87,13 +96,16 @@ export async function fetchLiigaData(): Promise<LeagueData> {
   const current = liigaSeasonFor();
   const seasons = [current - 2, current - 1, current];
   const all: GameRecord[] = [];
+  const upcoming: UpcomingGame[] = [];
   let currentTeams = new Set<string>();
   for (const s of seasons) {
-    const { games, teams } = await fetchSeason(s);
-    all.push(...games);
+    const season = await fetchSeason(s);
+    all.push(...season.games);
+    upcoming.push(...season.upcoming);
     // The newest season with any fixtures defines the current roster.
-    if (teams.size > 0) currentTeams = teams;
+    if (season.teams.size > 0) currentTeams = season.teams;
   }
   all.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  return { games: all, currentTeams };
+  upcoming.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  return { games: all, currentTeams, upcoming };
 }

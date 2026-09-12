@@ -1,7 +1,7 @@
 import axios from "axios";
 import fs from "fs";
 import path from "path";
-import { GameRecord, TeamElo } from "../utils/types";
+import { GameRecord, TeamElo, UpcomingGame } from "../utils/types";
 import { UCL_TEAMS, apiNameToAbbr } from "../utils/leagues";
 import { computeElosFromGames } from "../elo/calculator";
 
@@ -27,6 +27,8 @@ export interface UclState {
   teams: UclTeam[];
   ratings: Record<string, number>; // current, by abbr
   games: GameRecord[];
+  /** Fixtures of the current season that have not been played yet. */
+  upcoming: UpcomingGame[];
   seedRefreshed: string;
   loadedAt: number;
 }
@@ -53,7 +55,9 @@ export function uclSeasonFor(date = new Date()): number {
   return date.getMonth() >= 6 ? date.getFullYear() : date.getFullYear() - 1;
 }
 
-async function fetchPlayedGames(startYear: number): Promise<GameRecord[]> {
+async function fetchSeasonFeed(
+  startYear: number
+): Promise<{ games: GameRecord[]; upcoming: UpcomingGame[] }> {
   const resp = await axios.get(`${API}${startYear}`, {
     headers: { Accept: "application/json", "User-Agent": "elo-predictor" },
     timeout: 60_000,
@@ -62,10 +66,18 @@ async function fetchPlayedGames(startYear: number): Promise<GameRecord[]> {
   if (!Array.isArray(raw)) throw new Error(`ucl: unexpected payload for ${startYear}`);
 
   const games: GameRecord[] = [];
+  const upcoming: UpcomingGame[] = [];
   for (const m of raw) {
-    if (m.HomeTeamScore == null || m.AwayTeamScore == null) continue;
     const homeAbbr = abbrFor(m.HomeTeam);
     const awayAbbr = abbrFor(m.AwayTeam);
+    if (m.HomeTeamScore == null || m.AwayTeamScore == null) {
+      upcoming.push({
+        homeAbbr,
+        awayAbbr,
+        date: String(m.DateUtc).replace(" ", "T"),
+      });
+      continue;
+    }
     games.push({
       gamePk: startYear * 1000 + m.MatchNumber,
       season: `${startYear}${startYear + 1}`,
@@ -80,7 +92,10 @@ async function fetchPlayedGames(startYear: number): Promise<GameRecord[]> {
     });
   }
   games.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  return games;
+  upcoming.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+  return { games, upcoming };
 }
 
 let cached: UclState | null = null;
@@ -93,8 +108,11 @@ export async function ensureUcl(): Promise<UclState> {
   inflight = (async () => {
     const seed = loadSeed();
     let games: GameRecord[] = [];
+    let upcoming: UpcomingGame[] = [];
     try {
-      games = await fetchPlayedGames(uclSeasonFor());
+      const feed = await fetchSeasonFeed(uclSeasonFor());
+      games = feed.games;
+      upcoming = feed.upcoming;
     } catch (e) {
       // Seed alone is still useful; log and carry on without updates.
       console.error("ucl: failed to fetch results, using seed only", e);
@@ -127,6 +145,7 @@ export async function ensureUcl(): Promise<UclState> {
       teams,
       ratings: Object.fromEntries(teams.map((t) => [t.abbr, t.elo])),
       games,
+      upcoming,
       seedRefreshed: seed.refreshed,
       loadedAt: Date.now(),
     };

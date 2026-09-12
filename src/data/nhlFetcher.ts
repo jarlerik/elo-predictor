@@ -1,6 +1,6 @@
 import axios from "axios";
 import NodeCache from "node-cache";
-import { GameRecord } from "../utils/types";
+import { GameRecord, UpcomingGame } from "../utils/types";
 import { CURRENT_NHL_TEAMS } from "../utils/teamData";
 
 const cache = new NodeCache({ stdTTL: 60 * 60 * 6 }); // 6h
@@ -33,10 +33,15 @@ async function getTeamMapping(): Promise<Map<number, string>> {
   return mapping;
 }
 
-async function fetchSeasonGames(season: string): Promise<GameRecord[]> {
+interface NhlSeason {
+  games: GameRecord[];
+  upcoming: UpcomingGame[];
+}
+
+async function fetchSeasonData(season: string): Promise<NhlSeason> {
   try {
     const cacheKey = `schedule_${season}`;
-    const cached = cache.get<GameRecord[]>(cacheKey);
+    const cached = cache.get<NhlSeason>(cacheKey);
     if (cached) return cached;
 
     // Use season filtering instead of date filtering
@@ -44,16 +49,12 @@ async function fetchSeasonGames(season: string): Promise<GameRecord[]> {
     const resp = await axios.get(url);
     const gameData = resp.data.data as any[];
     const games: GameRecord[] = [];
+    const upcoming: UpcomingGame[] = [];
 
     // Get team mapping for abbreviations
     const teamMap = await getTeamMapping();
 
     for (const g of gameData) {
-      // The feed includes the full schedule; keep only finished games
-      // (gameStateId 6 = final, 7 = official final). Scheduled / postponed
-      // games carry a 0-0 score and must not count.
-      if (g.gameStateId !== 6 && g.gameStateId !== 7) continue;
-
       const gamePk = g.id as number;
       const gameDate = g.gameDate as string;
       const homeTeamId = g.homeTeamId as number;
@@ -64,6 +65,18 @@ async function fetchSeasonGames(season: string): Promise<GameRecord[]> {
       // Get team abbreviations from mapping
       const homeAbbr = teamMap.get(homeTeamId) || `T${homeTeamId}`;
       const awayAbbr = teamMap.get(awayTeamId) || `T${awayTeamId}`;
+
+      // The feed includes the full schedule; keep only finished games
+      // (gameStateId 6 = final, 7 = official final) as results. Scheduled /
+      // postponed games carry a 0-0 score and must not count, but their
+      // start time is the schedule. gameType 1 = preseason, which never
+      // belongs in either list.
+      if (g.gameStateId !== 6 && g.gameStateId !== 7) {
+        if (g.gameType !== 1 && gameDate) {
+          upcoming.push({ homeAbbr, awayAbbr, date: gameDate });
+        }
+        continue;
+      }
 
       // period 4 = overtime, 5 = shootout (gameType is preseason/regular/playoffs)
       const decidedInOTorSO = (g.period as number) >= 4;
@@ -82,12 +95,17 @@ async function fetchSeasonGames(season: string): Promise<GameRecord[]> {
       });
     }
 
-    cache.set(cacheKey, games);
-    return games;
+    const result: NhlSeason = { games, upcoming };
+    cache.set(cacheKey, result);
+    return result;
   } catch (error) {
     console.error(`Error fetching season games for ${season}:`, error);
     throw error;
   }
+}
+
+async function fetchSeasonGames(season: string): Promise<GameRecord[]> {
+  return (await fetchSeasonData(season)).games;
 }
 
 /** NHL season id ("20262027") for a date; the season starting in October belongs to that year. */
@@ -99,9 +117,28 @@ export function nhlSeasonFor(date = new Date()): string {
 
 /** Games from the two previous seasons plus the current one. */
 export async function fetchNhlGames(): Promise<GameRecord[]> {
+  return (await fetchNhlData()).games;
+}
+
+/** Played games plus the remaining schedule, over the same three seasons. */
+export async function fetchNhlData(): Promise<{
+  games: GameRecord[];
+  upcoming: UpcomingGame[];
+}> {
   const start = parseInt(nhlSeasonFor().slice(0, 4), 10);
   const seasons = [start - 2, start - 1, start].map((y) => `${y}${y + 1}`);
-  return fetchMultipleSeasons(seasons);
+  const games: GameRecord[] = [];
+  const upcoming: UpcomingGame[] = [];
+  for (const s of seasons) {
+    const season = await fetchSeasonData(s);
+    games.push(...season.games);
+    upcoming.push(...season.upcoming);
+  }
+  games.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  upcoming.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+  return { games, upcoming };
 }
 
 export async function fetchMultipleSeasons(

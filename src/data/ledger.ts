@@ -47,7 +47,11 @@ export interface LedgerRow {
     away: string;
     /** HOME__AWAY_DD.MM.YYYY, the bet file stem without "_winner". */
     key: string;
-    /** Game date (ISO date). Not known for bets saved so far. */
+    /**
+     * Scheduled start of the game (ISO), looked up from the league schedule
+     * when the bet is saved. Null for bets saved before this was captured,
+     * and for a pairing that is not on the schedule.
+     */
     date: string | null;
   };
   market: LedgerMarket;
@@ -214,6 +218,8 @@ export function newRow(input: {
   key: string;
   home: string;
   away: string;
+  /** Scheduled start of the game (ISO), when it could be resolved. */
+  date?: string | null;
   placedAt: string | null;
   league: LedgerLeague | null;
   market: LedgerMarket;
@@ -233,7 +239,12 @@ export function newRow(input: {
     positionId: input.key,
     placedAt: input.placedAt,
     league: input.league,
-    game: { home: input.home, away: input.away, key: input.key, date: null },
+    game: {
+      home: input.home,
+      away: input.away,
+      key: input.key,
+      date: input.date ?? null,
+    },
     market: input.market,
     pick: input.pick,
     stake: input.stake,
