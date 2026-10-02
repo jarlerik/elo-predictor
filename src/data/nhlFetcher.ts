@@ -38,6 +38,51 @@ interface NhlSeason {
   upcoming: UpcomingGame[];
 }
 
+const NHL_TZ = "America/New_York";
+
+/**
+ * The stats feed gives each game's `easternStartTime` as a New York
+ * wall-clock time with no offset ("2026-10-02T20:00:00"). Returns that
+ * instant as a UTC ISO string, or null when the value is not of that shape.
+ */
+export function easternToIso(wall: unknown): string | null {
+  if (typeof wall !== "string") return null;
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/.exec(wall);
+  if (!m) return null;
+  const [y, mo, d, h, mi, s] = m.slice(1).map(Number);
+  const asUtc = Date.UTC(y, mo - 1, d, h, mi, s);
+  const fmt = new Intl.DateTimeFormat("en-US", {
+    timeZone: NHL_TZ,
+    hourCycle: "h23",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+  // Milliseconds New York is ahead of UTC at instant `t` (negative).
+  const offsetAt = (t: number) => {
+    const parts = fmt.formatToParts(new Date(t));
+    const get = (type: string) =>
+      Number(parts.find((p) => p.type === type)?.value);
+    const local = Date.UTC(
+      get("year"),
+      get("month") - 1,
+      get("day"),
+      get("hour"),
+      get("minute"),
+      get("second")
+    );
+    return local - t;
+  };
+  // Two passes so a time within an hour of a DST switch lands on the
+  // offset in force at the game's own instant.
+  let t = asUtc - offsetAt(asUtc);
+  t = asUtc - offsetAt(t);
+  return new Date(t).toISOString();
+}
+
 async function fetchSeasonData(season: string): Promise<NhlSeason> {
   try {
     const cacheKey = `schedule_${season}`;
@@ -69,11 +114,14 @@ async function fetchSeasonData(season: string): Promise<NhlSeason> {
       // The feed includes the full schedule; keep only finished games
       // (gameStateId 6 = final, 7 = official final) as results. Scheduled /
       // postponed games carry a 0-0 score and must not count, but their
-      // start time is the schedule. gameType 1 = preseason, which never
-      // belongs in either list.
+      // start time is the schedule: the Eastern puck drop as a UTC instant,
+      // or the bare calendar date when the feed has no start time (that
+      // reads as midnight UTC, which is before the real start). gameType 1
+      // = preseason, which never belongs in either list.
       if (g.gameStateId !== 6 && g.gameStateId !== 7) {
-        if (g.gameType !== 1 && gameDate) {
-          upcoming.push({ homeAbbr, awayAbbr, date: gameDate });
+        const kickoff = easternToIso(g.easternStartTime) ?? gameDate;
+        if (g.gameType !== 1 && kickoff) {
+          upcoming.push({ homeAbbr, awayAbbr, date: kickoff });
         }
         continue;
       }
