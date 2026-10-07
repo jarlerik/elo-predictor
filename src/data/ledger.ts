@@ -66,6 +66,17 @@ export interface LedgerRow {
   marketOdds: Record<string, number> | null;
   model: ModelSnapshot | null;
   closingOdds: number | null;
+  /**
+   * Sharp reference prices (Pinnacle, an exchange or the consensus of the
+   * low-margin books) for every outcome of the market at bet time, and the
+   * same just before kick-off. De-vigged, they are the market's probability
+   * of the pick: the edge of a soft-book price is measured against it, and
+   * the closing one gives the closing line value. Missing on rows saved
+   * before these were captured (undefined reads as null).
+   */
+  sharpOdds?: Record<string, number> | null;
+  sharpSource?: string | null;
+  sharpClosingOdds?: Record<string, number> | null;
   bankrollBefore: number | null;
   kellyDivider: number | null;
   settledAt: string | null;
@@ -230,6 +241,8 @@ export function newRow(input: {
   bookmaker?: string | null;
   marketOdds?: Record<string, number> | null;
   model?: ModelSnapshot | null;
+  sharpOdds?: Record<string, number> | null;
+  sharpSource?: string | null;
   bankrollBefore?: number | null;
   kellyDivider?: number | null;
   flags?: string[];
@@ -254,6 +267,9 @@ export function newRow(input: {
     marketOdds: input.marketOdds ?? null,
     model: input.model ?? null,
     closingOdds: null,
+    sharpOdds: input.sharpOdds ?? null,
+    sharpSource: input.sharpSource ?? null,
+    sharpClosingOdds: null,
     bankrollBefore: input.bankrollBefore ?? null,
     kellyDivider: input.kellyDivider ?? null,
     settledAt: null,
@@ -324,6 +340,24 @@ export function setClosingOdds(
   const next = rows.map((row) => {
     if (!wanted.has(row.id)) return row;
     const changed = { ...row, closingOdds };
+    updated.push(changed);
+    return changed;
+  });
+  if (updated.length > 0) writeLedger(next);
+  return updated;
+}
+
+/** Set (or clear with null) the sharp closing prices of the given lines. */
+export function setSharpClosingOdds(
+  ids: string[],
+  sharpClosingOdds: Record<string, number> | null
+): LedgerRow[] {
+  const rows = ensureLedger();
+  const wanted = new Set(ids);
+  const updated: LedgerRow[] = [];
+  const next = rows.map((row) => {
+    if (!wanted.has(row.id)) return row;
+    const changed = { ...row, sharpClosingOdds };
     updated.push(changed);
     return changed;
   });

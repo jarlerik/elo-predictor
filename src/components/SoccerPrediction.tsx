@@ -3,6 +3,10 @@ import ScorePrediction from "./ScorePrediction";
 import {
   BookmakerField,
   OddsInput,
+  SharpOddsFields,
+  sharpOddsBody,
+  sharpProbabilities,
+  useSharpSource,
   parseOdds,
   useBookmaker,
 } from "./BookOdds";
@@ -117,6 +121,16 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
   const setBookOdds = (key: Outcome, value: string) =>
     setBook((prev) => ({ ...prev, [key]: value }));
   const [bookmaker, setBookmaker] = useBookmaker();
+  // Sharp reference prices per outcome; de-vigged they are the market's
+  // probabilities the book prices are measured against.
+  const [sharp, setSharp] = useState<Record<Outcome, string>>({
+    home: "",
+    draw: "",
+    away: "",
+  });
+  const setSharpOdds = (key: string, value: string) =>
+    setSharp((prev) => ({ ...prev, [key]: value }));
+  const [sharpSource, setSharpSource] = useSharpSource();
   // Bankroll and Kelly divider for the stake hint and the ledger snapshot.
   const { bankroll, kelly } = useBankroll();
   const useStake = (v: number) => setStake(v.toFixed(2));
@@ -190,10 +204,16 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
       setPrediction(await res.json());
       setScorePrediction(await scoreRes.json());
       setBook({ home: "", draw: "", away: "" });
+      setSharp({ home: "", draw: "", away: "" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     }
   };
+
+  // Knockout predictions carry a zero draw probability: a two-way market.
+  const hasDraw = (prediction?.drawProbability ?? 0) > 0;
+  const sides = hasDraw ? ["home", "draw", "away"] : ["home", "away"];
+  const sharpProbs = sharpProbabilities(sharp, sides);
 
   const handleBet = async (outcome: Outcome) => {
     if (!prediction) return;
@@ -222,6 +242,7 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
       const n = parseOdds(book[k]);
       if (n !== null) marketOdds[k] = n;
     }
+    const sharpOdds = sharpOddsBody(sharp, sides);
 
     const stakeValue = Number(stake);
     if (!Number.isFinite(stakeValue) || stakeValue <= 0) {
@@ -248,6 +269,8 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
           bankrollBefore: bankroll?.current ?? undefined,
           kellyDivider: bankroll?.kellyDivider,
           marketOdds,
+          sharpOdds,
+          sharpSource: sharpOdds ? sharpSource || undefined : undefined,
           // Snapshot of the model at bet time for the ledger.
           model: {
             probs: {
@@ -439,6 +462,17 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
               />
             </label>{" "}
             <BookmakerField value={bookmaker} onChange={setBookmaker} />
+            <SharpOddsFields
+              sides={[
+                { key: "home", label: "1" },
+                ...(hasDraw ? [{ key: "draw", label: "X" }] : []),
+                { key: "away", label: "2" },
+              ]}
+              values={sharp}
+              onChange={setSharpOdds}
+              source={sharpSource}
+              onSourceChange={setSharpSource}
+            />
 
             <div className="probabilities">
               <div className="probability-card home-win">
@@ -458,6 +492,7 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
                     value={book.home}
                     onChange={(v) => setBookOdds("home", v)}
                     probability={prediction.homeWinProbability}
+                    sharpProbability={sharpProbs?.home ?? null}
                   />
                   <div className="bar">
                     <div
@@ -494,6 +529,7 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
                     value={book.draw}
                     onChange={(v) => setBookOdds("draw", v)}
                     probability={prediction.drawProbability}
+                    sharpProbability={sharpProbs?.draw ?? null}
                   />
                   <div className="bar">
                     <div
@@ -528,6 +564,7 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
                     value={book.away}
                     onChange={(v) => setBookOdds("away", v)}
                     probability={prediction.awayWinProbability}
+                    sharpProbability={sharpProbs?.away ?? null}
                   />
                   <div className="bar">
                     <div

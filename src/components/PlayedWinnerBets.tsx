@@ -5,6 +5,7 @@ import {
   LineStatus,
   SettleButtons,
   SettleRestButton,
+  SharpClosing,
   ledgerId,
   useLedger,
 } from "./ledger";
@@ -563,6 +564,17 @@ const PlayedWinnerBets: React.FC = () => {
                                     ledger.setClosingOdds(
                                   ledgerId(betFile.filename, index),
                                   odds
+                                    )
+                                  }
+                                />
+                                <SharpClosing
+                                  row={ledger.byId.get(
+                                    ledgerId(betFile.filename, index)
+                                  )}
+                                  onSave={(odds) =>
+                                    ledger.setSharpClosing(
+                                      ledgerId(betFile.filename, index),
+                                      odds
                                     )
                                   }
                                 />

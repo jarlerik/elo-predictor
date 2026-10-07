@@ -28,6 +28,16 @@ export interface Summary {
     expectedProfit: number;
   };
   clv: { sample: number; mean: number | null; beatCloseShare: number | null };
+  /** Bets with sharp reference prices: expectation at the de-vigged sharp price. */
+  sharp: {
+    sample: number;
+    turnover: number;
+    actual: number;
+    modelExpected: number;
+    expectedProfit: number;
+  };
+  /** Edge of the odds taken at the de-vigged sharp close. */
+  sharpClv: { sample: number; mean: number | null; beatCloseShare: number | null };
   maxDrawdown: {
     amount: number;
     from: number;
@@ -181,6 +191,41 @@ export const HeadlineTiles: React.FC<{ summary: Summary }> = ({ summary }) => {
         }
         muted={s.market.sample < s.minSample}
         hint="Bets whose bookmaker prices cover every outcome of the market"
+      />
+      <Tile
+        label="Sharp view"
+        value={s.sharp.sample === 0 ? "—" : eur(s.sharp.expectedProfit, true)}
+        tone={toneOf(s.sharp.sample === 0 ? null : s.sharp.expectedProfit)}
+        sub={
+          s.sharp.sample === 0 ? (
+            "enter sharp odds on the bet forms"
+          ) : (
+            <>
+              expectation at the sharp price on n={s.sharp.sample} · actual{" "}
+              {eur(s.sharp.actual, true)} · model{" "}
+              {eur(s.sharp.modelExpected, true)}
+            </>
+          )
+        }
+        muted={s.sharp.sample < s.minSample}
+        hint="Bets saved with the sharp market's full price list: what the de-vigged sharp price said the odds taken were worth"
+      />
+      <Tile
+        label="CLV vs sharp close"
+        value={s.sharpClv.mean === null ? "—" : pct(s.sharpClv.mean, true)}
+        tone={toneOf(s.sharpClv.mean)}
+        sub={
+          s.sharpClv.mean === null ? (
+            "enter the sharp close on the Played Bets page"
+          ) : (
+            <>
+              beat the close {pct(s.sharpClv.beatCloseShare ?? 0)} · n=
+              {s.sharpClv.sample}
+            </>
+          )
+        }
+        muted={s.sharpClv.sample < s.minSample}
+        hint="Mean of odds taken × de-vigged sharp closing probability − 1: the edge the price still had when the market closed"
       />
       <Tile
         label="CLV"
@@ -379,6 +424,7 @@ export type SegmentBy =
   | "pick"
   | "oddsBand"
   | "edgeBand"
+  | "sharpEdgeBand"
   | "eloGap";
 
 export type SegmentRow = Omit<Summary, "series" | "minSample" | "bankroll"> & {
@@ -399,6 +445,7 @@ const SLICES: { by: SegmentBy; label: string }[] = [
   { by: "pick", label: "Pick" },
   { by: "oddsBand", label: "Odds band" },
   { by: "edgeBand", label: "Model edge" },
+  { by: "sharpEdgeBand", label: "Sharp edge" },
   { by: "eloGap", label: "Elo gap" },
 ];
 
@@ -472,6 +519,8 @@ export const SegmentTable: React.FC = () => {
                 <th>Hit rate</th>
                 <th>Expected hit</th>
                 <th>z</th>
+                <th>Sharp view</th>
+                <th>CLV (sharp)</th>
                 <th>CLV</th>
               </tr>
             </thead>
@@ -507,6 +556,18 @@ export const SegmentTable: React.FC = () => {
                       {r.expectedHitRate === null ? "" : pct(r.expectedHitRate)}
                     </td>
                     <td>{r.zScore === null ? "" : r.zScore.toFixed(2)}</td>
+                    <td
+                      className={signedClass(r.sharp.sample ? r.sharp.expectedProfit : null)}
+                      title={r.sharp.sample ? `n=${r.sharp.sample} with sharp prices` : ""}
+                    >
+                      {r.sharp.sample ? eur(r.sharp.expectedProfit, true) : "—"}
+                    </td>
+                    <td
+                      className={signedClass(r.sharpClv.mean)}
+                      title={r.sharpClv.sample ? `n=${r.sharpClv.sample} with a sharp close` : ""}
+                    >
+                      {r.sharpClv.mean === null ? "—" : pct(r.sharpClv.mean, true)}
+                    </td>
                     <td className={signedClass(r.clv.mean)}>
                       {r.clv.mean === null ? "—" : pct(r.clv.mean, true)}
                     </td>
@@ -519,8 +580,10 @@ export const SegmentTable: React.FC = () => {
       )}
       <p className="calibration-caption">
         Rows under {segments?.minSample ?? 30} settled bets are greyed out:
-        the number exists but does not mean much yet. CLV covers the bets
-        with closing odds.
+        the number exists but does not mean much yet. Sharp view is the
+        expectation at the de-vigged sharp price over the bets saved with
+        one; CLV (sharp) is the edge the odds taken still had at the sharp
+        close; CLV covers the bets with the book's own closing odds.
       </p>
     </div>
   );

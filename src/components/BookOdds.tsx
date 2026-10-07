@@ -1,5 +1,6 @@
 import React, { useSyncExternalStore } from "react";
 import { kellyStake } from "../utils/kelly";
+import { MIN_SHARP_EDGE, devig, overround } from "../utils/sharp";
 import { KellySettings, kellyLabel } from "./bankroll";
 
 /**
@@ -21,39 +22,49 @@ export function edgePercent(probability: number, odds: number): string {
   return `${edge >= 0 ? "+" : ""}${edge.toFixed(1)}%`;
 }
 
-const BOOKMAKER_KEY = "bookmaker";
-
 // One value shared by every form on the page (1X2 card and score list are
 // separate components), remembered in this browser between visits.
-let bookmakerValue: string = (() => {
-  try {
-    return localStorage.getItem(BOOKMAKER_KEY) ?? "";
-  } catch {
-    return "";
-  }
-})();
-const bookmakerListeners = new Set<() => void>();
-const subscribeBookmaker = (listener: () => void) => {
-  bookmakerListeners.add(listener);
-  return () => {
-    bookmakerListeners.delete(listener);
+function sharedValue(storageKey: string) {
+  let value: string = (() => {
+    try {
+      return localStorage.getItem(storageKey) ?? "";
+    } catch {
+      return "";
+    }
+  })();
+  const listeners = new Set<() => void>();
+  const subscribe = (listener: () => void) => {
+    listeners.add(listener);
+    return () => {
+      listeners.delete(listener);
+    };
   };
-};
-const getBookmaker = () => bookmakerValue;
-const setBookmakerValue = (v: string) => {
-  bookmakerValue = v;
-  try {
-    localStorage.setItem(BOOKMAKER_KEY, v);
-  } catch {
-    // storage unavailable: keep the value for this page only
-  }
-  bookmakerListeners.forEach((l) => l());
-};
+  const get = () => value;
+  const set = (v: string) => {
+    value = v;
+    try {
+      localStorage.setItem(storageKey, v);
+    } catch {
+      // storage unavailable: keep the value for this page only
+    }
+    listeners.forEach((l) => l());
+  };
+  return { subscribe, get, set };
+}
+
+const bookmakerStore = sharedValue("bookmaker");
+const sharpSourceStore = sharedValue("sharpSource");
 
 /** Bookmaker name, shared by all bet forms and remembered between visits. */
 export function useBookmaker(): [string, (v: string) => void] {
-  const bookmaker = useSyncExternalStore(subscribeBookmaker, getBookmaker);
-  return [bookmaker, setBookmakerValue];
+  const bookmaker = useSyncExternalStore(bookmakerStore.subscribe, bookmakerStore.get);
+  return [bookmaker, bookmakerStore.set];
+}
+
+/** Name of the sharp reference (e.g. Pinnacle), remembered between visits. */
+export function useSharpSource(): [string, (v: string) => void] {
+  const source = useSyncExternalStore(sharpSourceStore.subscribe, sharpSourceStore.get);
+  return [source, sharpSourceStore.set];
 }
 
 export const BookmakerField: React.FC<{
@@ -72,27 +83,50 @@ export const BookmakerField: React.FC<{
   </label>
 );
 
+/** True when a soft-book price clears the sharp fair price by the margin. */
+export function isSharpValue(sharpProbability: number, odds: number): boolean {
+  return sharpProbability * odds - 1 >= MIN_SHARP_EDGE;
+}
+
 /**
  * One outcome's bookmaker odds. Shows the model edge next to the input as
  * soon as a valid price is typed, so the decision is visible before the
- * bet button is pressed.
+ * bet button is pressed. With a sharp probability (from the sharp price row)
+ * the edge against the market is shown too, and the Kelly stake is sized on
+ * that probability instead of the model's.
  */
 export const OddsInput: React.FC<{
   value: string;
   onChange: (v: string) => void;
   probability: number;
+  /** De-vigged sharp probability of this outcome, when the sharp row is filled. */
+  sharpProbability?: number | null;
   label?: string;
   /** With a bankroll, the fractional-Kelly stake is shown under the edge. */
   kelly?: KellySettings | null;
   /** Clicking the Kelly stake puts it in the form's stake input. */
   onUseStake?: (stake: number) => void;
-}> = ({ value, onChange, probability, label = "Book odds", kelly, onUseStake }) => {
+}> = ({
+  value,
+  onChange,
+  probability,
+  sharpProbability = null,
+  label = "Book odds",
+  kelly,
+  onUseStake,
+}) => {
   const odds = parseOdds(value);
   const positive = odds !== null && probability * odds - 1 >= 0;
+  // Kelly on the sharp probability when there is one: that is the strategy's
+  // estimate, the model's is the fallback.
+  const sizingProb = sharpProbability ?? probability;
+  const sizingPositive = odds !== null && sizingProb * odds - 1 >= 0;
   const stake =
-    kelly && odds !== null && positive
-      ? Math.round(kellyStake(kelly.bankroll, probability, odds, kelly.divider) * 100) / 100
+    kelly && odds !== null && sizingPositive
+      ? Math.round(kellyStake(kelly.bankroll, sizingProb, odds, kelly.divider) * 100) / 100
       : null;
+  const value_ =
+    odds !== null && sharpProbability !== null && isSharpValue(sharpProbability, odds);
   return (
     <label className="book-odds-field" onClick={(e) => e.stopPropagation()}>
       <span className="book-odds-label">{label}</span>
@@ -104,20 +138,33 @@ export const OddsInput: React.FC<{
         placeholder="—"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="book-odds-input"
+        className={`book-odds-input ${value_ ? "sharp-value" : ""}`}
       />
       <span
         className={`book-odds-edge ${
           odds === null ? "" : positive ? "positive" : "negative"
         }`}
+        title="Edge against the model's probability"
       >
         {odds === null ? "" : edgePercent(probability, odds)}
       </span>
+      {odds !== null && sharpProbability !== null && (
+        <span
+          className={`book-odds-edge sharp ${
+            sharpProbability * odds - 1 >= 0 ? "positive" : "negative"
+          }`}
+          title="Edge against the de-vigged sharp price"
+        >
+          vs sharp {edgePercent(sharpProbability, odds)}
+        </span>
+      )}
       {stake !== null && kelly && (
         <button
           type="button"
           className="kelly-hint"
-          title={`${kellyLabel(kelly.divider)} of ${kelly.bankroll.toFixed(2)}€ at these odds. Click to use as the stake.`}
+          title={`${kellyLabel(kelly.divider)} of ${kelly.bankroll.toFixed(2)}€ at these odds on the ${
+            sharpProbability !== null ? "sharp" : "model"
+          } probability. Click to use as the stake.`}
           onClick={(e) => {
             e.preventDefault();
             onUseStake?.(stake);
@@ -129,3 +176,97 @@ export const OddsInput: React.FC<{
     </label>
   );
 };
+
+/**
+ * Sharp reference prices for every outcome of a market, typed from
+ * Pinnacle, an exchange or the consensus of the low-margin books. De-vigged
+ * they are the market's probabilities; the bet forms show each soft-book
+ * price's edge against them and size the Kelly stake on them. Nothing here
+ * is saved until a bet is: the prices then travel with the ledger row.
+ */
+export const SharpOddsFields: React.FC<{
+  sides: { key: string; label: string }[];
+  values: Record<string, string>;
+  onChange: (key: string, value: string) => void;
+  source: string;
+  onSourceChange: (v: string) => void;
+  title?: string;
+}> = ({ sides, values, onChange, source, onSourceChange, title = "Sharp odds" }) => {
+  const keys = sides.map((s) => s.key);
+  const odds: Record<string, number> = {};
+  for (const k of keys) {
+    const n = parseOdds(values[k]);
+    if (n !== null) odds[k] = n;
+  }
+  const fair = devig(odds, keys);
+  const margin = overround(odds, keys);
+  return (
+    <div className="sharp-odds-row" onClick={(e) => e.stopPropagation()}>
+      <span className="sharp-odds-title" title="The reference market: Pinnacle, an exchange, or the consensus of the low-margin books">
+        {title}
+      </span>
+      {sides.map((s) => (
+        <label key={s.key} className="sharp-odds-field">
+          <span>{s.label}</span>
+          <input
+            type="number"
+            min="1.01"
+            step="0.01"
+            inputMode="decimal"
+            placeholder="—"
+            value={values[s.key] ?? ""}
+            onChange={(e) => onChange(s.key, e.target.value)}
+            className="book-odds-input"
+          />
+          {fair && (
+            <span className="sharp-odds-fair" title="De-vigged fair odds">
+              {(1 / fair[s.key]).toFixed(2)}
+            </span>
+          )}
+        </label>
+      ))}
+      <label className="sharp-odds-field">
+        <span>Source</span>
+        <input
+          type="text"
+          value={source}
+          onChange={(e) => onSourceChange(e.target.value)}
+          placeholder="e.g. Pinnacle"
+          className="stake-input book-name-input"
+        />
+      </label>
+      {margin !== null && (
+        <span className="sharp-odds-margin" title="Sum of 1/odds; the fair odds above have this removed">
+          payout {((1 / margin) * 100).toFixed(1)}%
+        </span>
+      )}
+    </div>
+  );
+};
+
+/** De-vigged probabilities from the sharp inputs, or null until complete. */
+export function sharpProbabilities(
+  values: Record<string, string>,
+  keys: string[]
+): Record<string, number> | null {
+  const odds: Record<string, number> = {};
+  for (const k of keys) {
+    const n = parseOdds(values[k]);
+    if (n !== null) odds[k] = n;
+  }
+  return devig(odds, keys);
+}
+
+/** Parsed sharp prices for the request body, or undefined until complete. */
+export function sharpOddsBody(
+  values: Record<string, string>,
+  keys: string[]
+): Record<string, number> | undefined {
+  const odds: Record<string, number> = {};
+  for (const k of keys) {
+    const n = parseOdds(values[k]);
+    if (n === null) return undefined;
+    odds[k] = n;
+  }
+  return odds;
+}

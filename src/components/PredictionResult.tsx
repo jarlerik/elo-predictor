@@ -3,8 +3,12 @@ import { TEAM_FULL_NAMES } from "../utils/teamData";
 import {
   BookmakerField,
   OddsInput,
+  SharpOddsFields,
   parseOdds,
+  sharpOddsBody,
+  sharpProbabilities,
   useBookmaker,
+  useSharpSource,
 } from "./BookOdds";
 import { useBankroll } from "./bankroll";
 
@@ -71,17 +75,31 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
   const setBookOdds = (key: BookKey, value: string) =>
     setBook((prev) => ({ ...prev, [key]: value }));
   const [bookmaker, setBookmaker] = useBookmaker();
+  // Sharp reference prices (Pinnacle / exchange / consensus) per outcome.
+  // De-vigged they give the market's probability, which the odds inputs
+  // measure the book price against and size the Kelly stake on.
+  const [sharp, setSharp] = useState<Record<BookKey, string>>(emptyBook);
+  const setSharpOdds = (key: string, value: string) =>
+    setSharp((prev) => ({ ...prev, [key]: value }));
+  const [sharpSource, setSharpSource] = useSharpSource();
   // Bankroll and Kelly divider for the stake hint and the ledger snapshot.
   const { bankroll, kelly } = useBankroll();
   const useStake = (v: number) => setStake(v.toFixed(2));
   useEffect(() => {
     setBook(emptyBook);
+    setSharp(emptyBook);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prediction.homeTeam, prediction.awayTeam]);
 
   // Soccer draws at full time; hockey draws on the 60-minute score (the
   // game goes to OT/SO). Knockout markets can return 0 -> no draw card.
   const hasDraw = prediction.drawProbability > 0;
+  const sides1x2 = hasDraw ? ["home", "draw", "away"] : ["home", "away"];
+  const sharp1x2 = sharpProbabilities(sharp, sides1x2);
+  const sharpMl = sharpProbabilities(
+    { home: sharp.mlHome, away: sharp.mlAway },
+    ["home", "away"]
+  );
   const isRegulation = prediction.market === "regulation";
   const drawLabel = isRegulation ? "Draw (60 min)" : "Draw";
   const homeName = TEAM_FULL_NAMES[prediction.homeTeam] || prediction.homeTeam;
@@ -97,6 +115,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
     probability: number,
     odds: number | null,
     marketOdds: Record<string, number>,
+    sharpOdds: Record<string, number> | undefined,
     market: string,
     label: string,
     setBusy: (busy: boolean) => void
@@ -137,6 +156,8 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
           bankrollBefore: bankroll?.current ?? undefined,
           kellyDivider: bankroll?.kellyDivider,
           marketOdds,
+          sharpOdds,
+          sharpSource: sharpOdds ? sharpSource || undefined : undefined,
           // Snapshot of the model at bet time for the ledger.
           model: {
             probs:
@@ -217,6 +238,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
       probability,
       parseOdds(book[team]),
       filledOdds({ home: book.home, draw: book.draw, away: book.away }),
+      sharpOddsBody(sharp, sides1x2),
       prediction.market ?? "fullTime",
       label,
       (busy) => setSaving((prev) => ({ ...prev, [team]: busy }))
@@ -233,6 +255,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
         : moneyline.awayWinProbability,
       parseOdds(side === "home" ? book.mlHome : book.mlAway),
       filledOdds({ home: book.mlHome, away: book.mlAway }),
+      sharpOddsBody({ home: sharp.mlHome, away: sharp.mlAway }, ["home", "away"]),
       "moneyline",
       `${side === "home" ? homeName : awayName} (incl. OT/SO)`,
       (busy) => setSavingMoneyline((prev) => ({ ...prev, [side]: busy }))
@@ -302,6 +325,18 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
         />
       </label>{" "}
       <BookmakerField value={bookmaker} onChange={setBookmaker} />
+      <SharpOddsFields
+        title={isRegulation ? "Sharp odds (60 min)" : "Sharp odds"}
+        sides={[
+          { key: "home", label: "1" },
+          ...(hasDraw ? [{ key: "draw", label: "X" }] : []),
+          { key: "away", label: "2" },
+        ]}
+        values={sharp}
+        onChange={setSharpOdds}
+        source={sharpSource}
+        onSourceChange={setSharpSource}
+      />
 
       <div className="probabilities">
         <div className="probability-card home-win">
@@ -321,6 +356,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
               value={book.home}
               onChange={(v) => setBookOdds("home", v)}
               probability={prediction.homeWinProbability}
+              sharpProbability={sharp1x2?.home ?? null}
             />
             <div className="bar">
               <div
@@ -354,6 +390,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
                 value={book.draw}
                 onChange={(v) => setBookOdds("draw", v)}
                 probability={prediction.drawProbability}
+                sharpProbability={sharp1x2?.draw ?? null}
               />
               <div className="bar">
                 <div
@@ -389,6 +426,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
               value={book.away}
               onChange={(v) => setBookOdds("away", v)}
               probability={prediction.awayWinProbability}
+              sharpProbability={sharp1x2?.away ?? null}
             />
             <div className="bar">
               <div
@@ -417,6 +455,17 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
       {moneyline && (
         <div className="moneyline">
           <h4>Winner incl. OT/SO</h4>
+          <SharpOddsFields
+            title="Sharp odds (incl. OT/SO)"
+            sides={[
+              { key: "mlHome", label: "1" },
+              { key: "mlAway", label: "2" },
+            ]}
+            values={sharp}
+            onChange={setSharpOdds}
+            source={sharpSource}
+            onSourceChange={setSharpSource}
+          />
           <div className="moneyline-rows">
             <div className="moneyline-row">
               <span className="team-name">{homeName}</span>
@@ -434,6 +483,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
                 value={book.mlHome}
                 onChange={(v) => setBookOdds("mlHome", v)}
                 probability={moneyline.homeWinProbability}
+                sharpProbability={sharpMl?.home ?? null}
               />
               <button
                 className="bet-button"
@@ -459,6 +509,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
                 value={book.mlAway}
                 onChange={(v) => setBookOdds("mlAway", v)}
                 probability={moneyline.awayWinProbability}
+                sharpProbability={sharpMl?.away ?? null}
               />
               <button
                 className="bet-button"

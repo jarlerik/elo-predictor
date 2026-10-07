@@ -400,6 +400,9 @@ export interface StakingBet {
   oddsTaken: number;
   probability: number;
   edge: number;
+  sharpProbability: number | null;
+  sharpEdge: number | null;
+  probabilitySource: "sharp" | "model";
   kellyFraction: number;
   bankroll: number | null;
   bankrollAssumed: boolean;
@@ -423,6 +426,7 @@ export interface Staking {
     overKelly: number;
     noEdge: number;
     noPrice: number;
+    sharpSized: number;
     assumed: number;
   };
   open: {
@@ -598,6 +602,7 @@ export const StakingChart: React.FC<{ staking: Staking }> = ({ staking }) => {
           {s.noEdge > 0 && <> · {s.noEdge} with no edge (not shown)</>}
           {s.noPrice > 0 && <> · {s.noPrice} saved at model odds (not shown)</>}
           {s.assumed > 0 && <> · {s.assumed} measured against today's bankroll</>}
+          {s.sharpSized > 0 && <> · {s.sharpSized} sized on the sharp price</>}
         </span>
       </div>
       <svg
@@ -634,9 +639,9 @@ export const StakingChart: React.FC<{ staking: Staking }> = ({ staking }) => {
             <title>
               {`${b.home}–${b.away} ${b.pick} @ ${b.oddsTaken}: stake ${eur(b.stake)}, ${kellyLabel(
                 b.kellyDivider
-              )} ${eur(b.kellyStake ?? 0)} (${(b.ratio ?? 0).toFixed(2)}×)${
-                b.bankrollAssumed ? ", against today's bankroll" : ""
-              }`}
+              )} ${eur(b.kellyStake ?? 0)} (${(b.ratio ?? 0).toFixed(2)}×) on the ${
+                b.probabilitySource
+              } probability${b.bankrollAssumed ? ", against today's bankroll" : ""}`}
             </title>
           </circle>
         ))}

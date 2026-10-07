@@ -13,6 +13,7 @@
  */
 import { LedgerLeague, LedgerMarket, LedgerRow, round2 } from "./ledger";
 import { kellyFraction } from "../utils/kelly";
+import { MARKET_SIDES, fairProbability } from "../utils/sharp";
 
 /** Settled bets below this count are shown muted on the dashboard. */
 export const MIN_SAMPLE = 30;
@@ -61,6 +62,31 @@ export interface Summary {
     /** Share of bets with oddsTaken > closingOdds. */
     beatCloseShare: number | null;
   };
+  /**
+   * Bets with sharp reference prices at bet time. `expectedProfit` is what
+   * the de-vigged sharp price implied for the odds taken; `actual` and
+   * `modelExpected` are the same bets' realised and model-expected profit.
+   * The sharp view is the strategy's own expectation: positive means the
+   * soft book was overpriced against the market when the bet was placed.
+   */
+  sharp: {
+    sample: number;
+    turnover: number;
+    actual: number;
+    modelExpected: number;
+    expectedProfit: number;
+  };
+  /**
+   * Closing line value against the sharp close: mean of
+   * oddsTaken × p_sharpClose − 1, the edge the odds taken still had at the
+   * market's final price. Positive over a sample is the earliest sign the
+   * prices taken were good ones.
+   */
+  sharpClv: {
+    sample: number;
+    mean: number | null;
+    beatCloseShare: number | null;
+  };
   maxDrawdown: {
     amount: number;
     /** Series indexes of the peak and the trough. */
@@ -105,6 +131,22 @@ export function bookProbability(row: LedgerRow): number | null {
   return own && own > 1 ? 1 / own / total : null;
 }
 
+/** De-vigged sharp probability of the pick at bet time, or null. */
+export function sharpProbability(row: LedgerRow): number | null {
+  const sides = MARKET_SIDES[row.market];
+  const side = pickSide(row);
+  if (!sides || !side) return null;
+  return fairProbability(row.sharpOdds, side, sides);
+}
+
+/** De-vigged sharp probability of the pick at the close, or null. */
+export function sharpClosingProbability(row: LedgerRow): number | null {
+  const sides = MARKET_SIDES[row.market];
+  const side = pickSide(row);
+  if (!sides || !side) return null;
+  return fairProbability(row.sharpClosingOdds, side, sides);
+}
+
 const isSettled = (r: LedgerRow) =>
   !!r.settledAt && (r.result === "win" || r.result === "loss");
 
@@ -145,6 +187,14 @@ export function summarize(
     expectedProfit: 0,
   };
   const clvValues: number[] = [];
+  const sharp = {
+    sample: 0,
+    turnover: 0,
+    actual: 0,
+    modelExpected: 0,
+    expectedProfit: 0,
+  };
+  const sharpClvValues: number[] = [];
   const series: SeriesPoint[] = [];
 
   for (const r of settled) {
@@ -167,6 +217,16 @@ export function summarize(
     if (r.closingOdds && r.closingOdds > 1) {
       clvValues.push(r.oddsTaken / r.closingOdds - 1);
     }
+    const pSharp = sharpProbability(r);
+    if (pSharp !== null) {
+      sharp.sample++;
+      sharp.turnover += r.stake;
+      sharp.actual += rowProfit;
+      sharp.modelExpected += expectedOf(r);
+      sharp.expectedProfit += r.stake * (pSharp * r.oddsTaken - 1);
+    }
+    const pClose = sharpClosingProbability(r);
+    if (pClose !== null) sharpClvValues.push(r.oddsTaken * pClose - 1);
     series.push({
       id: r.id,
       at: r.settledAt,
@@ -227,6 +287,24 @@ export function summarize(
           ? clvValues.filter((v) => v > 0).length / clvValues.length
           : null,
     },
+    sharp: {
+      sample: sharp.sample,
+      turnover: round2(sharp.turnover),
+      actual: round2(sharp.actual),
+      modelExpected: round2(sharp.modelExpected),
+      expectedProfit: round2(sharp.expectedProfit),
+    },
+    sharpClv: {
+      sample: sharpClvValues.length,
+      mean:
+        sharpClvValues.length > 0
+          ? sharpClvValues.reduce((s, v) => s + v, 0) / sharpClvValues.length
+          : null,
+      beatCloseShare:
+        sharpClvValues.length > 0
+          ? sharpClvValues.filter((v) => v > 0).length / sharpClvValues.length
+          : null,
+    },
     maxDrawdown: {
       amount: round2(maxDrawdown.amount),
       from: maxDrawdown.from,
@@ -257,6 +335,7 @@ export type SegmentBy =
   | "pick"
   | "oddsBand"
   | "edgeBand"
+  | "sharpEdgeBand"
   | "eloGap";
 
 export const SEGMENT_KEYS: SegmentBy[] = [
@@ -266,6 +345,7 @@ export const SEGMENT_KEYS: SegmentBy[] = [
   "pick",
   "oddsBand",
   "edgeBand",
+  "sharpEdgeBand",
   "eloGap",
 ];
 
@@ -375,6 +455,15 @@ function groupOf(row: LedgerRow, by: SegmentBy): {
       const [order, label] = band(EDGE_BANDS, edge < -1e-9 ? edge : Math.max(0, edge));
       return { key: `edge${order}`, order, label };
     }
+    case "sharpEdgeBand": {
+      // Edge of the odds taken against the de-vigged sharp price at bet time.
+      const p = sharpProbability(row);
+      if (p === null)
+        return { key: "noSharp", order: 99, label: "No sharp price" };
+      const edge = p * row.oddsTaken - 1;
+      const [order, label] = band(EDGE_BANDS, edge < -1e-9 ? edge : Math.max(0, edge));
+      return { key: `sharp${order}`, order, label };
+    }
     case "eloGap": {
       const h = row.model?.homeElo;
       const a = row.model?.awayElo;
@@ -412,6 +501,8 @@ export function segments(rows: LedgerRow[], by: SegmentBy): Segments {
 // ---------------------------------------------------------------------------
 // Staking discipline (section D of the plan): every bet against the Kelly
 // stake its own snapshot implied, and the open exposure by day and by game.
+// A bet that carried sharp prices is sized on the de-vigged sharp
+// probability (the strategy's own estimate); the others on the model's.
 // ---------------------------------------------------------------------------
 
 export interface StakingBet {
@@ -429,6 +520,14 @@ export interface StakingBet {
   probability: number;
   /** p × odds − 1 */
   edge: number;
+  /**
+   * De-vigged sharp probability of the pick at bet time and the edge of the
+   * odds taken against it; null when the bet carried no sharp prices.
+   */
+  sharpProbability: number | null;
+  sharpEdge: number | null;
+  /** Which probability the Kelly stake is sized on. */
+  probabilitySource: "sharp" | "model";
   /** Full-Kelly fraction of the bankroll. */
   kellyFraction: number;
   /** Bankroll the Kelly stake is measured against. */
@@ -485,6 +584,8 @@ export interface Staking {
     noPrice: number;
     /** Bets without a bankroll of their own (measured against today's). */
     assumed: number;
+    /** Bets sized on a sharp price rather than the model. */
+    sharpSized: number;
   };
   open: {
     bets: number;
@@ -510,7 +611,9 @@ export function staking(
   const bets: StakingBet[] = ordered.map((r) => {
     // Rows saved at the model's own fair odds have no measured edge.
     const noPrice = r.flags?.includes("oddsIsMinOdd") ?? false;
-    const f = noPrice ? 0 : kellyFraction(r.probability, r.oddsTaken);
+    const pSharp = sharpProbability(r);
+    const sizingProb = pSharp ?? r.probability;
+    const f = noPrice ? 0 : kellyFraction(sizingProb, r.oddsTaken);
     const own = r.bankrollBefore && r.bankrollBefore > 0 ? r.bankrollBefore : null;
     const base = own ?? bankroll;
     const divider = r.kellyDivider && r.kellyDivider > 0 ? r.kellyDivider : kellyDivider;
@@ -529,6 +632,9 @@ export function staking(
       oddsTaken: r.oddsTaken,
       probability: r.probability,
       edge: r.probability * r.oddsTaken - 1,
+      sharpProbability: pSharp,
+      sharpEdge: pSharp === null ? null : pSharp * r.oddsTaken - 1,
+      probabilitySource: pSharp === null ? "model" : "sharp",
       kellyFraction: f,
       bankroll: base,
       bankrollAssumed: own === null && base !== null,
@@ -600,6 +706,7 @@ export function staking(
       noEdge: bets.filter((b) => !b.noPrice && b.kellyFraction === 0).length,
       noPrice: bets.filter((b) => b.noPrice).length,
       assumed: bets.filter((b) => b.bankrollAssumed).length,
+      sharpSized: bets.filter((b) => b.probabilitySource === "sharp").length,
     },
     open: {
       bets: pending.length,

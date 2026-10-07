@@ -29,8 +29,10 @@ import {
   newRow,
   round2,
   setClosingOdds,
+  setSharpClosingOdds,
   settleRows,
 } from "../data/ledger";
+import { MARKET_SIDES } from "../utils/sharp";
 import {
   logPrediction,
   notePredictionBet,
@@ -75,14 +77,45 @@ function betMeta(body: any, home: string, away: string) {
     const n = Number(v);
     return v !== undefined && v !== null && Number.isFinite(n) ? n : null;
   };
+  // Sharp reference prices for the market (Pinnacle / exchange / consensus),
+  // same shape as marketOdds. Only kept when every side of the bet's market
+  // has a price, since a partial list cannot be de-vigged.
+  const sharpOdds = completePriceList(priceList(body.sharpOdds), body.market);
+  const sharpSource =
+    sharpOdds && typeof body.sharpSource === "string" && body.sharpSource.trim()
+      ? body.sharpSource.trim()
+      : null;
   return {
     league,
     bookmaker,
     marketOdds,
     model,
+    sharpOdds,
+    sharpSource,
     bankrollBefore: numOrNull(body.bankrollBefore),
     kellyDivider: numOrNull(body.kellyDivider),
   };
+}
+
+/** The list when it prices every side of the market, else null. */
+function completePriceList(
+  list: Record<string, number> | null,
+  market: unknown
+): Record<string, number> | null {
+  const sides = typeof market === "string" ? MARKET_SIDES[market] : undefined;
+  if (!list || !sides) return null;
+  return sides.every((side) => typeof list[side] === "number") ? list : null;
+}
+
+/** {side: odds} from a request body, prices above 1 only; null when empty. */
+function priceList(value: unknown): Record<string, number> | null {
+  if (!value || typeof value !== "object") return null;
+  const out: Record<string, number> = {};
+  for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+    const n = Number(v);
+    if (Number.isFinite(n) && n > 1) out[k] = Math.round(n * 100) / 100;
+  }
+  return Object.keys(out).length > 0 ? out : null;
 }
 
 /** An explicit kickoff sent by the client, ISO, or null when absent / unusable. */
@@ -753,6 +786,8 @@ router.post("/bets/save-winner", async (req, res) => {
         bookmaker: meta.bookmaker,
         marketOdds: meta.marketOdds,
         model: meta.model,
+        sharpOdds: meta.sharpOdds,
+        sharpSource: meta.sharpSource,
         bankrollBefore: meta.bankrollBefore,
         kellyDivider: meta.kellyDivider,
         // Without bookmaker prices the client sent the model's min odd.
@@ -1072,6 +1107,44 @@ router.post("/ledger/settle", async (req, res) => {
   } catch (e) {
     console.error("failed to settle", e);
     res.status(500).json({ error: "failed to settle" });
+  }
+});
+
+/**
+ * Sharp closing prices of one or more lines: the reference market's full
+ * price list for the bet's market just before kick-off. De-vigged, it gives
+ * the closing line value of the odds taken. `sharpClosingOdds` null clears.
+ */
+router.post("/ledger/sharp-closing", async (req, res) => {
+  try {
+    const { id, ids } = req.body;
+    const targets: string[] = Array.isArray(ids)
+      ? ids.filter((x: unknown) => typeof x === "string")
+      : typeof id === "string"
+      ? [id]
+      : [];
+    if (targets.length === 0)
+      return res.status(400).json({ error: "please provide id or ids" });
+    const raw = req.body.sharpClosingOdds;
+    const closing = raw === null || raw === undefined ? null : priceList(raw);
+    if (raw !== null && raw !== undefined) {
+      // Every side of each target line's market must be priced.
+      const rows = ensureLedger().filter((r) => targets.includes(r.id));
+      const complete = rows.every(
+        (r) => completePriceList(closing, r.market) !== null
+      );
+      if (closing === null || !complete)
+        return res.status(400).json({
+          error: "sharpClosingOdds must price every side of the market, each above 1",
+        });
+    }
+    const updated = setSharpClosingOdds(targets, closing);
+    if (updated.length === 0)
+      return res.status(404).json({ error: "no ledger line with that id" });
+    res.json({ success: true, rows: updated });
+  } catch (e) {
+    console.error("failed to set sharp closing odds", e);
+    res.status(500).json({ error: "failed to set sharp closing odds" });
   }
 });
 

@@ -64,6 +64,8 @@ drift (roster change, rule change) is visible.
 | Expected profit                 | Σ stake × (p_model × odds − 1)                                                               | What the model *thought* it would earn. Gap to actual profit = variance or model error        |
 | Market-expected profit          | Σ stake × (p_book × odds − 1), p_book de-vigged                                              | Always ≤ 0 if the book is right. Actual profit sitting between the two is the healthy picture |
 | Closing line value (CLV)        | mean of (odds taken / closing odds − 1), and % of bets that beat the close                  | Best-known leading indicator of long-run profit; meaningful after ~50 bets, unlike ROI        |
+| Sharp-expected profit           | Σ stake × (p_sharp × odds − 1), p_sharp the de-vigged sharp price at bet time                | The soft-book-vs-market strategy's own expectation; positive means the book was overpriced    |
+| CLV vs sharp close              | mean of (odds taken × p_sharpClose − 1), and % above 0                                       | Same idea as CLV but against the market's fair closing price, not the soft book's own close   |
 | Hit rate vs expected hit rate   | wins / n vs Σ p_model / n                                                                    | Cheap sanity check on calibration *within* the bet sample                                     |
 | Profit z-score                  | (actual − expected) / √Σ stake² × p(1−p) × odds²                                             | Says whether the result so far is distinguishable from luck (|z| < 2 means: not yet)          |
 | Cumulative profit curve         | profit over time, with the expected-profit line drawn alongside                              | The chart people actually look at; the expected line keeps it honest                          |
@@ -141,6 +143,14 @@ to append, easy to load into anything). Fields:
   the "skill vs market" and "market-expected profit" metrics possible.
 - `closingOdds` is filled in by hand (or a small script) just before kick-off.
   Missing is fine; CLV is computed over the bets that have it.
+- `sharpOdds` / `sharpSource` / `sharpClosingOdds` (added October 2026) are
+  the sharp reference market's full price list for the bet's market at bet
+  time and at the close: Pinnacle, an exchange, or the consensus of the
+  low-margin books, never the soft book being bet at. De-vigged the same
+  way as `marketOdds`, the bet-time list is the market's probability of the
+  pick, which the forms measure the soft-book price against and size the
+  Kelly stake on; the closing list gives the CLV against the sharp close.
+  A partial list is dropped on save, since it cannot be de-vigged.
 - `model` is a snapshot. Ratings drift, so recomputing the probability later
   gives a different number; the decision was made on this one.
 - Correct-score bets are one ledger row per line, sharing a `positionId`, so
@@ -380,11 +390,38 @@ tuned once there is data:
    calibration chart, the scores and a table of the rows; the CLV tile and
    the segment table read the closing odds.
 
+8. **Sharp reference prices.** *Done (October 2026).* The strategy of
+   comparing a soft book (Veikkaus) with the market consensus and taking
+   only the outcomes the soft book has overpriced needs the consensus
+   recorded next to the price taken. `src/utils/sharp.ts` holds the de-vig
+   (proportional), the market side lists and `MIN_SHARP_EDGE`, the margin a
+   soft price must clear over the sharp fair price (2 %) before the form
+   marks it as value. The 1X2 and moneyline bet forms get a **Sharp odds**
+   row (every side of the market plus a source name, remembered between
+   visits); once filled, each book-odds input shows a second edge against
+   the de-vigged sharp price, the Kelly hint is sized on that probability
+   instead of the model's, and an input that clears the margin is
+   outlined. Saving the bet sends `sharpOdds` and `sharpSource`, kept on the
+   ledger row only when every side is priced. `POST /api/ledger/sharp-closing`
+   sets `sharpClosingOdds` on a line, and each line on the Played Winner Bets
+   page has a "sharp close?" button that takes the full closing list and
+   then shows it with the CLV against the de-vigged close. The summary gains
+   `sharp` (expectation at the sharp price, with the same bets' actual and
+   model-expected profit) and `sharpClv`; the Dashboard shows them as the
+   **Sharp view** and **CLV vs sharp close** tiles and as two columns of the
+   segment table, which also gets a **Sharp edge** slice. The staking
+   metrics size the Kelly stake on the sharp probability when a bet carried
+   one and say how many bets were sized that way. Fetching the prices from
+   a Veikkaus or consensus API is not built; they are typed in.
+
 ## Sample-size expectations
 
 - Backtest calibration: available immediately (three seasons ≈ 1,300 NHL
   games, ≈ 450 Liiga, ≈ 380 EPL games each season).
-- CLV: informative after ~50 bets with closing odds.
+- CLV: informative after ~50 bets with closing odds. CLV vs the sharp
+  close is the earlier signal for the soft-book strategy: with the sharp
+  list typed on every bet, a mean above zero after ~50 bets says the prices
+  taken were good ones before yield can.
 - Yield per segment: needs hundreds of bets at 1.6–2.0 odds before a 5 %
   yield is distinguishable from zero; thousands at 12x+ odds. The z-score on
   the dashboard makes this explicit instead of leaving it to intuition.
