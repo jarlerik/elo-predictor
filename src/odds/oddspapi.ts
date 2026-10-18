@@ -17,11 +17,13 @@
  *   /v4/odds, /v4/historical-odds, /v4/account, quota rules, soccer market
  *   101 "Full Time Result" (outcomes 101/102/103), EPL tournamentId 17,
  *   NHL tournamentId 234 and sportId 15, bookmaker slug "pinnacle".
- * Taken from the OddsPapi blog (oddspapi.io/blog/nhl-regulation-overtime-
- * markets): hockey market 153 "Regular Time Result" (153/154/155) and 151
- * "Winner (incl. overtime and penalties)" (151/152). Marked UNVERIFIED
- * below where the docs showed no example: Liiga and Champions League
- * tournament ids (discovered at runtime from /v4/tournaments and cached),
+ * Checked with live calls on 2026-10-18: hockey market 153 "Regular Time
+ * Result" (153/154/155) and 151 "Winner (incl. overtime and penalties)"
+ * (151/152) both carry Pinnacle prices; Liiga is tournament 134; the
+ * historical snapshots are oldest first and continue in-play, so the close
+ * is picked by timestamp; /v4/account returns 404 despite the docs, so the
+ * budget is counted locally. Still UNVERIFIED: the Champions League
+ * tournament id (discovered at runtime from /v4/tournaments and cached)
  * and the exact leaf shape of /v4/odds (handled tolerantly).
  */
 import axios from "axios";
@@ -51,12 +53,12 @@ export const IDS = {
   tournament: {
     epl: 17, // docs example (get-fixtures): Liverpool v Man United, tournamentId 17
     nhl: 234, // oddspapi.io/sports/ice-hockey
-    liiga: null as number | null, // UNVERIFIED: not listed on the public pages
+    liiga: 134 as number | null, // /v4/tournaments?sportId=15, slug "liiga", category "finland" (2026-10-18)
     ucl: null as number | null, // UNVERIFIED
   },
   /** Slug fragments used to discover the unknown tournaments. */
   tournamentSlug: {
-    liiga: ["liiga"], // UNVERIFIED: expected slug like "liiga" under category "finland"
+    liiga: ["liiga"], // slug "liiga", category "finland"
     ucl: ["uefa-champions-league", "champions-league"], // UNVERIFIED
   },
   markets: {
@@ -123,6 +125,11 @@ export class BudgetExceeded extends Error {
 // HTTP
 // ---------------------------------------------------------------------------
 
+/** The API enforces a cooldown per endpoint; calls closer than this get 429. */
+const ENDPOINT_COOLDOWN_MS = 1100;
+const lastCallAt = new Map<string, number>();
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 async function call<T>(
   endpoint: string,
   params: Record<string, string | number>,
@@ -134,14 +141,29 @@ async function call<T>(
     const b = budget();
     if (b.used >= MONTHLY_LIMIT || (b.used >= SOFT_LIMIT && !opts.force))
       throw new BudgetExceeded(b.used);
-    spend(1);
   }
-  const resp = await axios.get(`${ENDPOINTS.baseUrl}${endpoint}`, {
-    params: { ...params, apiKey: key },
-    headers: { Accept: "application/json", "User-Agent": "elo-predictor" },
-    timeout: 30_000,
-  });
-  return resp.data as T;
+  for (let attempt = 0; ; attempt++) {
+    const wait = (lastCallAt.get(endpoint) ?? 0) + ENDPOINT_COOLDOWN_MS - Date.now();
+    if (wait > 0) await sleep(wait);
+    lastCallAt.set(endpoint, Date.now());
+    const resp = await axios.get(`${ENDPOINTS.baseUrl}${endpoint}`, {
+      params: { ...params, apiKey: key },
+      headers: { Accept: "application/json", "User-Agent": "elo-predictor" },
+      timeout: 30_000,
+      validateStatus: () => true,
+    });
+    if (resp.status === 429 && attempt < 2) {
+      const retryAfter = Number(resp.headers?.["retry-after"]);
+      await sleep(Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : 2000 * (attempt + 1));
+      continue;
+    }
+    if (resp.status !== 200) {
+      throw new Error(`oddspapi: HTTP ${resp.status} for ${endpoint}`);
+    }
+    // Only a served request counts against the month.
+    if (opts.billable) spend(1);
+    return resp.data as T;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -300,7 +322,8 @@ function priceOf(outcome: Any, before: number | null): number | null {
     leaf = outcome.players["0"] ?? Object.values(outcome.players)[0];
   }
   if (Array.isArray(leaf)) {
-    // Historical shape: array of {createdAt, price, active}, newest first.
+    // Historical shape: array of {createdAt, price, active}, oldest first
+    // and continuing into the game (in-play prices), so pick by timestamp.
     let best: { t: number; price: number } | null = null;
     for (const e of leaf) {
       const t = new Date(e?.createdAt).getTime();

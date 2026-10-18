@@ -96,8 +96,10 @@ const OVERRIDES: Record<OddsLeague, Record<string, string>> = {
     "Winnipeg Jets": "WPG",
   },
   liiga: {
-    // UNVERIFIED: OddsPapi's Liiga spellings. Both the bare club name and
-    // the "club city" form are listed so either resolves.
+    // OddsPapi's Liiga spellings, checked against /v4/fixtures on
+    // 2026-10-18 (ASCII-folded: "Karpat Oulu", "Assat Pori", "KalPa Hockey",
+    // "Vaasan Sport"). The bare club name and the "club city" form are
+    // listed too so either resolves.
     HIFK: "HIFK",
     "HIFK Helsinki": "HIFK",
     "IFK Helsinki": "HIFK",
@@ -117,6 +119,7 @@ const OVERRIDES: Record<OddsLeague, Record<string, string>> = {
     "K-Espoo": "KES",
     KalPa: "KAL",
     "KalPa Kuopio": "KAL",
+    "KalPa Hockey": "KAL",
     KooKoo: "KOO",
     "KooKoo Kouvola": "KOO",
     Kärpät: "KAR",
