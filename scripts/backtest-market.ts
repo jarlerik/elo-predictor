@@ -8,6 +8,7 @@
  *   npm run backtest:market -- epl --rows          # also write the per-bet rows
  *   npm run backtest:market -- epl --homeadv 45 --k 20 --age-weighting
  *   npm run backtest:market -- epl --regress 0.33 --new-team 1450
+ *   npm run backtest:market -- epl --margin signed --scale 400 --prob-scale 320
  *
  * Reads data/games/<league>/ and data/odds/<league>/ only (fill them with
  * `npm run games:fetch` and `npm run odds:fetch`). Writes
@@ -65,6 +66,9 @@ const cfg: WalkForwardConfig = {
     timeWeighting: has("--age-weighting"),
     seasonRegression: Number(flag("--regress") ?? 0),
     newTeamElo: Number(flag("--new-team") ?? 1500),
+    marginMode: (flag("--margin") as "unsigned" | "signed" | "none" | undefined) ?? "unsigned",
+    scale: Number(flag("--scale") ?? 400),
+    probScale: flag("--prob-scale") ? Number(flag("--prob-scale")) : undefined,
   },
   drawFactorScale: Number(flag("--draw-scale") ?? 1),
 };

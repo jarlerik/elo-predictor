@@ -122,32 +122,73 @@ Test-season log loss against the sharp close, by games played:
   and late-season effects the market prices and Elo cannot (nothing left
   to play for, rotated squads).
 
+## Third turn: in-season responsiveness and the goal layer (18 October 2026)
+
+Run with `npm run backtest:compare` (one line per variant; the options are
+all off by default and listed in the script header). Test-season log loss
+against the sharp close, baseline 0.990 (Δ +0.026 ± 0.004):
+
+| Variant | Test LL | Δ vs market | Verdict |
+| --- | ---: | ---: | --- |
+| Signed margin multiplier (FiveThirtyEight form) | 0.989 | +0.025 | no change |
+| No margin multiplier | 0.989 | +0.024 | no change, train worse |
+| K 30 | 0.987 | +0.022 | under 1 se |
+| Early-season K ×2 for the first 8 games | 0.988 | +0.024 | under 1 se |
+| Probability scale 350 / 320 / 300 / 280 | 0.990 / 0.992 / 0.994 / 0.997 | worse | rejected |
+| Update scored against the goal margin (0.5 + 0.15 × goals) | 1.008 | +0.043 | rejected |
+| 1X2 from the recent-form Poisson layer | 1.044 | +0.080 | rejected |
+| 1X2 from the rating-gap Poisson layer | 0.994 | +0.029 | rejected |
+| Blends of Elo with either Poisson layer | 0.991–0.996 | worse | rejected |
+
+Nothing passes the rule. The results-only Elo has plateaued about 0.02
+behind the sharp close on this league, and the first-five-games gap is
+already the smallest, so faster or slower ratings do not help.
+
+**The decisive check.** Blending the model with the de-vigged market price
+at weight w on the model, test seasons: w = 0 gives 0.9643, w = 0.1 gives
+0.9655, w = 0.5 gives 0.9732, w = 1 gives 0.9899. The best weight is zero
+on train, on test, on the Pinnacle-only rows and against the market
+average. The model carries no information the EPL market lacks. That
+settles the question for this league: no Elo change of this kind makes the
+model profitable, and the live default should size on the sharp price
+alone when one is present.
+
+Side finding: the recent-form Poisson layer, which prices the app's
+correct-score bets, is 0.08 log loss behind the market on 1X2. Correct-
+score bets should not be placed on it without a market comparison.
+
 ## Backlog, ranked
 
-1. **In-season responsiveness.** The gap widens as the season goes on. Try
-   a higher base K (the grid prefers 25–30 with home advantage 60 on
-   train), a K that decays with games played instead of calendar age, and
-   a signed margin of victory (the current multiplier damps upsets and
-   expected wins alike). Read the by-phase table, not just the total.
-2. **Late-season context.** After thirty games the model is 0.04 behind.
-   A "nothing to play for" flag from the table position is the obvious
-   feature; it needs standings, which the game store can derive.
-3. **Draw model**: the model under-predicts draws at parity; try fitting the
+1. **Hockey history.** The EPL market is the tightest there is; the model
+   may carry information in Liiga and the NHL that it does not here. This
+   is the only route to a model edge left, and it needs the price history
+   (The Odds API for one month, provider slot in `src/odds/theOddsApi.ts`;
+   `npm run games:fetch` extended to the hockey fetchers).
+2. **Soft-book edge, not model edge.** For the EPL the question is whether
+   Veikkaus prices worse than Pinnacle on some games: live CLV against the
+   sharp close, read at 50 bets.
+3. **Richer inputs** if the model is to beat the market anywhere: expected
+   goals, lineups and rest days are what the market prices and results-only
+   Elo cannot see. Out of scope for the current data sources.
+4. **Late-season context.** After thirty games the model is 0.04 behind; a
+   "nothing to play for" flag from the standings would be the first
+   feature, but see the blend result above before investing in it.
+5. **Draw model**: the model under-predicts draws at parity; try fitting the
    Davidson factor per season phase or adding a rating-gap term.
-4. **Market-informed probabilities as the live default**: expose
+6. **Market-informed probabilities as the live default**: expose
    `shrinkWeight` from the backtest in the bet forms (today the Kelly hint
    uses the sharp probability outright when one is typed or prefilled).
-5. **NHL and Liiga history.** Store the game history with
+7. **NHL and Liiga history (details).** Store the game history with
    `npm run games:fetch` (NHL via `fetchMultipleSeasons`, Liiga once
    `fetchSeason` is exported; filter NHL preseason and playoffs by
    `gameType`) and fill `src/odds/theOddsApi.ts` with The Odds API
    historical snapshots (about one $30 month for several seasons). OddsPapi
    Liiga coverage is unverified; check `/v4/tournaments` with a key.
-6. **Shin de-vig** instead of proportional, for the longshot bands.
-7. **Early-season guard**: `Policy.minGamesPlayed` exists in the backtest;
+8. **Shin de-vig** instead of proportional, for the longshot bands.
+9. **Early-season guard**: `Policy.minGamesPlayed` exists in the backtest;
    wire `model.gamesPlayed` into live bet rows so the `phase` segment works
    on the Dashboard too.
-8. **Two-way soccer sharp lists and correct-score prices** are dropped on
+10. **Two-way soccer sharp lists and correct-score prices** are dropped on
    save (see docs/METRICS_AND_DASHBOARD.md step 8); needs a `sides` notion
    on the ledger row.
 
@@ -169,3 +210,5 @@ Test-season log loss against the sharp close, by games played:
 | 2026-10-18 | Baseline: live settings (homeAdv 45, K 20, age weighting off in the walk) | +0.019 | +0.026 | −10.2 % (1431, max-shrunk-2) | `backtest-epl-20261018-1728` |
 | 2026-10-18 | Season regression 0.2 / 0.33 / 0.5 toward 1500: **rejected** (train worse, test unchanged, early games worse) | +0.022 (0.2) | +0.026 | — | `backtest-epl-20261018-1809` |
 | 2026-10-18 | Promoted clubs start at 1400: **not accepted** (test −0.004, under 1 se; train +0.002) | +0.021 | +0.022 | — | `backtest-epl-20261018-1809` |
+| 2026-10-18 | Signed / no margin multiplier, K 30, early-season K, probability scale, goal-margin updates, Poisson 1X2 and blends: **all rejected** (best test Δ +0.022, under 1 se) | +0.018–+0.056 | +0.022–+0.080 | −6.6 % to −15.6 % at avg close | `npm run backtest:compare` table above |
+| 2026-10-18 | Model–market blend: best weight on the model is 0 on train, test and the market average | — | — | — | section "Third turn" |

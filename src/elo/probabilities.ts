@@ -74,6 +74,13 @@ export function fitDrawFactorFromHistory(
     baseK?: number;
     seasonRegression?: number;
     newTeamElo?: number;
+    marginMode?: "unsigned" | "signed" | "none" | "goals";
+    goalStep?: number;
+    earlyK?: { mult: number; games: number };
+    /** Divisor used by the Elo update. */
+    scale?: number;
+    /** Divisor used to turn the rating gap into probabilities (default = scale). */
+    probScale?: number;
   } = {}
 ): number {
   const homeAdv = options.homeAdv ?? 60;
@@ -87,30 +94,38 @@ export function fitDrawFactorFromHistory(
     baseK: options.baseK,
     seasonRegression: options.seasonRegression,
     newTeamElo: options.newTeamElo,
+    marginMode: options.marginMode,
+    goalStep: options.goalStep,
+    earlyK: options.earlyK,
+    scale: options.scale,
     onGame: (g, homeElo, awayElo) => {
       diffs.push(homeElo + homeAdv - awayElo);
       if (isDraw(g)) observed++;
     },
   });
-  return fitDrawFactorToDiffs(diffs, observed, options);
+  return fitDrawFactorToDiffs(diffs, observed, {
+    ...options,
+    scale: options.probScale ?? options.scale,
+  });
 }
 
 /** Bisection on ν: expected draws over the rating gaps is monotonic in ν. */
 function fitDrawFactorToDiffs(
   diffs: number[],
   observed: number,
-  options: { fallback?: number; minGames?: number }
+  options: { fallback?: number; minGames?: number; scale?: number }
 ): number {
   const fallback = options.fallback ?? HOCKEY_DRAW_FACTOR;
   const minGames = options.minGames ?? 50;
+  const scale = options.scale ?? 400;
   if (diffs.length < minGames || observed === 0) return fallback;
   if (observed === diffs.length) return fallback;
 
   const expectedDraws = (nu: number) => {
     let sum = 0;
     for (const d of diffs) {
-      const home = Math.pow(10, d / 400);
-      const draw = nu * Math.pow(10, d / 800);
+      const home = Math.pow(10, d / scale);
+      const draw = nu * Math.pow(10, d / (2 * scale));
       sum += draw / (home + 1 + draw);
     }
     return sum;
@@ -141,7 +156,8 @@ export function eloToWinProb(
   homeElo: number,
   awayElo: number,
   homeAdv = 60,
-  drawFactor = NO_DRAW
+  drawFactor = NO_DRAW,
+  scale = 400
 ): { homeWin: number; awayWin: number; draw: number } {
   const ratingDiff = homeElo + homeAdv - awayElo;
 
@@ -149,9 +165,9 @@ export function eloToWinProb(
   //   home  ∝ 10^(diff/400)
   //   away  ∝ 1
   //   draw  ∝ ν · 10^(diff/800)   (geometric mean of the two strengths)
-  const homeTerm = Math.pow(10, ratingDiff / 400);
+  const homeTerm = Math.pow(10, ratingDiff / scale);
   const awayTerm = 1;
-  const drawTerm = drawFactor * Math.pow(10, ratingDiff / 800);
+  const drawTerm = drawFactor * Math.pow(10, ratingDiff / (2 * scale));
 
   const total = homeTerm + awayTerm + drawTerm;
 

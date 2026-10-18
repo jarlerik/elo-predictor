@@ -45,6 +45,27 @@ export interface EloOptions {
    * average). Default 1500. `initialElos` wins for a first appearance.
    */
   newTeamElo?: number;
+  /**
+   * How the goal margin scales K. "unsigned" (default, the original): the
+   * autocorrelation term uses |home − away| regardless of who won. "signed":
+   * the FiveThirtyEight form, where the term uses winner minus loser (with
+   * home advantage), damping expected blowouts and amplifying upsets.
+   * "none": K ignores the margin.
+   */
+  marginMode?: "unsigned" | "signed" | "none" | "goals";
+  /**
+   * With marginMode "goals": the result the update is scored against is
+   * 0.5 + goalDiff × goalStep, clamped to 0..1, instead of 1 / 0.5 / 0.
+   * The margin then carries the information, not a multiplier. Default 0.15.
+   */
+  goalStep?: number;
+  /** Rating-difference divisor in the expected score (default 400). */
+  scale?: number;
+  /**
+   * K multiplier while either side has played fewer than `games` this
+   * season, so ratings move faster when last season's are stalest.
+   */
+  earlyK?: { mult: number; games: number };
 }
 
 /** Games each side had already played in the game's season before it. */
@@ -82,6 +103,10 @@ export function computeElosFromGames(
   const newTeamElo = options.newTeamElo ?? BASE_ELO;
   // Only when asked: by default a returning team keeps its old rating.
   const resetReturning = options.newTeamElo !== undefined;
+  const marginMode = options.marginMode ?? "unsigned";
+  const scale = options.scale ?? 400;
+  const goalStep = options.goalStep ?? 0.15;
+  const earlyK = options.earlyK;
 
   // Keyed by abbreviation: a franchise can change upstream id when it is
   // renamed (e.g. Utah Hockey Club -> Utah Mammoth) but keeps its history.
@@ -137,23 +162,38 @@ export function computeElosFromGames(
     const awayRating = awayElo;
 
     const expectedHome =
-      1 / (1 + Math.pow(10, (awayRating - homeRating) / 400));
+      1 / (1 + Math.pow(10, (awayRating - homeRating) / scale));
 
     // actual result: win 1, loss 0, draw 0.5 (soccer only; hockey always has a
     // winner incl. OT/SO -- the regulation-time draw lives in probabilities.ts)
     let actualHome = 0.5;
     if (g.homeGoals > g.awayGoals) actualHome = 1;
     else if (g.awayGoals > g.homeGoals) actualHome = 0;
+    if (marginMode === "goals") {
+      actualHome = Math.min(1, Math.max(0, 0.5 + (g.homeGoals - g.awayGoals) * goalStep));
+    }
 
     const goalDiff = Math.abs(g.homeGoals - g.awayGoals);
-    const eloDiff = Math.abs(homeElo - awayElo);
-    const marginMult = marginMultiplier(goalDiff || 1, eloDiff);
+    let marginMult = 1;
+    if (marginMode === "unsigned") {
+      marginMult = marginMultiplier(goalDiff || 1, Math.abs(homeElo - awayElo));
+    } else if (marginMode === "signed") {
+      // Winner minus loser; a draw counts the home side as the "winner" so a
+      // tie against a stronger side is still a mild surprise.
+      const winnerMinusLoser =
+        actualHome >= 0.5 ? homeRating - awayRating : awayRating - homeRating;
+      marginMult =
+        Math.log(goalDiff + 1 || 1) * (2.2 / (Math.max(0, winnerMinusLoser) * 0.001 + 2.2));
+      if (goalDiff === 0) marginMult = 2.2 / (Math.max(0, winnerMinusLoser) * 0.001 + 2.2) * Math.log(2);
+    }
 
     // OT/SO -> reduce impact
     const otFactor = g.decidedInOTorSO ? 0.75 : 1.0;
 
     const age = timeWeighting ? timeWeight(g.date, now) : 1;
-    const k = baseK * marginMult * age * otFactor;
+    const early =
+      earlyK && Math.min(homePlayed, awayPlayed) < earlyK.games ? earlyK.mult : 1;
+    const k = baseK * marginMult * age * otFactor * early;
 
     const deltaHome = k * (actualHome - expectedHome);
     const deltaAway = -deltaHome; // zero-sum

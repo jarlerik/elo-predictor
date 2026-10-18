@@ -36,6 +36,10 @@ import { devig, MARKET_SIDES } from "../utils/sharp";
 import { kellyStake } from "../utils/kelly";
 import { OddsRecord, PriceTrio } from "../odds/types";
 import { joinOdds } from "../odds/store";
+import { computeRecentStatsForTeam } from "../score/recentStats";
+import { computeExpectedGoals } from "../score/expectedGoals";
+import { soccerExpectedGoals } from "../score/soccerGoals";
+import { computeScoreProbabilities } from "../score/correctScore";
 import { LedgerRow, newRow, round2 } from "./ledger";
 import { summarize, segments, Summary, SegmentBy, SEGMENT_KEYS, Segments } from "./metrics";
 import { brierOf, logLossOf, Bucket, emptyBuckets, addToBucket, finishBuckets, seasonLabel } from "./backtest";
@@ -54,6 +58,22 @@ export interface EloConfig {
   seasonRegression: number;
   /** Starting rating for promoted or returning teams. */
   newTeamElo: number;
+  /** See EloOptions.marginMode; default "unsigned". */
+  marginMode?: "unsigned" | "signed" | "none" | "goals";
+  goalStep?: number;
+  earlyK?: { mult: number; games: number };
+  /**
+   * Where the 1X2 probabilities come from: the Elo rating gap (default),
+   * the Poisson goal layer (`poisson-recent` from recent scoring form plus
+   * the rating gap, `poisson-elo` from the rating gap alone), or a blend
+   * of Elo and one of them with weight `blendWeight` on Elo.
+   */
+  probModel?: "elo" | "poisson-recent" | "poisson-elo" | "blend-recent" | "blend-elo";
+  blendWeight?: number;
+  /** Divisor in the Elo update's expected score; default 400. */
+  scale?: number;
+  /** Divisor used to map a rating gap to probabilities; default = scale. */
+  probScale?: number;
 }
 
 export interface WalkForwardConfig {
@@ -173,6 +193,28 @@ export function walkForward(
     seasonRegression: cfg.elo.seasonRegression,
     // 1500 means "as before": returning teams keep their rating.
     newTeamElo: cfg.elo.newTeamElo === 1500 ? undefined : cfg.elo.newTeamElo,
+    marginMode: cfg.elo.marginMode,
+    goalStep: cfg.elo.goalStep,
+    earlyK: cfg.elo.earlyK,
+    scale: cfg.elo.scale,
+  };
+  const probScale = cfg.elo.probScale ?? cfg.elo.scale ?? 400;
+  const probModel = cfg.elo.probModel ?? "elo";
+  const blendWeight = cfg.elo.blendWeight ?? 0.5;
+  // Per-team history so far, for the Poisson layer's recent-form stats.
+  const played = new Map<string, GameRecord[]>();
+  const historyOf = (abbr: string) => {
+    let list = played.get(abbr);
+    if (!list) played.set(abbr, (list = []));
+    return list;
+  };
+  const maxGoals = hockey ? 8 : 6;
+  const poisson1x2 = (lambdaHome: number, lambdaAway: number): [number, number, number] => {
+    const grid = computeScoreProbabilities(lambdaHome, lambdaAway, maxGoals);
+    const p: [number, number, number] = [0, 0, 0];
+    for (const c of grid) p[c.home > c.away ? 0 : c.home === c.away ? 1 : 2] += c.probability;
+    const t = p[0] + p[1] + p[2];
+    return [p[0] / t, p[1] / t, p[2] / t];
   };
 
   // Per-season draw factor and baseline from earlier seasons only.
@@ -183,6 +225,7 @@ export function walkForward(
     const prior = sorted.filter((g) => g.season < s);
     const nu = fitDrawFactorFromHistory(prior, hockey ? isRegulationDraw : isFullTimeDraw, {
       ...eloOpts,
+      probScale,
       fallback,
       currentTeams: new Set(),
     });
@@ -199,9 +242,28 @@ export function walkForward(
     ...eloOpts,
     currentTeams: new Set(),
     onGame: (g, homeElo, awayElo, played) => {
-      if (!scored.has(g.season)) return;
+      if (!scored.has(g.season)) {
+        historyOf(g.homeAbbr).push(g);
+        historyOf(g.awayAbbr).push(g);
+        return;
+      }
       const nu = drawFactor.get(g.season) ?? fallback;
-      const probs = eloToWinProb(homeElo, awayElo, cfg.elo.homeAdv, nu);
+      const probs = eloToWinProb(homeElo, awayElo, cfg.elo.homeAdv, nu, probScale);
+      let p: [number, number, number] = [probs.homeWin, probs.draw, probs.awayWin];
+      if (probModel !== "elo") {
+        let lambdas: { lambdaHome: number; lambdaAway: number };
+        if (probModel === "poisson-recent" || probModel === "blend-recent") {
+          const hs = computeRecentStatsForTeam(g.homeAbbr, historyOf(g.homeAbbr), 20);
+          const as = computeRecentStatsForTeam(g.awayAbbr, historyOf(g.awayAbbr), 20);
+          lambdas = computeExpectedGoals(hs, as, homeElo, awayElo);
+        } else {
+          lambdas = soccerExpectedGoals(homeElo, awayElo, cfg.elo.homeAdv);
+        }
+        const q = poisson1x2(lambdas.lambdaHome, lambdas.lambdaAway);
+        p = probModel.startsWith("blend") ? mix(p, q, blendWeight) : q;
+      }
+      historyOf(g.homeAbbr).push(g);
+      historyOf(g.awayAbbr).push(g);
       const o = join.matched.get(g.gamePk) ?? null;
       rows.push({
         gamePk: g.gamePk,
@@ -213,7 +275,7 @@ export function walkForward(
         awayElo,
         gamesPlayed: played,
         drawFactor: nu,
-        p: [probs.homeWin, probs.draw, probs.awayWin],
+        p,
         y: outcomeOf(g, hockey),
         baseline: baseline.get(g.season)!,
         odds: o,

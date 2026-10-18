@@ -17,6 +17,7 @@
     "odds:fetch": "tsx scripts/fetch-odds.ts",
     "games:fetch": "tsx scripts/fetch-games.ts",
     "backtest:market": "tsx scripts/backtest-market.ts",
+    "backtest:compare": "tsx scripts/backtest-compare.ts",
     "odds:close": "tsx scripts/fill-sharp-closing.ts",
     "odds:budget": "tsx scripts/oddspapi-budget.ts"
   },
