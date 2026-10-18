@@ -32,6 +32,19 @@ export interface EloOptions {
   timeWeighting?: boolean;
   /** Base K per game, default 20. Exposed for sensitivity grids. */
   baseK?: number;
+  /**
+   * Share of each rating's distance from 1500 given back at a season
+   * boundary (0 = none, the default; 1/3 is the common choice). Squads
+   * change over the summer, so last spring's rating overstates what is
+   * known in August.
+   */
+  seasonRegression?: number;
+  /**
+   * Starting rating for a team seen for the first time, or returning
+   * after a season out of the league (promoted sides are usually below
+   * average). Default 1500. `initialElos` wins for a first appearance.
+   */
+  newTeamElo?: number;
 }
 
 /** Games each side had already played in the game's season before it. */
@@ -65,6 +78,10 @@ export function computeElosFromGames(
   const now = options.now ?? Date.now();
   const timeWeighting = options.timeWeighting ?? true;
   const baseK = options.baseK ?? BASE_K;
+  const regression = options.seasonRegression ?? 0;
+  const newTeamElo = options.newTeamElo ?? BASE_ELO;
+  // Only when asked: by default a returning team keeps its old rating.
+  const resetReturning = options.newTeamElo !== undefined;
 
   // Keyed by abbreviation: a franchise can change upstream id when it is
   // renamed (e.g. Utah Hockey Club -> Utah Mammoth) but keeps its history.
@@ -76,20 +93,40 @@ export function computeElosFromGames(
   const played = new Map<string, number>();
 
   function ensureTeam(id: number | string, abbr: string) {
-    if (!elos.has(abbr)) elos.set(abbr, initial[abbr] ?? BASE_ELO);
+    if (!elos.has(abbr)) elos.set(abbr, initial[abbr] ?? newTeamElo);
     ids.set(abbr, id); // latest id wins
   }
 
-  for (const g of games) {
-    ensureTeam(g.homeTeamId, g.homeAbbr);
-    ensureTeam(g.awayTeamId, g.awayAbbr);
+  // Teams that played in the season just finished; the others are back
+  // from a spell outside the league and restart at newTeamElo.
+  let lastSeasonTeams = new Set<string>();
+  let thisSeasonTeams = new Set<string>();
+  function startSeason() {
+    if (regression > 0) {
+      for (const [abbr, e] of elos) elos.set(abbr, e + (BASE_ELO - e) * regression);
+    }
+    if (resetReturning && lastSeasonTeams.size > 0) {
+      for (const abbr of elos.keys()) {
+        if (!lastSeasonTeams.has(abbr)) elos.set(abbr, newTeamElo);
+      }
+    }
+    lastSeasonTeams = thisSeasonTeams;
+    thisSeasonTeams = new Set();
+  }
 
-    const homeElo = elos.get(g.homeAbbr)!;
-    const awayElo = elos.get(g.awayAbbr)!;
+  for (const g of games) {
     if (g.season !== season) {
+      if (season !== null) startSeason();
       season = g.season;
       played.clear();
     }
+    ensureTeam(g.homeTeamId, g.homeAbbr);
+    ensureTeam(g.awayTeamId, g.awayAbbr);
+    thisSeasonTeams.add(g.homeAbbr);
+    thisSeasonTeams.add(g.awayAbbr);
+
+    const homeElo = elos.get(g.homeAbbr)!;
+    const awayElo = elos.get(g.awayAbbr)!;
     const homePlayed = played.get(g.homeAbbr) ?? 0;
     const awayPlayed = played.get(g.awayAbbr) ?? 0;
     options.onGame?.(g, homeElo, awayElo, { home: homePlayed, away: awayPlayed });

@@ -73,7 +73,13 @@ export function drawFactorFor(
   games: GameRecord[],
   currentTeams: Set<string>,
   homeAdv: number,
-  eloOpts: { now?: number; timeWeighting?: boolean; baseK?: number } = {}
+  eloOpts: {
+    now?: number;
+    timeWeighting?: boolean;
+    baseK?: number;
+    seasonRegression?: number;
+    newTeamElo?: number;
+  } = {}
 ): number {
   const soccer = LEAGUES[league].sport === "soccer";
   return fitDrawFactorFromHistory(

@@ -72,6 +72,8 @@ export function fitDrawFactorFromHistory(
     now?: number;
     timeWeighting?: boolean;
     baseK?: number;
+    seasonRegression?: number;
+    newTeamElo?: number;
   } = {}
 ): number {
   const homeAdv = options.homeAdv ?? 60;
@@ -83,6 +85,8 @@ export function fitDrawFactorFromHistory(
     now: options.now,
     timeWeighting: options.timeWeighting,
     baseK: options.baseK,
+    seasonRegression: options.seasonRegression,
+    newTeamElo: options.newTeamElo,
     onGame: (g, homeElo, awayElo) => {
       diffs.push(homeElo + homeAdv - awayElo);
       if (isDraw(g)) observed++;

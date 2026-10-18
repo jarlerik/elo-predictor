@@ -7,6 +7,7 @@
  *   npm run backtest:market -- epl --grid          # sensitivity over Elo and policy settings
  *   npm run backtest:market -- epl --rows          # also write the per-bet rows
  *   npm run backtest:market -- epl --homeadv 45 --k 20 --age-weighting
+ *   npm run backtest:market -- epl --regress 0.33 --new-team 1450
  *
  * Reads data/games/<league>/ and data/odds/<league>/ only (fill them with
  * `npm run games:fetch` and `npm run odds:fetch`). Writes
@@ -62,6 +63,8 @@ const cfg: WalkForwardConfig = {
     homeAdv: Number(flag("--homeadv") ?? LEAGUES[league].homeAdv),
     baseK: Number(flag("--k") ?? 20),
     timeWeighting: has("--age-weighting"),
+    seasonRegression: Number(flag("--regress") ?? 0),
+    newTeamElo: Number(flag("--new-team") ?? 1500),
   },
   drawFactorScale: Number(flag("--draw-scale") ?? 1),
 };

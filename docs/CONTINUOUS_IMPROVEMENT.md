@@ -92,33 +92,62 @@ sharp probability (the forms already do this when a sharp price is
 present), and the backlog below is ordered by how much of the 0.02 gap each
 item might close.
 
+## Second turn: season regression (18 October 2026)
+
+Report: `data/reports/backtest-epl-20261018-1809.md`. Options added:
+`--regress <share>` pulls every rating that share of the way back to 1500
+at a season boundary; `--new-team <elo>` is the start for promoted or
+returning clubs. Both are in the grid.
+
+Test-season log loss against the sharp close, by games played:
+
+| Phase | n | Baseline Δ LL | Regress 0.2 | Regress 0.33, new 1400 | New 1400 only |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 0–5 played | 301 | +0.016 | +0.030 | +0.044 | +0.010 |
+| 6–15 played | 403 | +0.030 | +0.026 | +0.025 | +0.025 |
+| 16–30 played | 605 | +0.021 | +0.022 | +0.024 | +0.018 |
+| 31+ played | 271 | +0.040 | +0.042 | +0.044 | +0.040 |
+
+- **Regression rejected.** It makes the first games of a season worse, not
+  better: the spring rating is a better August prior than a shrunk one.
+  Train log loss rises at every strength and test does not move.
+- **Lower start for promoted clubs: not accepted.** Test Δ improves from
+  +0.026 to +0.022, under one standard error, and train worsens by the
+  same amount. 1450, 1400 and 1350 are indistinguishable. Kept as an
+  option, off.
+- **The hypothesis was wrong about where the gap is.** The model is closest
+  to the market in the first five games and furthest after thirty, so the
+  problem is in-season, not between seasons. Candidates: ratings move too
+  slowly (higher K, or K that does not shrink with the margin multiplier),
+  and late-season effects the market prices and Elo cannot (nothing left
+  to play for, rotated squads).
+
 ## Backlog, ranked
 
-1. **Regression to the mean between seasons** (`computeElosFromGames`): pull
-   every rating a third of the way back to 1500 at a season boundary, and
-   start promoted clubs below the mean. Early-season games are where the
-   gap to the market is widest.
-2. **Per-league base K and margin multiplier.** The grid prefers K 25–30
-   with home advantage 60 for the EPL on train (Δ LL 0.017 vs 0.018 at the
-   live settings); check on test before changing `LEAGUES[].homeAdv`.
-3. **Signed margin of victory**: the current multiplier damps upsets and
-   expected wins alike.
-4. **Draw model**: the model under-predicts draws at parity; try fitting the
+1. **In-season responsiveness.** The gap widens as the season goes on. Try
+   a higher base K (the grid prefers 25–30 with home advantage 60 on
+   train), a K that decays with games played instead of calendar age, and
+   a signed margin of victory (the current multiplier damps upsets and
+   expected wins alike). Read the by-phase table, not just the total.
+2. **Late-season context.** After thirty games the model is 0.04 behind.
+   A "nothing to play for" flag from the table position is the obvious
+   feature; it needs standings, which the game store can derive.
+3. **Draw model**: the model under-predicts draws at parity; try fitting the
    Davidson factor per season phase or adding a rating-gap term.
-5. **Market-informed probabilities as the live default**: expose
+4. **Market-informed probabilities as the live default**: expose
    `shrinkWeight` from the backtest in the bet forms (today the Kelly hint
    uses the sharp probability outright when one is typed or prefilled).
-6. **NHL and Liiga history.** Store the game history with
+5. **NHL and Liiga history.** Store the game history with
    `npm run games:fetch` (NHL via `fetchMultipleSeasons`, Liiga once
    `fetchSeason` is exported; filter NHL preseason and playoffs by
    `gameType`) and fill `src/odds/theOddsApi.ts` with The Odds API
    historical snapshots (about one $30 month for several seasons). OddsPapi
    Liiga coverage is unverified; check `/v4/tournaments` with a key.
-7. **Shin de-vig** instead of proportional, for the longshot bands.
-8. **Early-season guard**: `Policy.minGamesPlayed` exists in the backtest;
+6. **Shin de-vig** instead of proportional, for the longshot bands.
+7. **Early-season guard**: `Policy.minGamesPlayed` exists in the backtest;
    wire `model.gamesPlayed` into live bet rows so the `phase` segment works
    on the Dashboard too.
-9. **Two-way soccer sharp lists and correct-score prices** are dropped on
+8. **Two-way soccer sharp lists and correct-score prices** are dropped on
    save (see docs/METRICS_AND_DASHBOARD.md step 8); needs a `sides` notion
    on the ledger row.
 
@@ -138,3 +167,5 @@ item might close.
 | Date | Change | Train Δ LL | Test Δ LL | Test yield (bets, policy) | Report |
 | --- | --- | ---: | ---: | --- | --- |
 | 2026-10-18 | Baseline: live settings (homeAdv 45, K 20, age weighting off in the walk) | +0.019 | +0.026 | −10.2 % (1431, max-shrunk-2) | `backtest-epl-20261018-1728` |
+| 2026-10-18 | Season regression 0.2 / 0.33 / 0.5 toward 1500: **rejected** (train worse, test unchanged, early games worse) | +0.022 (0.2) | +0.026 | — | `backtest-epl-20261018-1809` |
+| 2026-10-18 | Promoted clubs start at 1400: **not accepted** (test −0.004, under 1 se; train +0.002) | +0.021 | +0.022 | — | `backtest-epl-20261018-1809` |
