@@ -137,3 +137,8 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Odds provider responses and backtest reports (regenerated; the fixtures
+# under data/odds/<league>/ and data/games/ are committed)
+data/odds/oddspapi/
+data/reports/*.json

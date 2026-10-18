@@ -15,6 +15,7 @@
     "src/server/**/*",
     "src/data/**/*",
     "src/elo/**/*",
+    "src/odds/**/*",
     "src/utils/**/*"
   ],
   "exclude": [

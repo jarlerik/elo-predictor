@@ -51,7 +51,7 @@ correct-score probabilities. This is a backtest; it needs no bets.
 | Draw rate: model vs actual| mean predicted draw prob vs share of games drawn                                    | Validates the fitted draw factor; the seeded soccer competitions use a constant   |
 | Home advantage check      | mean predicted home-win prob vs observed home-win rate                              | Validates `HOME_ADV` = 60 per league; Liiga and EPL likely differ                 |
 | Correct-score log loss    | −mean log p(actual score)                                                           | Scores the Poisson layer separately from Elo                                      |
-| Skill vs market (when odds stored) | model Brier − de-vigged bookmaker Brier                                     | Negative = model is sharper than the book on that segment. This is the edge test  |
+| Skill vs market                 | model Brier − de-vigged sharp-close Brier (`skillVsMarket` on `/api/metrics/model`, strict walk-forward version in `npm run backtest:market`) | Negative = model is sharper than the market on that segment. This is the edge test  |
 
 Report each per league and per season, plus a rolling 100-game window so a
 drift (roster change, rule change) is visible.
@@ -299,7 +299,10 @@ tuned once there is data:
    league's mean goals, the top-score hit rate, all of that per season, and
    a rolling 100-game Brier series. The result is cached with the league's
    Elo state, so it is recomputed on the same 6-hour refresh. Skill vs
-   market stays null until odds are stored for played games (step 7). The
+   market is filled from `data/odds/<league>/` when it exists (October
+   2026: EPL from 2012-13 via `npm run odds:fetch`); the strict
+   walk-forward comparison lives in `npm run backtest:market` and
+   docs/CONTINUOUS_IMPROVEMENT.md. The
    Dashboard has a **Model calibration** panel with one card per league:
    calibration chart (predicted vs observed with bucket sizes as bars,
    season and outcome selectors), the scores against their baselines, a
@@ -412,7 +415,9 @@ tuned once there is data:
    segment table, which also gets a **Sharp edge** slice. The staking
    metrics size the Kelly stake on the sharp probability when a bet carried
    one and say how many bets were sized that way. Fetching the prices from
-   a Veikkaus or consensus API is not built; they are typed in.
+   a Veikkaus API is not built; the sharp list is prefilled from OddsPapi
+   (Pinnacle) when `ODDSPAPI_API_KEY` is set (`GET /api/odds/sharp`), the
+   closing list by `npm run odds:close`; both stay editable.
 
 ## Sample-size expectations
 

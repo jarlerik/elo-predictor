@@ -29,6 +29,9 @@ import { eloToWinProb, NO_DRAW } from "../elo/probabilities";
 import { computeRecentStatsForTeam } from "../score/recentStats";
 import { computeExpectedGoals } from "../score/expectedGoals";
 import { computeScoreProbabilities, poissonPmf } from "../score/correctScore";
+import { readAllOdds, joinOdds } from "../odds/store";
+import { devig, MARKET_SIDES } from "../utils/sharp";
+import { PriceTrio } from "../odds/types";
 
 export const HOME_ADV = 60;
 /** Games in the rolling window and how often a point is emitted. */
@@ -51,6 +54,12 @@ export interface GamePrediction {
   y: Outcome;
   /** Hockey only: two-way probabilities including OT/SO. */
   ml: { p: [number, number]; y: 0 | 1 } | null;
+  /**
+   * De-vigged bookmaker probabilities for the game when data/odds has
+   * them: the sharp close (Pinnacle, else Betfair Exchange, else the market
+   * average) and the market average close.
+   */
+  market: { p: [number, number, number]; avg: [number, number, number] | null; book: string } | null;
   score: {
     home: number;
     away: number;
@@ -128,9 +137,44 @@ export interface Backtest {
   rolling: { window: number; step: number; points: RollingPoint[] };
   /** Outcome frequencies the baseline scores use. */
   baseline: { home: number; draw: number; away: number };
-  /** Not available until bookmaker odds are stored for played games. */
-  skillVsMarket: null;
+  /**
+   * Model vs the de-vigged sharp close over the games that have stored
+   * odds (data/odds, filled by `npm run odds:fetch`). This is the live
+   * model's view (whole-history draw factor, age-weighted K); the strict
+   * walk-forward numbers come from `npm run backtest:market`. Null without
+   * an odds cache.
+   */
+  skillVsMarket: SkillVsMarket | null;
   computedAt: string;
+}
+
+export interface MarketScore {
+  brier: number;
+  logLoss: number;
+}
+
+export interface SkillRow {
+  label: string;
+  n: number;
+  model: MarketScore;
+  market: MarketScore;
+  /** Market average close; null where the files have no such columns. */
+  avg: MarketScore | null;
+  baseline: MarketScore;
+  /** model − market; negative means the model is sharper. */
+  delta: MarketScore;
+}
+
+export interface SkillVsMarket {
+  source: string;
+  reference: "sharp-close";
+  /** Share of priced games by sharp book, e.g. { pinnacle: 4390 }. */
+  books: Record<string, number>;
+  games: number;
+  unmatched: number;
+  overall: SkillRow;
+  seasons: SkillRow[];
+  calibrationMarket: Bucket[];
 }
 
 const EPS = 1e-12;
@@ -152,10 +196,31 @@ function outcomeOf(g: GameRecord, sport: Sport): Outcome {
 }
 
 /** Score every game of the league once. */
+function toProbs(trio: PriceTrio | undefined): [number, number, number] | null {
+  if (!trio || trio.draw === undefined) return null;
+  const p = devig({ home: trio.home, draw: trio.draw, away: trio.away }, MARKET_SIDES.fullTime);
+  return p ? [p.home, p.draw, p.away] : null;
+}
+
+/** Stored odds joined to the league's games by (UTC day, home, away). */
+export function marketFor(league: LeagueId, games: GameRecord[]) {
+  const odds = readAllOdds(league);
+  const join = odds.length ? joinOdds(games, odds) : null;
+  const byGame = new Map<number, GamePrediction["market"]>();
+  if (join) {
+    for (const [pk, o] of join.matched) {
+      const p = toProbs(o.sharp);
+      if (p) byGame.set(pk, { p, avg: toProbs(o.avg), book: o.sharpBook });
+    }
+  }
+  return { byGame, unmatched: join ? join.unmatchedGames.length : 0, source: odds[0]?.source ?? null };
+}
+
 export function predictHistory(
   league: LeagueId,
   state: LeagueState,
-  homeAdv = HOME_ADV
+  homeAdv = HOME_ADV,
+  market: Map<number, GamePrediction["market"]> = new Map()
 ): GamePrediction[] {
   const sport = LEAGUES[league].sport;
   const maxGoals = sport === "soccer" ? 6 : 8;
@@ -217,6 +282,7 @@ export function predictHistory(
         p,
         y: outcomeOf(g, sport),
         ml,
+        market: market.get(g.gamePk) ?? null,
         score: {
           home: g.homeGoals,
           away: g.awayGoals,
@@ -266,13 +332,14 @@ export function baselineOf(games: GamePrediction[]): Baseline {
   };
 }
 
-function brierOf(p: number[], y: number): number {
+/** Multi-class Brier: the sum over outcomes of (p − 1{y})², so 0..2. */
+export function brierOf(p: number[], y: number): number {
   let s = 0;
   for (let i = 0; i < p.length; i++) s += (p[i] - (i === y ? 1 : 0)) ** 2;
   return s;
 }
 
-const logLossOf = (p: number[], y: number) => -Math.log(Math.max(p[y], EPS));
+export const logLossOf = (p: number[], y: number) => -Math.log(Math.max(p[y], EPS));
 
 export function emptyBuckets(): Bucket[] {
   return Array.from({ length: BUCKETS }, (_, i) => ({
@@ -471,6 +538,76 @@ function rollingSeries(
   return points;
 }
 
+/** Model vs market over the games that carry a market probability. */
+function skillRowOf(label: string, games: GamePrediction[], baseline: Baseline): SkillRow | null {
+  const priced = games.filter((g) => g.market);
+  const n = priced.length;
+  if (!n) return null;
+  const acc = { model: [0, 0], market: [0, 0], avg: [0, 0], base: [0, 0] };
+  let avgN = 0;
+  for (const g of priced) {
+    const m = g.market!;
+    acc.model[0] += brierOf(g.p, g.y);
+    acc.model[1] += logLossOf(g.p, g.y);
+    acc.market[0] += brierOf(m.p, g.y);
+    acc.market[1] += logLossOf(m.p, g.y);
+    acc.base[0] += brierOf(baseline.p, g.y);
+    acc.base[1] += logLossOf(baseline.p, g.y);
+    if (m.avg) {
+      avgN++;
+      acc.avg[0] += brierOf(m.avg, g.y);
+      acc.avg[1] += logLossOf(m.avg, g.y);
+    }
+  }
+  const score = (a: number[], k: number): MarketScore => ({
+    brier: round4(a[0] / k),
+    logLoss: round4(a[1] / k),
+  });
+  const model = score(acc.model, n);
+  const market = score(acc.market, n);
+  return {
+    label,
+    n,
+    model,
+    market,
+    avg: avgN ? score(acc.avg, avgN) : null,
+    baseline: score(acc.base, n),
+    delta: { brier: round4(model.brier - market.brier), logLoss: round4(model.logLoss - market.logLoss) },
+  };
+}
+
+function skillVsMarketOf(
+  games: GamePrediction[],
+  bySeason: Map<string, GamePrediction[]>,
+  baseline: Baseline,
+  info: { unmatched: number; source: string | null }
+): SkillVsMarket | null {
+  const overall = skillRowOf("All seasons", games, baseline);
+  if (!overall || !info.source) return null;
+  const books: Record<string, number> = {};
+  const buckets = emptyBuckets();
+  for (const g of games) {
+    if (!g.market) continue;
+    books[g.market.book] = (books[g.market.book] ?? 0) + 1;
+    for (let i = 0; i < 3; i++) addToBucket(buckets, g.market.p[i], g.y === i);
+  }
+  const seasons: SkillRow[] = [];
+  for (const [season, list] of bySeason) {
+    const row = skillRowOf(seasonLabel(season), list, baseline);
+    if (row) seasons.push(row);
+  }
+  return {
+    source: info.source,
+    reference: "sharp-close",
+    books,
+    games: overall.n,
+    unmatched: info.unmatched,
+    overall,
+    seasons,
+    calibrationMarket: finishBuckets(buckets),
+  };
+}
+
 export function backtestLeague(
   league: LeagueId,
   state: LeagueState,
@@ -478,7 +615,8 @@ export function backtestLeague(
 ): Backtest {
   const info = LEAGUES[league];
   const maxGoals = info.sport === "soccer" ? 6 : 8;
-  const games = predictHistory(league, state, homeAdv);
+  const market = marketFor(league, state.games);
+  const games = predictHistory(league, state, homeAdv, market.byGame);
   const baseline = baselineOf(games);
 
   const bySeason = new Map<string, GamePrediction[]>();
@@ -510,7 +648,7 @@ export function backtestLeague(
       step: ROLLING_STEP,
       points: rollingSeries(games, baseline),
     },
-    skillVsMarket: null,
+    skillVsMarket: skillVsMarketOf(games, bySeason, baseline, market),
     computedAt: new Date().toISOString(),
   };
 }

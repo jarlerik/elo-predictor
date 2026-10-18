@@ -77,6 +77,13 @@ Live sources are re-fetched every 6 hours. The Champions League and World Cup se
 - `npm run build:server` - Build only the backend
 - `npm run build:client` - Build only the frontend
 - `npm start` - Start the production server
+- `npm run odds:fetch -- epl 2012 2026` - Store football-data.co.uk odds per season under `data/odds/`
+- `npm run games:fetch -- epl 2012 2026 --verify` - Store played games per season under `data/games/` and cross-check scores with the odds files
+- `npm run backtest:market -- epl [--grid]` - Walk-forward backtest of the model against the stored odds; writes `data/reports/`
+- `npm run odds:close` / `npm run odds:budget` - Fill sharp closing prices on settled bets from OddsPapi, and show the month's request budget
+- `npm run fit:homeadv` - Grid-fit the Elo home advantage per league
+
+See [docs/CONTINUOUS_IMPROVEMENT.md](docs/CONTINUOUS_IMPROVEMENT.md) for the improvement loop these scripts support.
 
 ### Development URLs
 

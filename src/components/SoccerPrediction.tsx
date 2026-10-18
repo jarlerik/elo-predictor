@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ScorePrediction from "./ScorePrediction";
 import {
   BookmakerField,
   OddsInput,
   SharpOddsFields,
+  fetchSharpPrefill,
+  sharpFillNote,
   sharpOddsBody,
   sharpProbabilities,
   useSharpSource,
@@ -101,7 +103,12 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
   const [teams, setTeams] = useState<Team[]>([]);
   const [seedRefreshed, setSeedRefreshed] = useState<string>("");
   const [selectedHome, setSelectedHome] = useState<string>("");
+  // Latest selection, so a prefill arriving after the user moved on is dropped.
+  const selectedHomeRef = useRef("");
+  selectedHomeRef.current = selectedHome;
   const [selectedAway, setSelectedAway] = useState<string>("");
+  const selectedAwayRef = useRef("");
+  selectedAwayRef.current = selectedAway;
   const [knockout, setKnockout] = useState<boolean>(false);
   // "venue flipped" = the venue checkbox is ticked (host nation / neutral final)
   const [venueFlipped, setVenueFlipped] = useState<boolean>(false);
@@ -131,6 +138,8 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
   const setSharpOdds = (key: string, value: string) =>
     setSharp((prev) => ({ ...prev, [key]: value }));
   const [sharpSource, setSharpSource] = useSharpSource();
+  // Where the sharp prices came from when they were fetched, not typed.
+  const [sharpNote, setSharpNote] = useState<string | null>(null);
   // Bankroll and Kelly divider for the stake hint and the ledger snapshot.
   const { bankroll, kelly } = useBankroll();
   const useStake = (v: number) => setStake(v.toFixed(2));
@@ -205,6 +214,31 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
       setScorePrediction(await scoreRes.json());
       setBook({ home: "", draw: "", away: "" });
       setSharp({ home: "", draw: "", away: "" });
+      setSharpNote(null);
+      // Champions League games are priced by the odds API; prefill the
+      // sharp fields unless the user has typed into them meanwhile.
+      if (competition === "ucl") {
+        const home = selectedHome;
+        const away = selectedAway;
+        fetchSharpPrefill({ league: "ucl", home, away }).then((body) => {
+          if (!body) return;
+          if (home !== selectedHomeRef.current || away !== selectedAwayRef.current) return;
+          let applied = false;
+          setSharp((prev) => {
+            if (Object.values(prev).some((v) => v !== "")) return prev;
+            applied = true;
+            return {
+              home: body.sharpOdds.home.toFixed(2),
+              draw: body.sharpOdds.draw === undefined ? "" : body.sharpOdds.draw.toFixed(2),
+              away: body.sharpOdds.away.toFixed(2),
+            };
+          });
+          if (applied) {
+            setSharpNote(sharpFillNote(body.sharpSource, body.fetchedAt));
+            if (!sharpSource) setSharpSource(body.sharpSource);
+          }
+        });
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     }
@@ -472,6 +506,7 @@ const SoccerPrediction: React.FC<SoccerPredictionProps> = ({
               onChange={setSharpOdds}
               source={sharpSource}
               onSourceChange={setSharpSource}
+              note={sharpNote ?? undefined}
             />
 
             <div className="probabilities">

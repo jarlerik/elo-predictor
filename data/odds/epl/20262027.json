@@ -1,0 +1,4553 @@
+{
+ "source": "football-data",
+ "fetchedAt": "2026-10-18T17:23:00.068Z",
+ "startYear": 2026,
+ "complete": false,
+ "records": [
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-21T20:00:00Z",
+   "home": "ARS",
+   "away": "COV",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.23,
+    "draw": 7.4,
+    "away": 18
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.23,
+    "draw": 7.4,
+    "away": 18
+   },
+   "avg": {
+    "home": 1.2,
+    "draw": 6.72,
+    "away": 14
+   },
+   "max": {
+    "home": 1.22,
+    "draw": 7.5,
+    "away": 16
+   },
+   "avgOpen": {
+    "home": 1.19,
+    "draw": 6.77,
+    "away": 14.19
+   },
+   "maxOpen": {
+    "home": 1.23,
+    "draw": 7.5,
+    "away": 16.5
+   },
+   "book": {
+    "B365": {
+     "home": 1.2,
+     "draw": 7,
+     "away": 13
+    },
+    "B365C": {
+     "home": 1.18,
+     "draw": 7.5,
+     "away": 13
+    },
+    "BW": {
+     "home": 1.2,
+     "draw": 6.5,
+     "away": 12
+    },
+    "BWC": {
+     "home": 1.2,
+     "draw": 6.5,
+     "away": 11.5
+    },
+    "BFE": {
+     "home": 1.23,
+     "draw": 7.4,
+     "away": 18
+    },
+    "BFEC": {
+     "home": 1.23,
+     "draw": 7.4,
+     "away": 18
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 0
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-22T12:30:00Z",
+   "home": "HUL",
+   "away": "MUN",
+   "market": "fullTime",
+   "sharp": {
+    "home": 9.6,
+    "draw": 5.4,
+    "away": 1.39
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 9.6,
+    "draw": 5.2,
+    "away": 1.4
+   },
+   "avg": {
+    "home": 8.49,
+    "draw": 5.11,
+    "away": 1.34
+   },
+   "max": {
+    "home": 9,
+    "draw": 5.5,
+    "away": 1.37
+   },
+   "avgOpen": {
+    "home": 8.37,
+    "draw": 4.93,
+    "away": 1.36
+   },
+   "maxOpen": {
+    "home": 9,
+    "draw": 5.25,
+    "away": 1.39
+   },
+   "book": {
+    "B365": {
+     "home": 8.5,
+     "draw": 5,
+     "away": 1.36
+    },
+    "B365C": {
+     "home": 9,
+     "draw": 5,
+     "away": 1.33
+    },
+    "BW": {
+     "home": 7.5,
+     "draw": 4.6,
+     "away": 1.38
+    },
+    "BWC": {
+     "home": 7.25,
+     "draw": 4.8,
+     "away": 1.36
+    },
+    "BFE": {
+     "home": 9.6,
+     "draw": 5.2,
+     "away": 1.4
+    },
+    "BFEC": {
+     "home": 9.6,
+     "draw": 5.4,
+     "away": 1.39
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 0
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-22T15:00:00Z",
+   "home": "EVE",
+   "away": "CRY",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.42,
+    "draw": 3.45,
+    "away": 3.25
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.28,
+    "draw": 3.55,
+    "away": 3.5
+   },
+   "avg": {
+    "home": 2.32,
+    "draw": 3.36,
+    "away": 3.05
+   },
+   "max": {
+    "home": 2.38,
+    "draw": 3.5,
+    "away": 3.2
+   },
+   "avgOpen": {
+    "home": 2.23,
+    "draw": 3.4,
+    "away": 3.24
+   },
+   "maxOpen": {
+    "home": 3.2,
+    "draw": 3.5,
+    "away": 3.4
+   },
+   "book": {
+    "B365": {
+     "home": 2.15,
+     "draw": 3.5,
+     "away": 3.3
+    },
+    "B365C": {
+     "home": 2.38,
+     "draw": 3.4,
+     "away": 3
+    },
+    "BW": {
+     "home": 2.1,
+     "draw": 3.3,
+     "away": 3.2
+    },
+    "BWC": {
+     "home": 2.25,
+     "draw": 3.25,
+     "away": 3
+    },
+    "BFE": {
+     "home": 2.28,
+     "draw": 3.55,
+     "away": 3.5
+    },
+    "BFEC": {
+     "home": 2.42,
+     "draw": 3.45,
+     "away": 3.25
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 0
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-22T15:00:00Z",
+   "home": "IPS",
+   "away": "SUN",
+   "market": "fullTime",
+   "sharp": {
+    "home": 3,
+    "draw": 3.35,
+    "away": 2.68
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.88,
+    "draw": 3.4,
+    "away": 2.74
+   },
+   "avg": {
+    "home": 2.83,
+    "draw": 3.22,
+    "away": 2.52
+   },
+   "max": {
+    "home": 3,
+    "draw": 3.3,
+    "away": 2.6
+   },
+   "avgOpen": {
+    "home": 2.69,
+    "draw": 3.29,
+    "away": 2.6
+   },
+   "maxOpen": {
+    "home": 2.75,
+    "draw": 3.4,
+    "away": 2.68
+   },
+   "book": {
+    "B365": {
+     "home": 2.7,
+     "draw": 3.3,
+     "away": 2.63
+    },
+    "B365C": {
+     "home": 3,
+     "draw": 3.3,
+     "away": 2.5
+    },
+    "BW": {
+     "home": 2.65,
+     "draw": 3.25,
+     "away": 2.5
+    },
+    "BWC": {
+     "home": 2.7,
+     "draw": 3.1,
+     "away": 2.5
+    },
+    "BFE": {
+     "home": 2.88,
+     "draw": 3.4,
+     "away": 2.74
+    },
+    "BFEC": {
+     "home": 3,
+     "draw": 3.35,
+     "away": 2.68
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-22T15:00:00Z",
+   "home": "NFO",
+   "away": "LEE",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.6,
+    "draw": 3.3,
+    "away": 3.15
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.4,
+    "draw": 3.5,
+    "away": 3.3
+   },
+   "avg": {
+    "home": 2.45,
+    "draw": 3.2,
+    "away": 2.94
+   },
+   "max": {
+    "home": 2.52,
+    "draw": 3.25,
+    "away": 3
+   },
+   "avgOpen": {
+    "home": 2.27,
+    "draw": 3.35,
+    "away": 3.1
+   },
+   "maxOpen": {
+    "home": 2.35,
+    "draw": 3.5,
+    "away": 3.4
+   },
+   "book": {
+    "B365": {
+     "home": 2.3,
+     "draw": 3.4,
+     "away": 3.1
+    },
+    "B365C": {
+     "home": 2.5,
+     "draw": 3.2,
+     "away": 2.9
+    },
+    "BW": {
+     "home": 2.25,
+     "draw": 3.3,
+     "away": 2.95
+    },
+    "BWC": {
+     "home": 2.37,
+     "draw": 3.1,
+     "away": 2.9
+    },
+    "BFE": {
+     "home": 2.4,
+     "draw": 3.5,
+     "away": 3.3
+    },
+    "BFEC": {
+     "home": 2.6,
+     "draw": 3.3,
+     "away": 3.15
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-22T17:30:00Z",
+   "home": "BRE",
+   "away": "TOT",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.1,
+    "draw": 4,
+    "away": 3.55
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.52,
+    "draw": 3.8,
+    "away": 2.9
+   },
+   "avg": {
+    "home": 1.99,
+    "draw": 3.71,
+    "away": 3.39
+   },
+   "max": {
+    "home": 2.14,
+    "draw": 3.9,
+    "away": 3.5
+   },
+   "avgOpen": {
+    "home": 2.48,
+    "draw": 3.58,
+    "away": 2.69
+   },
+   "maxOpen": {
+    "home": 3.4,
+    "draw": 3.75,
+    "away": 2.8
+   },
+   "book": {
+    "B365": {
+     "home": 2.4,
+     "draw": 3.7,
+     "away": 2.75
+    },
+    "B365C": {
+     "home": 1.95,
+     "draw": 3.9,
+     "away": 3.5
+    },
+    "BW": {
+     "home": 2.37,
+     "draw": 3.4,
+     "away": 2.7
+    },
+    "BWC": {
+     "home": 1.95,
+     "draw": 3.6,
+     "away": 3.4
+    },
+    "BFE": {
+     "home": 2.52,
+     "draw": 3.8,
+     "away": 2.9
+    },
+    "BFEC": {
+     "home": 2.1,
+     "draw": 4,
+     "away": 3.55
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 0
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-23T14:00:00Z",
+   "home": "BHA",
+   "away": "AVL",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.16,
+    "draw": 3.55,
+    "away": 3.8
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.28,
+    "draw": 3.75,
+    "away": 3.3
+   },
+   "avg": {
+    "home": 2.07,
+    "draw": 3.41,
+    "away": 3.52
+   },
+   "max": {
+    "home": 2.12,
+    "draw": 3.5,
+    "away": 3.7
+   },
+   "avgOpen": {
+    "home": 2.19,
+    "draw": 3.54,
+    "away": 3.08
+   },
+   "maxOpen": {
+    "home": 2.25,
+    "draw": 3.6,
+    "away": 3.15
+   },
+   "book": {
+    "B365": {
+     "home": 2.15,
+     "draw": 3.6,
+     "away": 3
+    },
+    "B365C": {
+     "home": 2.05,
+     "draw": 3.5,
+     "away": 3.5
+    },
+    "BW": {
+     "home": 2.15,
+     "draw": 3.5,
+     "away": 3.1
+    },
+    "BWC": {
+     "home": 2,
+     "draw": 3.3,
+     "away": 3.4
+    },
+    "BFE": {
+     "home": 2.28,
+     "draw": 3.75,
+     "away": 3.3
+    },
+    "BFEC": {
+     "home": 2.16,
+     "draw": 3.55,
+     "away": 3.8
+    }
+   },
+   "result": {
+    "homeGoals": 4,
+    "awayGoals": 0
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-23T14:00:00Z",
+   "home": "MCI",
+   "away": "BOU",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.51,
+    "draw": 5.1,
+    "away": 7
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.52,
+    "draw": 5.1,
+    "away": 6.4
+   },
+   "avg": {
+    "home": 1.44,
+    "draw": 4.78,
+    "away": 6.36
+   },
+   "max": {
+    "home": 1.48,
+    "draw": 5,
+    "away": 7
+   },
+   "avgOpen": {
+    "home": 1.45,
+    "draw": 4.72,
+    "away": 5.93
+   },
+   "maxOpen": {
+    "home": 1.48,
+    "draw": 5,
+    "away": 6.6
+   },
+   "book": {
+    "B365": {
+     "home": 1.48,
+     "draw": 4.5,
+     "away": 6.25
+    },
+    "B365C": {
+     "home": 1.45,
+     "draw": 4.5,
+     "away": 7
+    },
+    "BW": {
+     "home": 1.46,
+     "draw": 4.75,
+     "away": 5.75
+    },
+    "BWC": {
+     "home": 1.43,
+     "draw": 4.75,
+     "away": 6
+    },
+    "BFE": {
+     "home": 1.52,
+     "draw": 5.1,
+     "away": 6.4
+    },
+    "BFEC": {
+     "home": 1.51,
+     "draw": 5.1,
+     "away": 7
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-23T16:30:00Z",
+   "home": "NEW",
+   "away": "LIV",
+   "market": "fullTime",
+   "sharp": {
+    "home": 4.1,
+    "draw": 4,
+    "away": 1.95
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 4.1,
+    "draw": 4,
+    "away": 1.95
+   },
+   "avg": {
+    "home": 3.66,
+    "draw": 3.82,
+    "away": 1.92
+   },
+   "max": {
+    "home": 3.9,
+    "draw": 4,
+    "away": 2.5
+   },
+   "avgOpen": {
+    "home": 3.57,
+    "draw": 3.85,
+    "away": 1.92
+   },
+   "maxOpen": {
+    "home": 4,
+    "draw": 4,
+    "away": 2.5
+   },
+   "book": {
+    "B365": {
+     "home": 4,
+     "draw": 3.8,
+     "away": 1.9
+    },
+    "B365C": {
+     "home": 3.9,
+     "draw": 3.9,
+     "away": 1.85
+    },
+    "BW": {
+     "home": 3.5,
+     "draw": 3.8,
+     "away": 1.87
+    },
+    "BWC": {
+     "home": 3.6,
+     "draw": 3.7,
+     "away": 1.88
+    },
+    "BFE": {
+     "home": 4.1,
+     "draw": 4,
+     "away": 1.95
+    },
+    "BFEC": {
+     "home": 4.1,
+     "draw": 4,
+     "away": 1.95
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 2
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-24T20:00:00Z",
+   "home": "FUL",
+   "away": "CHE",
+   "market": "fullTime",
+   "sharp": {
+    "home": 3.95,
+    "draw": 3.65,
+    "away": 2.1
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 4.1,
+    "draw": 3.95,
+    "away": 1.95
+   },
+   "avg": {
+    "home": 3.57,
+    "draw": 3.5,
+    "away": 2.02
+   },
+   "max": {
+    "home": 3.65,
+    "draw": 3.6,
+    "away": 2.08
+   },
+   "avgOpen": {
+    "home": 3.66,
+    "draw": 3.76,
+    "away": 1.89
+   },
+   "maxOpen": {
+    "home": 3.8,
+    "draw": 4,
+    "away": 1.95
+   },
+   "book": {
+    "B365": {
+     "home": 3.6,
+     "draw": 3.8,
+     "away": 1.9
+    },
+    "B365C": {
+     "home": 3.6,
+     "draw": 3.5,
+     "away": 2.05
+    },
+    "BW": {
+     "home": 3.5,
+     "draw": 3.5,
+     "away": 1.93
+    },
+    "BWC": {
+     "home": 3.4,
+     "draw": 3.4,
+     "away": 2
+    },
+    "BFE": {
+     "home": 4.1,
+     "draw": 3.95,
+     "away": 1.95
+    },
+    "BFEC": {
+     "home": 3.95,
+     "draw": 3.65,
+     "away": 2.1
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 3
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-28T20:00:00Z",
+   "home": "CRY",
+   "away": "MCI",
+   "market": "fullTime",
+   "sharp": {
+    "home": 5.5,
+    "draw": 4.3,
+    "away": 1.69
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 5.3,
+    "draw": 4.2,
+    "away": 1.73
+   },
+   "avg": {
+    "home": 4.96,
+    "draw": 4.13,
+    "away": 1.62
+   },
+   "max": {
+    "home": 5.3,
+    "draw": 4.3,
+    "away": 1.67
+   },
+   "avgOpen": {
+    "home": 4.83,
+    "draw": 3.95,
+    "away": 1.67
+   },
+   "maxOpen": {
+    "home": 5,
+    "draw": 4.05,
+    "away": 1.7
+   },
+   "book": {
+    "B365": {
+     "home": 5,
+     "draw": 3.9,
+     "away": 1.67
+    },
+    "B365C": {
+     "home": 5,
+     "draw": 4.2,
+     "away": 1.62
+    },
+    "BW": {
+     "home": 4.6,
+     "draw": 3.9,
+     "away": 1.7
+    },
+    "BWC": {
+     "home": 4.75,
+     "draw": 4.1,
+     "away": 1.65
+    },
+    "BFE": {
+     "home": 5.3,
+     "draw": 4.2,
+     "away": 1.73
+    },
+    "BFEC": {
+     "home": 5.5,
+     "draw": 4.3,
+     "away": 1.69
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 4
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-29T12:30:00Z",
+   "home": "LIV",
+   "away": "NFO",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.52,
+    "draw": 4.9,
+    "away": 6.8
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.56,
+    "draw": 4.8,
+    "away": 6.4
+   },
+   "avg": {
+    "home": 1.46,
+    "draw": 4.7,
+    "away": 6.09
+   },
+   "max": {
+    "home": 1.49,
+    "draw": 5,
+    "away": 6.5
+   },
+   "avgOpen": {
+    "home": 1.57,
+    "draw": 4.39,
+    "away": 5.53
+   },
+   "maxOpen": {
+    "home": 2.25,
+    "draw": 4.6,
+    "away": 6
+   },
+   "book": {
+    "B365": {
+     "home": 1.5,
+     "draw": 4.5,
+     "away": 5.75
+    },
+    "B365C": {
+     "home": 1.48,
+     "draw": 4.5,
+     "away": 6
+    },
+    "BW": {
+     "home": 1.55,
+     "draw": 4.6,
+     "away": 5.25
+    },
+    "BWC": {
+     "home": 1.47,
+     "draw": 4.8,
+     "away": 5.75
+    },
+    "BFE": {
+     "home": 1.56,
+     "draw": 4.8,
+     "away": 6.4
+    },
+    "BFEC": {
+     "home": 1.52,
+     "draw": 4.9,
+     "away": 6.8
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 2
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-29T15:00:00Z",
+   "home": "BOU",
+   "away": "EVE",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.3,
+    "draw": 3.55,
+    "away": 3.45
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.14,
+    "draw": 3.65,
+    "away": 3.75
+   },
+   "avg": {
+    "home": 2.18,
+    "draw": 3.46,
+    "away": 3.24
+   },
+   "max": {
+    "home": 2.25,
+    "draw": 3.5,
+    "away": 3.39
+   },
+   "avgOpen": {
+    "home": 2.1,
+    "draw": 3.5,
+    "away": 3.41
+   },
+   "maxOpen": {
+    "home": 2.6,
+    "draw": 3.6,
+    "away": 3.6
+   },
+   "book": {
+    "B365": {
+     "home": 2.05,
+     "draw": 3.5,
+     "away": 3.6
+    },
+    "B365C": {
+     "home": 2.2,
+     "draw": 3.5,
+     "away": 3.25
+    },
+    "BW": {
+     "home": 2.05,
+     "draw": 3.5,
+     "away": 3.5
+    },
+    "BWC": {
+     "home": 2.2,
+     "draw": 3.4,
+     "away": 3.2
+    },
+    "BFE": {
+     "home": 2.14,
+     "draw": 3.65,
+     "away": 3.75
+    },
+    "BFEC": {
+     "home": 2.3,
+     "draw": 3.55,
+     "away": 3.45
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-29T15:00:00Z",
+   "home": "COV",
+   "away": "HUL",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.79,
+    "draw": 3.95,
+    "away": 5.2
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.91,
+    "draw": 3.75,
+    "away": 4.7
+   },
+   "avg": {
+    "home": 1.72,
+    "draw": 3.82,
+    "away": 4.72
+   },
+   "max": {
+    "home": 1.76,
+    "draw": 4,
+    "away": 5
+   },
+   "avgOpen": {
+    "home": 1.87,
+    "draw": 3.53,
+    "away": 4.19
+   },
+   "maxOpen": {
+    "home": 1.92,
+    "draw": 3.6,
+    "away": 4.33
+   },
+   "book": {
+    "B365": {
+     "home": 1.9,
+     "draw": 3.5,
+     "away": 4.2
+    },
+    "B365C": {
+     "home": 1.73,
+     "draw": 3.9,
+     "away": 4.75
+    },
+    "BW": {
+     "home": 1.85,
+     "draw": 3.5,
+     "away": 4.2
+    },
+    "BWC": {
+     "home": 1.7,
+     "draw": 3.9,
+     "away": 4.75
+    },
+    "BFE": {
+     "home": 1.91,
+     "draw": 3.75,
+     "away": 4.7
+    },
+    "BFEC": {
+     "home": 1.79,
+     "draw": 3.95,
+     "away": 5.2
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-29T17:30:00Z",
+   "home": "TOT",
+   "away": "NEW",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.26,
+    "draw": 3.85,
+    "away": 3.3
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.38,
+    "draw": 3.85,
+    "away": 3.05
+   },
+   "avg": {
+    "home": 2.15,
+    "draw": 3.67,
+    "away": 3.06
+   },
+   "max": {
+    "home": 2.22,
+    "draw": 3.77,
+    "away": 3.11
+   },
+   "avgOpen": {
+    "home": 2.25,
+    "draw": 3.65,
+    "away": 2.88
+   },
+   "maxOpen": {
+    "home": 2.3,
+    "draw": 3.75,
+    "away": 2.98
+   },
+   "book": {
+    "B365": {
+     "home": 2.25,
+     "draw": 3.75,
+     "away": 2.9
+    },
+    "B365C": {
+     "home": 2.15,
+     "draw": 3.75,
+     "away": 3.1
+    },
+    "BW": {
+     "home": 2.25,
+     "draw": 3.6,
+     "away": 2.9
+    },
+    "BWC": {
+     "home": 2.15,
+     "draw": 3.7,
+     "away": 3.1
+    },
+    "BFE": {
+     "home": 2.38,
+     "draw": 3.85,
+     "away": 3.05
+    },
+    "BFEC": {
+     "home": 2.26,
+     "draw": 3.85,
+     "away": 3.3
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 2
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-30T14:00:00Z",
+   "home": "CHE",
+   "away": "BHA",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.93,
+    "draw": 4,
+    "away": 4.3
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.88,
+    "draw": 4.1,
+    "away": 4.3
+   },
+   "avg": {
+    "home": 1.83,
+    "draw": 3.83,
+    "away": 3.89
+   },
+   "max": {
+    "home": 1.86,
+    "draw": 4,
+    "away": 4
+   },
+   "avgOpen": {
+    "home": 1.82,
+    "draw": 3.85,
+    "away": 3.93
+   },
+   "maxOpen": {
+    "home": 1.88,
+    "draw": 4,
+    "away": 4
+   },
+   "book": {
+    "B365": {
+     "home": 1.83,
+     "draw": 4,
+     "away": 4
+    },
+    "B365C": {
+     "home": 1.83,
+     "draw": 3.8,
+     "away": 4
+    },
+    "BW": {
+     "home": 1.82,
+     "draw": 4,
+     "away": 3.9
+    },
+    "BWC": {
+     "home": 1.83,
+     "draw": 3.9,
+     "away": 3.9
+    },
+    "BFE": {
+     "home": 1.88,
+     "draw": 4.1,
+     "away": 4.3
+    },
+    "BFEC": {
+     "home": 1.93,
+     "draw": 4,
+     "away": 4.3
+    }
+   },
+   "result": {
+    "homeGoals": 4,
+    "awayGoals": 3
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-30T14:00:00Z",
+   "home": "LEE",
+   "away": "BRE",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.9,
+    "draw": 3.5,
+    "away": 2.68
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.7,
+    "draw": 3.5,
+    "away": 2.86
+   },
+   "avg": {
+    "home": 2.74,
+    "draw": 3.4,
+    "away": 2.48
+   },
+   "max": {
+    "home": 2.83,
+    "draw": 3.5,
+    "away": 2.55
+   },
+   "avgOpen": {
+    "home": 2.58,
+    "draw": 3.36,
+    "away": 2.67
+   },
+   "maxOpen": {
+    "home": 2.88,
+    "draw": 3.5,
+    "away": 2.75
+   },
+   "book": {
+    "B365": {
+     "home": 2.6,
+     "draw": 3.3,
+     "away": 2.7
+    },
+    "B365C": {
+     "home": 2.8,
+     "draw": 3.4,
+     "away": 2.45
+    },
+    "BW": {
+     "home": 2.55,
+     "draw": 3.4,
+     "away": 2.65
+    },
+    "BWC": {
+     "home": 2.7,
+     "draw": 3.4,
+     "away": 2.5
+    },
+    "BFE": {
+     "home": 2.7,
+     "draw": 3.5,
+     "away": 2.86
+    },
+    "BFEC": {
+     "home": 2.9,
+     "draw": 3.5,
+     "away": 2.68
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-30T14:00:00Z",
+   "home": "SUN",
+   "away": "FUL",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.32,
+    "draw": 3.4,
+    "away": 3.55
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.56,
+    "draw": 3.35,
+    "away": 3.15
+   },
+   "avg": {
+    "home": 2.22,
+    "draw": 3.29,
+    "away": 3.28
+   },
+   "max": {
+    "home": 2.26,
+    "draw": 3.4,
+    "away": 3.41
+   },
+   "avgOpen": {
+    "home": 2.39,
+    "draw": 3.24,
+    "away": 2.96
+   },
+   "maxOpen": {
+    "home": 2.45,
+    "draw": 3.4,
+    "away": 3.1
+   },
+   "book": {
+    "B365": {
+     "home": 2.4,
+     "draw": 3.2,
+     "away": 3.1
+    },
+    "B365C": {
+     "home": 2.2,
+     "draw": 3.3,
+     "away": 3.4
+    },
+    "BW": {
+     "home": 2.37,
+     "draw": 3.25,
+     "away": 3
+    },
+    "BWC": {
+     "home": 2.2,
+     "draw": 3.3,
+     "away": 3.25
+    },
+    "BFE": {
+     "home": 2.56,
+     "draw": 3.35,
+     "away": 3.15
+    },
+    "BFEC": {
+     "home": 2.32,
+     "draw": 3.4,
+     "away": 3.55
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 0
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-30T16:30:00Z",
+   "home": "MUN",
+   "away": "IPS",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.39,
+    "draw": 5.8,
+    "away": 9
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.45,
+    "draw": 5.1,
+    "away": 8
+   },
+   "avg": {
+    "home": 1.34,
+    "draw": 5.39,
+    "away": 7.68
+   },
+   "max": {
+    "home": 1.38,
+    "draw": 5.75,
+    "away": 9
+   },
+   "avgOpen": {
+    "home": 1.4,
+    "draw": 4.82,
+    "away": 6.94
+   },
+   "maxOpen": {
+    "home": 1.43,
+    "draw": 5,
+    "away": 7.8
+   },
+   "book": {
+    "B365": {
+     "home": 1.42,
+     "draw": 5,
+     "away": 7
+    },
+    "B365C": {
+     "home": 1.33,
+     "draw": 5.5,
+     "away": 7.5
+    },
+    "BW": {
+     "home": 1.43,
+     "draw": 5,
+     "away": 6.5
+    },
+    "BWC": {
+     "home": 1.35,
+     "draw": 5.5,
+     "away": 7.5
+    },
+    "BFE": {
+     "home": 1.45,
+     "draw": 5.1,
+     "away": 8
+    },
+    "BFEC": {
+     "home": 1.39,
+     "draw": 5.8,
+     "away": 9
+    }
+   },
+   "result": {
+    "homeGoals": 5,
+    "awayGoals": 2
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-08-31T20:00:00Z",
+   "home": "AVL",
+   "away": "ARS",
+   "market": "fullTime",
+   "sharp": {
+    "home": 7.4,
+    "draw": 4.8,
+    "away": 1.51
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 7,
+    "draw": 4.4,
+    "away": 1.56
+   },
+   "avg": {
+    "home": 6.54,
+    "draw": 4.41,
+    "away": 1.47
+   },
+   "max": {
+    "home": 7.2,
+    "draw": 4.5,
+    "away": 1.52
+   },
+   "avgOpen": {
+    "home": 5.99,
+    "draw": 4.11,
+    "away": 1.52
+   },
+   "maxOpen": {
+    "home": 6.5,
+    "draw": 4.2,
+    "away": 1.55
+   },
+   "book": {
+    "B365": {
+     "home": 6,
+     "draw": 4.1,
+     "away": 1.53
+    },
+    "B365C": {
+     "home": 6.5,
+     "draw": 4.33,
+     "away": 1.48
+    },
+    "BW": {
+     "home": 5.75,
+     "draw": 4.1,
+     "away": 1.55
+    },
+    "BWC": {
+     "home": 6.5,
+     "draw": 4.4,
+     "away": 1.49
+    },
+    "BFE": {
+     "home": 7,
+     "draw": 4.4,
+     "away": 1.56
+    },
+    "BFEC": {
+     "home": 7.4,
+     "draw": 4.8,
+     "away": 1.51
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-04T20:00:00Z",
+   "home": "IPS",
+   "away": "LIV",
+   "market": "fullTime",
+   "sharp": {
+    "home": 5.4,
+    "draw": 4.5,
+    "away": 1.67
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 6.2,
+    "draw": 5.2,
+    "away": 1.54
+   },
+   "avg": {
+    "home": 4.86,
+    "draw": 4.34,
+    "away": 1.62
+   },
+   "max": {
+    "home": 5.1,
+    "draw": 4.5,
+    "away": 1.66
+   },
+   "avgOpen": {
+    "home": 5.48,
+    "draw": 4.8,
+    "away": 1.5
+   },
+   "maxOpen": {
+    "home": 5.8,
+    "draw": 5,
+    "away": 1.54
+   },
+   "book": {
+    "B365": {
+     "home": 5.25,
+     "draw": 4.75,
+     "away": 1.5
+    },
+    "B365C": {
+     "home": 4.75,
+     "draw": 4.33,
+     "away": 1.62
+    },
+    "BW": {
+     "home": 5,
+     "draw": 4.8,
+     "away": 1.53
+    },
+    "BWC": {
+     "home": 4.6,
+     "draw": 4.2,
+     "away": 1.66
+    },
+    "BFE": {
+     "home": 6.2,
+     "draw": 5.2,
+     "away": 1.54
+    },
+    "BFEC": {
+     "home": 5.4,
+     "draw": 4.5,
+     "away": 1.67
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 2
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-05T12:30:00Z",
+   "home": "NEW",
+   "away": "BOU",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.2,
+    "draw": 3.8,
+    "away": 3.45
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.18,
+    "draw": 3.8,
+    "away": 3.5
+   },
+   "avg": {
+    "home": 2.12,
+    "draw": 3.64,
+    "away": 3.22
+   },
+   "max": {
+    "home": 2.15,
+    "draw": 3.8,
+    "away": 3.3
+   },
+   "avgOpen": {
+    "home": 2.1,
+    "draw": 3.64,
+    "away": 3.19
+   },
+   "maxOpen": {
+    "home": 2.15,
+    "draw": 3.8,
+    "away": 3.3
+   },
+   "book": {
+    "B365": {
+     "home": 2.1,
+     "draw": 3.6,
+     "away": 3.3
+    },
+    "B365C": {
+     "home": 2.15,
+     "draw": 3.5,
+     "away": 3.25
+    },
+    "BW": {
+     "home": 2.1,
+     "draw": 3.75,
+     "away": 3.1
+    },
+    "BFE": {
+     "home": 2.18,
+     "draw": 3.8,
+     "away": 3.5
+    },
+    "BFEC": {
+     "home": 2.2,
+     "draw": 3.8,
+     "away": 3.45
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 2
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-05T15:00:00Z",
+   "home": "BRE",
+   "away": "SUN",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.76,
+    "draw": 3.95,
+    "away": 5.4
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.69,
+    "draw": 4.1,
+    "away": 5.9
+   },
+   "avg": {
+    "home": 1.68,
+    "draw": 3.86,
+    "away": 4.89
+   },
+   "max": {
+    "home": 1.74,
+    "draw": 4,
+    "away": 5.05
+   },
+   "avgOpen": {
+    "home": 1.62,
+    "draw": 3.9,
+    "away": 5.29
+   },
+   "maxOpen": {
+    "home": 1.67,
+    "draw": 4,
+    "away": 5.5
+   },
+   "book": {
+    "B365": {
+     "home": 1.62,
+     "draw": 3.9,
+     "away": 5.5
+    },
+    "B365C": {
+     "home": 1.7,
+     "draw": 3.8,
+     "away": 4.75
+    },
+    "BW": {
+     "home": 1.61,
+     "draw": 4,
+     "away": 5.25
+    },
+    "BWC": {
+     "home": 1.68,
+     "draw": 3.8,
+     "away": 5
+    },
+    "BFE": {
+     "home": 1.69,
+     "draw": 4.1,
+     "away": 5.9
+    },
+    "BFEC": {
+     "home": 1.76,
+     "draw": 3.95,
+     "away": 5.4
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-05T15:00:00Z",
+   "home": "BHA",
+   "away": "LEE",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.04,
+    "draw": 3.75,
+    "away": 4
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.06,
+    "draw": 3.65,
+    "away": 4
+   },
+   "avg": {
+    "home": 1.94,
+    "draw": 3.63,
+    "away": 3.73
+   },
+   "max": {
+    "home": 2,
+    "draw": 3.75,
+    "away": 3.88
+   },
+   "avgOpen": {
+    "home": 1.98,
+    "draw": 3.52,
+    "away": 3.68
+   },
+   "maxOpen": {
+    "home": 2.38,
+    "draw": 3.6,
+    "away": 3.9
+   },
+   "book": {
+    "B365": {
+     "home": 1.95,
+     "draw": 3.5,
+     "away": 3.9
+    },
+    "B365C": {
+     "home": 1.91,
+     "draw": 3.7,
+     "away": 3.75
+    },
+    "BW": {
+     "home": 1.95,
+     "draw": 3.6,
+     "away": 3.7
+    },
+    "BWC": {
+     "home": 1.95,
+     "draw": 3.6,
+     "away": 3.75
+    },
+    "BFE": {
+     "home": 2.06,
+     "draw": 3.65,
+     "away": 4
+    },
+    "BFEC": {
+     "home": 2.04,
+     "draw": 3.75,
+     "away": 4
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-05T15:00:00Z",
+   "home": "FUL",
+   "away": "CRY",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.24,
+    "draw": 3.45,
+    "away": 3.7
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.36,
+    "draw": 3.5,
+    "away": 3.35
+   },
+   "avg": {
+    "home": 2.16,
+    "draw": 3.39,
+    "away": 3.35
+   },
+   "max": {
+    "home": 2.25,
+    "draw": 3.5,
+    "away": 3.52
+   },
+   "avgOpen": {
+    "home": 2.32,
+    "draw": 3.37,
+    "away": 3.03
+   },
+   "maxOpen": {
+    "home": 3,
+    "draw": 3.5,
+    "away": 3.25
+   },
+   "book": {
+    "B365": {
+     "home": 2.3,
+     "draw": 3.25,
+     "away": 3.25
+    },
+    "B365C": {
+     "home": 2.2,
+     "draw": 3.4,
+     "away": 3.4
+    },
+    "BW": {
+     "home": 2.25,
+     "draw": 3.4,
+     "away": 3.1
+    },
+    "BWC": {
+     "home": 2.15,
+     "draw": 3.4,
+     "away": 3.4
+    },
+    "BFE": {
+     "home": 2.36,
+     "draw": 3.5,
+     "away": 3.35
+    },
+    "BFEC": {
+     "home": 2.24,
+     "draw": 3.45,
+     "away": 3.7
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 3
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-05T15:00:00Z",
+   "home": "MCI",
+   "away": "COV",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.21,
+    "draw": 8.2,
+    "away": 17
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.19,
+    "draw": 8.8,
+    "away": 18
+   },
+   "avg": {
+    "home": 1.19,
+    "draw": 7.18,
+    "away": 12.96
+   },
+   "max": {
+    "home": 1.22,
+    "draw": 8,
+    "away": 14
+   },
+   "avgOpen": {
+    "home": 1.17,
+    "draw": 7.64,
+    "away": 13.85
+   },
+   "maxOpen": {
+    "home": 1.2,
+    "draw": 8.5,
+    "away": 15.5
+   },
+   "book": {
+    "B365": {
+     "home": 1.18,
+     "draw": 8,
+     "away": 12
+    },
+    "B365C": {
+     "home": 1.18,
+     "draw": 7.5,
+     "away": 13
+    },
+    "BW": {
+     "home": 1.2,
+     "draw": 7.5,
+     "away": 12.5
+    },
+    "BFE": {
+     "home": 1.19,
+     "draw": 8.8,
+     "away": 18
+    },
+    "BFEC": {
+     "home": 1.21,
+     "draw": 8.2,
+     "away": 17
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 0
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-05T15:00:00Z",
+   "home": "NFO",
+   "away": "TOT",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.84,
+    "draw": 3.5,
+    "away": 2.76
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.52,
+    "draw": 3.55,
+    "away": 3.05
+   },
+   "avg": {
+    "home": 2.64,
+    "draw": 3.38,
+    "away": 2.61
+   },
+   "max": {
+    "home": 2.74,
+    "draw": 3.5,
+    "away": 2.65
+   },
+   "avgOpen": {
+    "home": 2.4,
+    "draw": 3.36,
+    "away": 2.86
+   },
+   "maxOpen": {
+    "home": 2.5,
+    "draw": 3.4,
+    "away": 2.9
+   },
+   "book": {
+    "B365": {
+     "home": 2.4,
+     "draw": 3.4,
+     "away": 2.9
+    },
+    "B365C": {
+     "home": 2.7,
+     "draw": 3.3,
+     "away": 2.63
+    },
+    "BW": {
+     "home": 2.45,
+     "draw": 3.25,
+     "away": 2.87
+    },
+    "BFE": {
+     "home": 2.52,
+     "draw": 3.55,
+     "away": 3.05
+    },
+    "BFEC": {
+     "home": 2.84,
+     "draw": 3.5,
+     "away": 2.76
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 0
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-05T17:30:00Z",
+   "home": "HUL",
+   "away": "AVL",
+   "market": "fullTime",
+   "sharp": {
+    "home": 4.3,
+    "draw": 3.75,
+    "away": 1.99
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 4.3,
+    "draw": 3.85,
+    "away": 1.95
+   },
+   "avg": {
+    "home": 3.92,
+    "draw": 3.59,
+    "away": 1.89
+   },
+   "max": {
+    "home": 4.3,
+    "draw": 3.75,
+    "away": 1.95
+   },
+   "avgOpen": {
+    "home": 4.04,
+    "draw": 3.62,
+    "away": 1.86
+   },
+   "maxOpen": {
+    "home": 4.2,
+    "draw": 3.75,
+    "away": 1.9
+   },
+   "book": {
+    "B365": {
+     "home": 4.2,
+     "draw": 3.6,
+     "away": 1.85
+    },
+    "B365C": {
+     "home": 4,
+     "draw": 3.6,
+     "away": 1.91
+    },
+    "BW": {
+     "home": 4.1,
+     "draw": 3.6,
+     "away": 1.85
+    },
+    "BFE": {
+     "home": 4.3,
+     "draw": 3.85,
+     "away": 1.95
+    },
+    "BFEC": {
+     "home": 4.3,
+     "draw": 3.75,
+     "away": 1.99
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 0
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-06T14:00:00Z",
+   "home": "EVE",
+   "away": "MUN",
+   "market": "fullTime",
+   "sharp": {
+    "home": 3.9,
+    "draw": 3.95,
+    "away": 2
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 3.45,
+    "draw": 3.75,
+    "away": 2.22
+   },
+   "avg": {
+    "home": 3.65,
+    "draw": 3.82,
+    "away": 1.91
+   },
+   "max": {
+    "home": 3.8,
+    "draw": 3.9,
+    "away": 2
+   },
+   "avgOpen": {
+    "home": 3.21,
+    "draw": 3.54,
+    "away": 2.12
+   },
+   "maxOpen": {
+    "home": 3.3,
+    "draw": 3.6,
+    "away": 2.2
+   },
+   "book": {
+    "B365": {
+     "home": 3.3,
+     "draw": 3.5,
+     "away": 2.1
+    },
+    "B365C": {
+     "home": 3.75,
+     "draw": 3.8,
+     "away": 1.9
+    },
+    "BW": {
+     "home": 3.1,
+     "draw": 3.6,
+     "away": 2.2
+    },
+    "BWC": {
+     "home": 3.6,
+     "draw": 3.75,
+     "away": 1.93
+    },
+    "BFE": {
+     "home": 3.45,
+     "draw": 3.75,
+     "away": 2.22
+    },
+    "BFEC": {
+     "home": 3.9,
+     "draw": 3.95,
+     "away": 2
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 2
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-06T16:30:00Z",
+   "home": "ARS",
+   "away": "CHE",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.77,
+    "draw": 4,
+    "away": 5.2
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.75,
+    "draw": 4,
+    "away": 5.3
+   },
+   "avg": {
+    "home": 1.7,
+    "draw": 3.85,
+    "away": 4.74
+   },
+   "max": {
+    "home": 1.73,
+    "draw": 4,
+    "away": 5
+   },
+   "avgOpen": {
+    "home": 1.69,
+    "draw": 3.8,
+    "away": 4.82
+   },
+   "maxOpen": {
+    "home": 1.73,
+    "draw": 4,
+    "away": 5.25
+   },
+   "book": {
+    "B365": {
+     "home": 1.67,
+     "draw": 3.75,
+     "away": 5.25
+    },
+    "B365C": {
+     "home": 1.7,
+     "draw": 3.9,
+     "away": 4.75
+    },
+    "BW": {
+     "home": 1.66,
+     "draw": 3.9,
+     "away": 5
+    },
+    "BWC": {
+     "home": 1.7,
+     "draw": 4,
+     "away": 4.6
+    },
+    "BFE": {
+     "home": 1.75,
+     "draw": 4,
+     "away": 5.3
+    },
+    "BFEC": {
+     "home": 1.77,
+     "draw": 4,
+     "away": 5.2
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-12T15:00:00Z",
+   "home": "AVL",
+   "away": "NFO",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.34,
+    "draw": 3.55,
+    "away": 3.4
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.38,
+    "draw": 3.5,
+    "away": 3.35
+   },
+   "avg": {
+    "home": 2.22,
+    "draw": 3.43,
+    "away": 3.19
+   },
+   "max": {
+    "home": 2.25,
+    "draw": 3.5,
+    "away": 3.3
+   },
+   "avgOpen": {
+    "home": 2.22,
+    "draw": 3.39,
+    "away": 3.17
+   },
+   "maxOpen": {
+    "home": 2.3,
+    "draw": 3.5,
+    "away": 3.25
+   },
+   "book": {
+    "B365": {
+     "home": 2.2,
+     "draw": 3.4,
+     "away": 3.25
+    },
+    "B365C": {
+     "home": 2.25,
+     "draw": 3.4,
+     "away": 3.2
+    },
+    "BW": {
+     "home": 2.15,
+     "draw": 3.5,
+     "away": 3.25
+    },
+    "BWC": {
+     "home": 2.2,
+     "draw": 3.4,
+     "away": 3.2
+    },
+    "BFE": {
+     "home": 2.38,
+     "draw": 3.5,
+     "away": 3.35
+    },
+    "BFEC": {
+     "home": 2.34,
+     "draw": 3.55,
+     "away": 3.4
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 2
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-12T15:00:00Z",
+   "home": "BOU",
+   "away": "BRE",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.4,
+    "draw": 3.7,
+    "away": 3.15
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.58,
+    "draw": 3.75,
+    "away": 2.88
+   },
+   "avg": {
+    "home": 2.29,
+    "draw": 3.59,
+    "away": 2.91
+   },
+   "max": {
+    "home": 2.32,
+    "draw": 3.7,
+    "away": 3
+   },
+   "avgOpen": {
+    "home": 2.45,
+    "draw": 3.58,
+    "away": 2.68
+   },
+   "maxOpen": {
+    "home": 2.5,
+    "draw": 3.75,
+    "away": 2.8
+   },
+   "book": {
+    "B365": {
+     "home": 2.5,
+     "draw": 3.6,
+     "away": 2.7
+    },
+    "B365C": {
+     "home": 2.25,
+     "draw": 3.6,
+     "away": 3
+    },
+    "BW": {
+     "home": 2.45,
+     "draw": 3.5,
+     "away": 2.75
+    },
+    "BWC": {
+     "home": 2.3,
+     "draw": 3.6,
+     "away": 2.95
+    },
+    "BFE": {
+     "home": 2.58,
+     "draw": 3.75,
+     "away": 2.88
+    },
+    "BFEC": {
+     "home": 2.4,
+     "draw": 3.7,
+     "away": 3.15
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 2
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-12T15:00:00Z",
+   "home": "CHE",
+   "away": "HUL",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.24,
+    "draw": 7.6,
+    "away": 14.5
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.25,
+    "draw": 7.2,
+    "away": 14.5
+   },
+   "avg": {
+    "home": 1.21,
+    "draw": 6.67,
+    "away": 11.96
+   },
+   "max": {
+    "home": 1.23,
+    "draw": 7,
+    "away": 13
+   },
+   "avgOpen": {
+    "home": 1.21,
+    "draw": 6.5,
+    "away": 11.92
+   },
+   "maxOpen": {
+    "home": 1.23,
+    "draw": 7,
+    "away": 13
+   },
+   "book": {
+    "B365": {
+     "home": 1.22,
+     "draw": 6.5,
+     "away": 11
+    },
+    "B365C": {
+     "home": 1.22,
+     "draw": 6.5,
+     "away": 12
+    },
+    "BW": {
+     "home": 1.23,
+     "draw": 6.5,
+     "away": 11.5
+    },
+    "BWC": {
+     "home": 1.23,
+     "draw": 6.75,
+     "away": 11
+    },
+    "BFE": {
+     "home": 1.25,
+     "draw": 7.2,
+     "away": 14.5
+    },
+    "BFEC": {
+     "home": 1.24,
+     "draw": 7.6,
+     "away": 14.5
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 2
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-12T15:00:00Z",
+   "home": "CRY",
+   "away": "IPS",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.26,
+    "draw": 3.65,
+    "away": 3.45
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.91,
+    "draw": 3.95,
+    "away": 4.4
+   },
+   "avg": {
+    "home": 2.1,
+    "draw": 3.62,
+    "away": 3.27
+   },
+   "max": {
+    "home": 2.2,
+    "draw": 3.75,
+    "away": 3.5
+   },
+   "avgOpen": {
+    "home": 1.84,
+    "draw": 3.74,
+    "away": 3.98
+   },
+   "maxOpen": {
+    "home": 1.89,
+    "draw": 3.9,
+    "away": 4.1
+   },
+   "book": {
+    "B365": {
+     "home": 1.85,
+     "draw": 3.8,
+     "away": 3.9
+    },
+    "B365C": {
+     "home": 2.15,
+     "draw": 3.75,
+     "away": 3.1
+    },
+    "BW": {
+     "home": 1.88,
+     "draw": 3.7,
+     "away": 3.9
+    },
+    "BWC": {
+     "home": 2.15,
+     "draw": 3.6,
+     "away": 3.2
+    },
+    "BFE": {
+     "home": 1.91,
+     "draw": 3.95,
+     "away": 4.4
+    },
+    "BFEC": {
+     "home": 2.26,
+     "draw": 3.65,
+     "away": 3.45
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 3
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-12T15:00:00Z",
+   "home": "LIV",
+   "away": "FUL",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.55,
+    "draw": 4.7,
+    "away": 6.6
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.48,
+    "draw": 5.3,
+    "away": 7.2
+   },
+   "avg": {
+    "home": 1.5,
+    "draw": 4.58,
+    "away": 5.74
+   },
+   "max": {
+    "home": 1.53,
+    "draw": 4.75,
+    "away": 6.2
+   },
+   "avgOpen": {
+    "home": 1.44,
+    "draw": 4.85,
+    "away": 6.37
+   },
+   "maxOpen": {
+    "home": 1.46,
+    "draw": 5,
+    "away": 7.2
+   },
+   "book": {
+    "B365": {
+     "home": 1.42,
+     "draw": 5,
+     "away": 6.25
+    },
+    "B365C": {
+     "home": 1.5,
+     "draw": 4.5,
+     "away": 5.25
+    },
+    "BW": {
+     "home": 1.46,
+     "draw": 5,
+     "away": 6
+    },
+    "BWC": {
+     "home": 1.51,
+     "draw": 4.75,
+     "away": 5.5
+    },
+    "BFE": {
+     "home": 1.48,
+     "draw": 5.3,
+     "away": 7.2
+    },
+    "BFEC": {
+     "home": 1.55,
+     "draw": 4.7,
+     "away": 6.6
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 0
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-12T17:30:00Z",
+   "home": "TOT",
+   "away": "EVE",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.08,
+    "draw": 3.8,
+    "away": 3.8
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.12,
+    "draw": 3.75,
+    "away": 3.75
+   },
+   "avg": {
+    "home": 1.98,
+    "draw": 3.63,
+    "away": 3.59
+   },
+   "max": {
+    "home": 2.05,
+    "draw": 3.75,
+    "away": 3.7
+   },
+   "avgOpen": {
+    "home": 2.02,
+    "draw": 3.53,
+    "away": 3.55
+   },
+   "maxOpen": {
+    "home": 2.05,
+    "draw": 3.6,
+    "away": 3.75
+   },
+   "book": {
+    "B365": {
+     "home": 2,
+     "draw": 3.6,
+     "away": 3.6
+    },
+    "B365C": {
+     "home": 2,
+     "draw": 3.6,
+     "away": 3.5
+    },
+    "BW": {
+     "home": 2.05,
+     "draw": 3.5,
+     "away": 3.5
+    },
+    "BWC": {
+     "home": 1.98,
+     "draw": 3.6,
+     "away": 3.6
+    },
+    "BFE": {
+     "home": 2.12,
+     "draw": 3.75,
+     "away": 3.75
+    },
+    "BFEC": {
+     "home": 2.08,
+     "draw": 3.8,
+     "away": 3.8
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 0
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-12T20:00:00Z",
+   "home": "SUN",
+   "away": "ARS",
+   "market": "fullTime",
+   "sharp": {
+    "home": 6.6,
+    "draw": 3.85,
+    "away": 1.68
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 8.4,
+    "draw": 4.4,
+    "away": 1.51
+   },
+   "avg": {
+    "home": 5.89,
+    "draw": 3.72,
+    "away": 1.62
+   },
+   "max": {
+    "home": 6.5,
+    "draw": 3.8,
+    "away": 1.71
+   },
+   "avgOpen": {
+    "home": 7.36,
+    "draw": 4.12,
+    "away": 1.46
+   },
+   "maxOpen": {
+    "home": 8,
+    "draw": 4.3,
+    "away": 1.49
+   },
+   "book": {
+    "B365": {
+     "home": 7.5,
+     "draw": 4.1,
+     "away": 1.48
+    },
+    "B365C": {
+     "home": 6,
+     "draw": 3.6,
+     "away": 1.6
+    },
+    "BW": {
+     "home": 7,
+     "draw": 4.2,
+     "away": 1.49
+    },
+    "BWC": {
+     "home": 5.5,
+     "draw": 3.75,
+     "away": 1.65
+    },
+    "BFE": {
+     "home": 8.4,
+     "draw": 4.4,
+     "away": 1.51
+    },
+    "BFEC": {
+     "home": 6.6,
+     "draw": 3.85,
+     "away": 1.68
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 2
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-13T14:00:00Z",
+   "home": "COV",
+   "away": "BHA",
+   "market": "fullTime",
+   "sharp": {
+    "home": 4,
+    "draw": 3.9,
+    "away": 1.99
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 4.2,
+    "draw": 4,
+    "away": 1.94
+   },
+   "avg": {
+    "home": 3.71,
+    "draw": 3.78,
+    "away": 1.91
+   },
+   "max": {
+    "home": 3.8,
+    "draw": 3.9,
+    "away": 1.95
+   },
+   "avgOpen": {
+    "home": 3.91,
+    "draw": 3.73,
+    "away": 1.85
+   },
+   "maxOpen": {
+    "home": 4.1,
+    "draw": 3.9,
+    "away": 1.9
+   },
+   "book": {
+    "B365": {
+     "home": 3.8,
+     "draw": 3.9,
+     "away": 1.9
+    },
+    "B365C": {
+     "home": 3.7,
+     "draw": 3.8,
+     "away": 1.91
+    },
+    "BW": {
+     "home": 4,
+     "draw": 3.7,
+     "away": 1.87
+    },
+    "BWC": {
+     "home": 3.7,
+     "draw": 3.75,
+     "away": 1.93
+    },
+    "BFE": {
+     "home": 4.2,
+     "draw": 4,
+     "away": 1.94
+    },
+    "BFEC": {
+     "home": 4,
+     "draw": 3.9,
+     "away": 1.99
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 5
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-13T16:30:00Z",
+   "home": "MUN",
+   "away": "MCI",
+   "market": "fullTime",
+   "sharp": {
+    "home": 3.2,
+    "draw": 3.9,
+    "away": 2.3
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 3.35,
+    "draw": 4,
+    "away": 2.18
+   },
+   "avg": {
+    "home": 2.95,
+    "draw": 3.76,
+    "away": 2.2
+   },
+   "max": {
+    "home": 3,
+    "draw": 3.9,
+    "away": 2.26
+   },
+   "avgOpen": {
+    "home": 3.08,
+    "draw": 3.78,
+    "away": 2.1
+   },
+   "maxOpen": {
+    "home": 3.25,
+    "draw": 4,
+    "away": 2.15
+   },
+   "book": {
+    "B365": {
+     "home": 3.25,
+     "draw": 3.8,
+     "away": 2.1
+    },
+    "B365C": {
+     "home": 3,
+     "draw": 3.75,
+     "away": 2.2
+    },
+    "BW": {
+     "home": 3.1,
+     "draw": 3.8,
+     "away": 2.15
+    },
+    "BWC": {
+     "home": 2.85,
+     "draw": 3.75,
+     "away": 2.25
+    },
+    "BFE": {
+     "home": 3.35,
+     "draw": 4,
+     "away": 2.18
+    },
+    "BFEC": {
+     "home": 3.2,
+     "draw": 3.9,
+     "away": 2.3
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-14T20:00:00Z",
+   "home": "LEE",
+   "away": "NEW",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.44,
+    "draw": 3.6,
+    "away": 3.15
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.48,
+    "draw": 3.6,
+    "away": 3.05
+   },
+   "avg": {
+    "home": 2.3,
+    "draw": 3.46,
+    "away": 2.98
+   },
+   "max": {
+    "home": 2.38,
+    "draw": 3.6,
+    "away": 3.15
+   },
+   "avgOpen": {
+    "home": 2.38,
+    "draw": 3.45,
+    "away": 2.81
+   },
+   "maxOpen": {
+    "home": 2.5,
+    "draw": 3.6,
+    "away": 2.88
+   },
+   "book": {
+    "B365": {
+     "home": 2.38,
+     "draw": 3.5,
+     "away": 2.88
+    },
+    "B365C": {
+     "home": 2.3,
+     "draw": 3.5,
+     "away": 3
+    },
+    "BW": {
+     "home": 2.4,
+     "draw": 3.5,
+     "away": 2.8
+    },
+    "BWC": {
+     "home": 2.25,
+     "draw": 3.5,
+     "away": 3
+    },
+    "BFE": {
+     "home": 2.48,
+     "draw": 3.6,
+     "away": 3.05
+    },
+    "BFEC": {
+     "home": 2.44,
+     "draw": 3.6,
+     "away": 3.15
+    }
+   },
+   "result": {
+    "homeGoals": 4,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-18T20:00:00Z",
+   "home": "BRE",
+   "away": "CHE",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.66,
+    "draw": 3.75,
+    "away": 2.72
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.7,
+    "draw": 3.9,
+    "away": 2.66
+   },
+   "avg": {
+    "home": 2.53,
+    "draw": 3.63,
+    "away": 2.58
+   },
+   "max": {
+    "home": 2.6,
+    "draw": 3.75,
+    "away": 2.65
+   },
+   "avgOpen": {
+    "home": 2.62,
+    "draw": 3.7,
+    "away": 2.48
+   },
+   "maxOpen": {
+    "home": 2.71,
+    "draw": 3.8,
+    "away": 2.5
+   },
+   "book": {
+    "B365": {
+     "home": 2.55,
+     "draw": 3.8,
+     "away": 2.45
+    },
+    "B365C": {
+     "home": 2.55,
+     "draw": 3.6,
+     "away": 2.6
+    },
+    "BW": {
+     "home": 2.55,
+     "draw": 3.75,
+     "away": 2.5
+    },
+    "BWC": {
+     "home": 2.5,
+     "draw": 3.6,
+     "away": 2.6
+    },
+    "BFE": {
+     "home": 2.7,
+     "draw": 3.9,
+     "away": 2.66
+    },
+    "BFEC": {
+     "home": 2.66,
+     "draw": 3.75,
+     "away": 2.72
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 0
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-19T12:30:00Z",
+   "home": "TOT",
+   "away": "AVL",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.98,
+    "draw": 3.9,
+    "away": 4.1
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.08,
+    "draw": 3.7,
+    "away": 3.95
+   },
+   "avg": {
+    "home": 1.89,
+    "draw": 3.77,
+    "away": 3.81
+   },
+   "max": {
+    "home": 1.93,
+    "draw": 3.9,
+    "away": 4
+   },
+   "avgOpen": {
+    "home": 1.99,
+    "draw": 3.59,
+    "away": 3.62
+   },
+   "maxOpen": {
+    "home": 2,
+    "draw": 3.7,
+    "away": 3.8
+   },
+   "book": {
+    "B365": {
+     "home": 2,
+     "draw": 3.5,
+     "away": 3.7
+    },
+    "B365C": {
+     "home": 1.85,
+     "draw": 3.75,
+     "away": 3.9
+    },
+    "BW": {
+     "home": 2,
+     "draw": 3.6,
+     "away": 3.5
+    },
+    "BWC": {
+     "home": 1.85,
+     "draw": 3.9,
+     "away": 3.8
+    },
+    "BFE": {
+     "home": 2.08,
+     "draw": 3.7,
+     "away": 3.95
+    },
+    "BFEC": {
+     "home": 1.98,
+     "draw": 3.9,
+     "away": 4.1
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 3
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-19T15:00:00Z",
+   "home": "BHA",
+   "away": "ARS",
+   "market": "fullTime",
+   "sharp": {
+    "home": 5.6,
+    "draw": 4.1,
+    "away": 1.73
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 5.3,
+    "draw": 4.1,
+    "away": 1.73
+   },
+   "avg": {
+    "home": 4.92,
+    "draw": 3.84,
+    "away": 1.68
+   },
+   "max": {
+    "home": 5.25,
+    "draw": 4,
+    "away": 1.73
+   },
+   "avgOpen": {
+    "home": 4.77,
+    "draw": 3.89,
+    "away": 1.68
+   },
+   "maxOpen": {
+    "home": 5,
+    "draw": 4,
+    "away": 1.72
+   },
+   "book": {
+    "B365": {
+     "home": 5,
+     "draw": 3.9,
+     "away": 1.67
+    },
+    "B365C": {
+     "home": 5,
+     "draw": 3.8,
+     "away": 1.7
+    },
+    "BW": {
+     "home": 4.6,
+     "draw": 3.9,
+     "away": 1.72
+    },
+    "BWC": {
+     "home": 5,
+     "draw": 3.8,
+     "away": 1.68
+    },
+    "BFE": {
+     "home": 5.3,
+     "draw": 4.1,
+     "away": 1.73
+    },
+    "BFEC": {
+     "home": 5.6,
+     "draw": 4.1,
+     "away": 1.73
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 0
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-19T15:00:00Z",
+   "home": "EVE",
+   "away": "IPS",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.83,
+    "draw": 4,
+    "away": 4.9
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.85,
+    "draw": 3.9,
+    "away": 4.8
+   },
+   "avg": {
+    "home": 1.74,
+    "draw": 3.85,
+    "away": 4.43
+   },
+   "max": {
+    "home": 1.78,
+    "draw": 4,
+    "away": 4.55
+   },
+   "avgOpen": {
+    "home": 1.76,
+    "draw": 3.79,
+    "away": 4.36
+   },
+   "maxOpen": {
+    "home": 1.8,
+    "draw": 3.9,
+    "away": 4.75
+   },
+   "book": {
+    "B365": {
+     "home": 1.75,
+     "draw": 3.8,
+     "away": 4.5
+    },
+    "B365C": {
+     "home": 1.7,
+     "draw": 3.9,
+     "away": 4.5
+    },
+    "BW": {
+     "home": 1.75,
+     "draw": 3.9,
+     "away": 4.33
+    },
+    "BWC": {
+     "home": 1.78,
+     "draw": 3.8,
+     "away": 4.33
+    },
+    "BFE": {
+     "home": 1.85,
+     "draw": 3.9,
+     "away": 4.8
+    },
+    "BFEC": {
+     "home": 1.83,
+     "draw": 4,
+     "away": 4.9
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 0
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-19T15:00:00Z",
+   "home": "NEW",
+   "away": "HUL",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.65,
+    "draw": 4.5,
+    "away": 5.7
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.64,
+    "draw": 4.6,
+    "away": 5.6
+   },
+   "avg": {
+    "home": 1.59,
+    "draw": 4.29,
+    "away": 5.05
+   },
+   "max": {
+    "home": 1.62,
+    "draw": 4.5,
+    "away": 5.35
+   },
+   "avgOpen": {
+    "home": 1.58,
+    "draw": 4.26,
+    "away": 5.1
+   },
+   "maxOpen": {
+    "home": 1.62,
+    "draw": 4.35,
+    "away": 5.5
+   },
+   "book": {
+    "B365": {
+     "home": 1.6,
+     "draw": 4.33,
+     "away": 5
+    },
+    "B365C": {
+     "home": 1.6,
+     "draw": 4.5,
+     "away": 5
+    },
+    "BW": {
+     "home": 1.6,
+     "draw": 4.2,
+     "away": 5
+    },
+    "BWC": {
+     "home": 1.6,
+     "draw": 4.33,
+     "away": 5
+    },
+    "BFE": {
+     "home": 1.64,
+     "draw": 4.6,
+     "away": 5.6
+    },
+    "BFEC": {
+     "home": 1.65,
+     "draw": 4.5,
+     "away": 5.7
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-19T17:30:00Z",
+   "home": "NFO",
+   "away": "COV",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.68,
+    "draw": 4.1,
+    "away": 6
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.64,
+    "draw": 4.3,
+    "away": 6.2
+   },
+   "avg": {
+    "home": 1.63,
+    "draw": 3.93,
+    "away": 5.21
+   },
+   "max": {
+    "home": 1.67,
+    "draw": 4.1,
+    "away": 5.6
+   },
+   "avgOpen": {
+    "home": 1.58,
+    "draw": 4.02,
+    "away": 5.54
+   },
+   "maxOpen": {
+    "home": 1.6,
+    "draw": 4.2,
+    "away": 6
+   },
+   "book": {
+    "B365": {
+     "home": 1.57,
+     "draw": 4,
+     "away": 5.75
+    },
+    "B365C": {
+     "home": 1.62,
+     "draw": 3.9,
+     "away": 5.25
+    },
+    "BW": {
+     "home": 1.6,
+     "draw": 4.1,
+     "away": 5.25
+    },
+    "BWC": {
+     "home": 1.63,
+     "draw": 4,
+     "away": 5
+    },
+    "BFE": {
+     "home": 1.64,
+     "draw": 4.3,
+     "away": 6.2
+    },
+    "BFEC": {
+     "home": 1.68,
+     "draw": 4.1,
+     "away": 6
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-20T14:00:00Z",
+   "home": "BOU",
+   "away": "LIV",
+   "market": "fullTime",
+   "sharp": {
+    "home": 3.25,
+    "draw": 3.8,
+    "away": 2.28
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 3.3,
+    "draw": 4,
+    "away": 2.22
+   },
+   "avg": {
+    "home": 3.11,
+    "draw": 3.66,
+    "away": 2.15
+   },
+   "max": {
+    "home": 3.5,
+    "draw": 3.8,
+    "away": 2.25
+   },
+   "avgOpen": {
+    "home": 3.05,
+    "draw": 3.78,
+    "away": 2.13
+   },
+   "maxOpen": {
+    "home": 3.2,
+    "draw": 3.9,
+    "away": 2.38
+   },
+   "book": {
+    "B365": {
+     "home": 3.2,
+     "draw": 3.8,
+     "away": 2.1
+    },
+    "B365C": {
+     "home": 3.1,
+     "draw": 3.6,
+     "away": 2.2
+    },
+    "BW": {
+     "home": 3.1,
+     "draw": 3.75,
+     "away": 2.15
+    },
+    "BWC": {
+     "home": 3,
+     "draw": 3.6,
+     "away": 2.2
+    },
+    "BFE": {
+     "home": 3.3,
+     "draw": 4,
+     "away": 2.22
+    },
+    "BFEC": {
+     "home": 3.25,
+     "draw": 3.8,
+     "away": 2.28
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-20T14:00:00Z",
+   "home": "LEE",
+   "away": "CRY",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.73,
+    "draw": 4.1,
+    "away": 5.5
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.8,
+    "draw": 3.95,
+    "away": 5
+   },
+   "avg": {
+    "home": 1.66,
+    "draw": 3.95,
+    "away": 4.93
+   },
+   "max": {
+    "home": 1.73,
+    "draw": 4.1,
+    "away": 5
+   },
+   "avgOpen": {
+    "home": 1.74,
+    "draw": 3.79,
+    "away": 4.49
+   },
+   "maxOpen": {
+    "home": 1.8,
+    "draw": 4,
+    "away": 4.9
+   },
+   "book": {
+    "B365": {
+     "home": 1.73,
+     "draw": 3.9,
+     "away": 4.75
+    },
+    "B365C": {
+     "home": 1.65,
+     "draw": 4,
+     "away": 5
+    },
+    "BW": {
+     "home": 1.78,
+     "draw": 3.75,
+     "away": 4.33
+    },
+    "BWC": {
+     "home": 1.65,
+     "draw": 4.1,
+     "away": 4.8
+    },
+    "BFE": {
+     "home": 1.8,
+     "draw": 3.95,
+     "away": 5
+    },
+    "BFEC": {
+     "home": 1.73,
+     "draw": 4.1,
+     "away": 5.5
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 0
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-20T14:00:00Z",
+   "home": "MCI",
+   "away": "SUN",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.36,
+    "draw": 5.7,
+    "away": 10
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.34,
+    "draw": 6,
+    "away": 11
+   },
+   "avg": {
+    "home": 1.34,
+    "draw": 5.19,
+    "away": 8.5
+   },
+   "max": {
+    "home": 1.36,
+    "draw": 5.5,
+    "away": 9.2
+   },
+   "avgOpen": {
+    "home": 1.29,
+    "draw": 5.56,
+    "away": 9.39
+   },
+   "maxOpen": {
+    "home": 1.3,
+    "draw": 6,
+    "away": 11
+   },
+   "book": {
+    "B365": {
+     "home": 1.3,
+     "draw": 5.5,
+     "away": 9
+    },
+    "B365C": {
+     "home": 1.36,
+     "draw": 5,
+     "away": 7.5
+    },
+    "BW": {
+     "home": 1.3,
+     "draw": 6,
+     "away": 8.75
+    },
+    "BWC": {
+     "home": 1.35,
+     "draw": 5.25,
+     "away": 8
+    },
+    "BFE": {
+     "home": 1.34,
+     "draw": 6,
+     "away": 11
+    },
+    "BFEC": {
+     "home": 1.36,
+     "draw": 5.7,
+     "away": 10
+    }
+   },
+   "result": {
+    "homeGoals": 5,
+    "awayGoals": 3
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-09-20T16:30:00Z",
+   "home": "FUL",
+   "away": "MUN",
+   "market": "fullTime",
+   "sharp": {
+    "home": 3.7,
+    "draw": 3.85,
+    "away": 2.1
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 3.6,
+    "draw": 3.95,
+    "away": 2.12
+   },
+   "avg": {
+    "home": 3.49,
+    "draw": 3.74,
+    "away": 1.98
+   },
+   "max": {
+    "home": 3.75,
+    "draw": 3.9,
+    "away": 2.05
+   },
+   "avgOpen": {
+    "home": 3.36,
+    "draw": 3.71,
+    "away": 2
+   },
+   "maxOpen": {
+    "home": 3.5,
+    "draw": 3.8,
+    "away": 2.05
+   },
+   "book": {
+    "B365": {
+     "home": 3.5,
+     "draw": 3.8,
+     "away": 2
+    },
+    "B365C": {
+     "home": 3.6,
+     "draw": 3.8,
+     "away": 2
+    },
+    "BW": {
+     "home": 3.4,
+     "draw": 3.7,
+     "away": 2
+    },
+    "BWC": {
+     "home": 3.4,
+     "draw": 3.7,
+     "away": 2
+    },
+    "BFE": {
+     "home": 3.6,
+     "draw": 3.95,
+     "away": 2.12
+    },
+    "BFEC": {
+     "home": 3.7,
+     "draw": 3.85,
+     "away": 2.1
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-10-10T12:30:00Z",
+   "home": "ARS",
+   "away": "LEE",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.47,
+    "draw": 4.8,
+    "away": 8.6
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.41,
+    "draw": 5.3,
+    "away": 9.4
+   },
+   "avg": {
+    "home": 1.44,
+    "draw": 4.44,
+    "away": 7.02
+   },
+   "max": {
+    "home": 1.48,
+    "draw": 4.75,
+    "away": 8
+   },
+   "avgOpen": {
+    "home": 1.38,
+    "draw": 4.78,
+    "away": 7.89
+   },
+   "maxOpen": {
+    "home": 1.4,
+    "draw": 5,
+    "away": 9.5
+   },
+   "book": {
+    "B365": {
+     "home": 1.4,
+     "draw": 5,
+     "away": 7.5
+    },
+    "B365C": {
+     "home": 1.4,
+     "draw": 4.75,
+     "away": 8
+    },
+    "BW": {
+     "home": 1.4,
+     "draw": 5,
+     "away": 7.25
+    },
+    "BWC": {
+     "home": 1.47,
+     "draw": 4.5,
+     "away": 6.5
+    },
+    "BFE": {
+     "home": 1.41,
+     "draw": 5.3,
+     "away": 9.4
+    },
+    "BFEC": {
+     "home": 1.47,
+     "draw": 4.8,
+     "away": 8.6
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-10-10T15:00:00Z",
+   "home": "AVL",
+   "away": "BRE",
+   "market": "fullTime",
+   "sharp": {
+    "home": 2.7,
+    "draw": 3.75,
+    "away": 2.72
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.78,
+    "draw": 3.65,
+    "away": 2.7
+   },
+   "avg": {
+    "home": 2.52,
+    "draw": 3.56,
+    "away": 2.61
+   },
+   "max": {
+    "home": 2.6,
+    "draw": 3.7,
+    "away": 2.65
+   },
+   "avgOpen": {
+    "home": 2.62,
+    "draw": 3.5,
+    "away": 2.54
+   },
+   "maxOpen": {
+    "home": 2.65,
+    "draw": 3.6,
+    "away": 2.6
+   },
+   "book": {
+    "B365": {
+     "home": 2.63,
+     "draw": 3.5,
+     "away": 2.6
+    },
+    "B365C": {
+     "home": 2.55,
+     "draw": 3.5,
+     "away": 2.63
+    },
+    "BW": {
+     "home": 2.6,
+     "draw": 3.5,
+     "away": 2.55
+    },
+    "BWC": {
+     "home": 2.55,
+     "draw": 3.5,
+     "away": 2.65
+    },
+    "BFE": {
+     "home": 2.78,
+     "draw": 3.65,
+     "away": 2.7
+    },
+    "BFEC": {
+     "home": 2.7,
+     "draw": 3.75,
+     "away": 2.72
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 2
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-10-10T15:00:00Z",
+   "home": "CHE",
+   "away": "BOU",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.88,
+    "draw": 4.1,
+    "away": 4.4
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.74,
+    "draw": 4.4,
+    "away": 4.9
+   },
+   "avg": {
+    "home": 1.8,
+    "draw": 3.93,
+    "away": 3.95
+   },
+   "max": {
+    "home": 1.84,
+    "draw": 4,
+    "away": 4.2
+   },
+   "avgOpen": {
+    "home": 1.66,
+    "draw": 4.21,
+    "away": 4.53
+   },
+   "maxOpen": {
+    "home": 1.7,
+    "draw": 4.33,
+    "away": 4.75
+   },
+   "book": {
+    "B365": {
+     "home": 1.65,
+     "draw": 4.33,
+     "away": 4.5
+    },
+    "B365C": {
+     "home": 1.83,
+     "draw": 3.8,
+     "away": 4.1
+    },
+    "BW": {
+     "home": 1.66,
+     "draw": 4.2,
+     "away": 4.6
+    },
+    "BWC": {
+     "home": 1.8,
+     "draw": 4,
+     "away": 4
+    },
+    "BFE": {
+     "home": 1.74,
+     "draw": 4.4,
+     "away": 4.9
+    },
+    "BFEC": {
+     "home": 1.88,
+     "draw": 4.1,
+     "away": 4.4
+    }
+   },
+   "result": {
+    "homeGoals": 5,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-10-10T15:00:00Z",
+   "home": "IPS",
+   "away": "FUL",
+   "market": "fullTime",
+   "sharp": {
+    "home": 3.2,
+    "draw": 3.55,
+    "away": 2.44
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.96,
+    "draw": 3.65,
+    "away": 2.54
+   },
+   "avg": {
+    "home": 2.96,
+    "draw": 3.43,
+    "away": 2.33
+   },
+   "max": {
+    "home": 3.08,
+    "draw": 3.6,
+    "away": 2.38
+   },
+   "avgOpen": {
+    "home": 2.75,
+    "draw": 3.48,
+    "away": 2.42
+   },
+   "maxOpen": {
+    "home": 2.8,
+    "draw": 3.6,
+    "away": 2.5
+   },
+   "book": {
+    "B365": {
+     "home": 2.8,
+     "draw": 3.4,
+     "away": 2.5
+    },
+    "B365C": {
+     "home": 3,
+     "draw": 3.4,
+     "away": 2.35
+    },
+    "BW": {
+     "home": 2.75,
+     "draw": 3.5,
+     "away": 2.45
+    },
+    "BWC": {
+     "home": 2.95,
+     "draw": 3.4,
+     "away": 2.35
+    },
+    "BFE": {
+     "home": 2.96,
+     "draw": 3.65,
+     "away": 2.54
+    },
+    "BFEC": {
+     "home": 3.2,
+     "draw": 3.55,
+     "away": 2.44
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-10-10T15:00:00Z",
+   "home": "SUN",
+   "away": "BHA",
+   "market": "fullTime",
+   "sharp": {
+    "home": 3.2,
+    "draw": 3.55,
+    "away": 2.42
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 3.15,
+    "draw": 3.6,
+    "away": 2.42
+   },
+   "avg": {
+    "home": 2.96,
+    "draw": 3.34,
+    "away": 2.33
+   },
+   "max": {
+    "home": 3.1,
+    "draw": 3.5,
+    "away": 2.4
+   },
+   "avgOpen": {
+    "home": 2.94,
+    "draw": 3.47,
+    "away": 2.3
+   },
+   "maxOpen": {
+    "home": 3.1,
+    "draw": 3.6,
+    "away": 2.35
+   },
+   "book": {
+    "B365": {
+     "home": 3.1,
+     "draw": 3.5,
+     "away": 2.25
+    },
+    "B365C": {
+     "home": 3,
+     "draw": 3.3,
+     "away": 2.38
+    },
+    "BW": {
+     "home": 2.9,
+     "draw": 3.5,
+     "away": 2.3
+    },
+    "BWC": {
+     "home": 2.87,
+     "draw": 3.4,
+     "away": 2.4
+    },
+    "BFE": {
+     "home": 3.15,
+     "draw": 3.6,
+     "away": 2.42
+    },
+    "BFEC": {
+     "home": 3.2,
+     "draw": 3.55,
+     "away": 2.42
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 2
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-10-10T17:30:00Z",
+   "home": "MUN",
+   "away": "TOT",
+   "market": "fullTime",
+   "sharp": {
+    "home": 1.74,
+    "draw": 4.4,
+    "away": 4.8
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 1.76,
+    "draw": 4.4,
+    "away": 4.8
+   },
+   "avg": {
+    "home": 1.68,
+    "draw": 4.17,
+    "away": 4.43
+   },
+   "max": {
+    "home": 1.73,
+    "draw": 4.33,
+    "away": 4.6
+   },
+   "avgOpen": {
+    "home": 1.69,
+    "draw": 4.16,
+    "away": 4.37
+   },
+   "maxOpen": {
+    "home": 1.73,
+    "draw": 4.33,
+    "away": 4.65
+   },
+   "book": {
+    "B365": {
+     "home": 1.7,
+     "draw": 4.2,
+     "away": 4.5
+    },
+    "B365C": {
+     "home": 1.73,
+     "draw": 4,
+     "away": 4.5
+    },
+    "BW": {
+     "home": 1.7,
+     "draw": 4.2,
+     "away": 4.33
+    },
+    "BWC": {
+     "home": 1.65,
+     "draw": 4.33,
+     "away": 4.5
+    },
+    "BFE": {
+     "home": 1.76,
+     "draw": 4.4,
+     "away": 4.8
+    },
+    "BFEC": {
+     "home": 1.74,
+     "draw": 4.4,
+     "away": 4.8
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-10-11T14:00:00Z",
+   "home": "CRY",
+   "away": "NFO",
+   "market": "fullTime",
+   "sharp": {
+    "home": 3,
+    "draw": 3.45,
+    "away": 2.64
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.78,
+    "draw": 3.45,
+    "away": 2.8
+   },
+   "avg": {
+    "home": 2.77,
+    "draw": 3.34,
+    "away": 2.47
+   },
+   "max": {
+    "home": 2.88,
+    "draw": 3.5,
+    "away": 2.55
+   },
+   "avgOpen": {
+    "home": 2.59,
+    "draw": 3.33,
+    "away": 2.64
+   },
+   "maxOpen": {
+    "home": 2.7,
+    "draw": 3.5,
+    "away": 2.7
+   },
+   "book": {
+    "B365": {
+     "home": 2.7,
+     "draw": 3.2,
+     "away": 2.7
+    },
+    "B365C": {
+     "home": 2.88,
+     "draw": 3.3,
+     "away": 2.5
+    },
+    "BW": {
+     "home": 2.55,
+     "draw": 3.4,
+     "away": 2.7
+    },
+    "BWC": {
+     "home": 2.75,
+     "draw": 3.4,
+     "away": 2.5
+    },
+    "BFE": {
+     "home": 2.78,
+     "draw": 3.45,
+     "away": 2.8
+    },
+    "BFEC": {
+     "home": 3,
+     "draw": 3.45,
+     "away": 2.64
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-10-11T14:00:00Z",
+   "home": "HUL",
+   "away": "EVE",
+   "market": "fullTime",
+   "sharp": {
+    "home": 4.4,
+    "draw": 3.5,
+    "away": 2.02
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 3.85,
+    "draw": 3.5,
+    "away": 2.16
+   },
+   "avg": {
+    "home": 4.02,
+    "draw": 3.36,
+    "away": 1.95
+   },
+   "max": {
+    "home": 4.33,
+    "draw": 3.4,
+    "away": 2
+   },
+   "avgOpen": {
+    "home": 3.58,
+    "draw": 3.4,
+    "away": 2.04
+   },
+   "maxOpen": {
+    "home": 3.9,
+    "draw": 3.5,
+    "away": 2.1
+   },
+   "book": {
+    "B365": {
+     "home": 3.7,
+     "draw": 3.4,
+     "away": 2.05
+    },
+    "B365C": {
+     "home": 4.1,
+     "draw": 3.4,
+     "away": 1.95
+    },
+    "BW": {
+     "home": 3.5,
+     "draw": 3.5,
+     "away": 2.05
+    },
+    "BWC": {
+     "home": 4,
+     "draw": 3.4,
+     "away": 1.95
+    },
+    "BFE": {
+     "home": 3.85,
+     "draw": 3.5,
+     "away": 2.16
+    },
+    "BFEC": {
+     "home": 4.4,
+     "draw": 3.5,
+     "away": 2.02
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 2
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-10-11T16:30:00Z",
+   "home": "LIV",
+   "away": "MCI",
+   "market": "fullTime",
+   "sharp": {
+    "home": 3.75,
+    "draw": 3.85,
+    "away": 2.1
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 2.8,
+    "draw": 3.85,
+    "away": 2.56
+   },
+   "avg": {
+    "home": 3.36,
+    "draw": 3.69,
+    "away": 2.05
+   },
+   "max": {
+    "home": 3.5,
+    "draw": 3.9,
+    "away": 2.5
+   },
+   "avgOpen": {
+    "home": 2.62,
+    "draw": 3.64,
+    "away": 2.44
+   },
+   "maxOpen": {
+    "home": 2.7,
+    "draw": 3.75,
+    "away": 2.5
+   },
+   "book": {
+    "B365": {
+     "home": 2.7,
+     "draw": 3.6,
+     "away": 2.45
+    },
+    "B365C": {
+     "home": 3.5,
+     "draw": 3.75,
+     "away": 2
+    },
+    "BW": {
+     "home": 2.65,
+     "draw": 3.6,
+     "away": 2.5
+    },
+    "BWC": {
+     "home": 3.3,
+     "draw": 3.6,
+     "away": 2.1
+    },
+    "BFE": {
+     "home": 2.8,
+     "draw": 3.85,
+     "away": 2.56
+    },
+    "BFEC": {
+     "home": 3.75,
+     "draw": 3.85,
+     "away": 2.1
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 3
+   },
+   "source": "football-data"
+  },
+  {
+   "league": "epl",
+   "season": "20262027",
+   "date": "2026-10-12T20:00:00Z",
+   "home": "COV",
+   "away": "NEW",
+   "market": "fullTime",
+   "sharp": {
+    "home": 3.85,
+    "draw": 3.85,
+    "away": 2.04
+   },
+   "sharpBook": "betfair-exchange",
+   "sharpOpen": {
+    "home": 3.6,
+    "draw": 3.7,
+    "away": 2.16
+   },
+   "avg": {
+    "home": 3.54,
+    "draw": 3.72,
+    "away": 1.97
+   },
+   "max": {
+    "home": 3.7,
+    "draw": 3.9,
+    "away": 2.05
+   },
+   "avgOpen": {
+    "home": 3.25,
+    "draw": 3.58,
+    "away": 2.08
+   },
+   "maxOpen": {
+    "home": 3.4,
+    "draw": 3.75,
+    "away": 2.15
+   },
+   "book": {
+    "B365": {
+     "home": 3.3,
+     "draw": 3.7,
+     "away": 2.1
+    },
+    "B365C": {
+     "home": 3.6,
+     "draw": 3.75,
+     "away": 1.95
+    },
+    "BW": {
+     "home": 3.2,
+     "draw": 3.6,
+     "away": 2.1
+    },
+    "BWC": {
+     "home": 3.5,
+     "draw": 3.7,
+     "away": 2
+    },
+    "BFE": {
+     "home": 3.6,
+     "draw": 3.7,
+     "away": 2.16
+    },
+    "BFEC": {
+     "home": 3.85,
+     "draw": 3.85,
+     "away": 2.04
+    }
+   },
+   "result": {
+    "homeGoals": 4,
+    "awayGoals": 1
+   },
+   "source": "football-data"
+  }
+ ],
+ "unmatched": [],
+ "skipped": {
+  "noResult": 0,
+  "noSharp": 0
+ }
+}

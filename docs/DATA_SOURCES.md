@@ -23,6 +23,8 @@ in-memory data keeps being served and the error is logged.
 | Premier League   | `fixturedownload.com/feed/json/epl-*`   | 2 previous + current  | every 6 h         | `EPL_TEAMS` when a promoted club is missing                         |
 | Champions League | `data/ucl/ratings.json` + `fixturedownload.com/feed/json/champions-league-*` | current | games every 6 h | seed + `UCL_TEAMS` once per season                        |
 | World Cup        | `data/soccer/ratings.json`              | —                     | none              | seed before and during the tournament                               |
+| EPL odds history | `football-data.co.uk/mmz4281/<yy><yy>/E0.csv` → `data/odds/epl/` | 2012-13 onwards | `npm run odds:fetch` (current season refetched after a day) | extend `src/odds/aliases.ts` when a club name is reported unmatched |
+| EPL game history | `data/games/epl/` from fixturedownload (2016-17+) or the odds files (older) | 2012-13 onwards | `npm run games:fetch` | none |
 
 Team tables live in `src/utils/leagues.ts` (Liiga, EPL, UCL) and
 `src/utils/teamData.ts` (NHL). Codes must be unique across every league
@@ -74,9 +76,36 @@ the wrong name.
 - **Upkeep:** if a promoted club is missing from `EPL_TEAMS` the server logs
   `epl: unknown team "<name>"` and uses the first three letters. Add the club
   with the exact `HomeTeam` string from the feed as `apiName`.
-- **Fallbacks considered:** football-data.co.uk CSVs and the clubelo API
-  were both unavailable when this was built (September 2026); the
-  openfootball GitHub JSON lags a round or two behind fixturedownload.
+- **Spelling drift:** the feed wrote "Nottingham Forest" in 2022-23 and
+  2023-24 and "Nott'm Forest" otherwise; `eplFetcher.ts` carries that alias.
+- **Older seasons:** the feed starts at 2016-17 (404 before). The backtest
+  derives 2012-13 to 2015-16 from the football-data odds files, which carry
+  the results; `npm run games:fetch -- epl 2012 2026 --verify` cross-checks
+  every score on the seasons both sources cover.
+
+## Premier League odds history (football-data.co.uk)
+
+- **Endpoint:** `https://football-data.co.uk/mmz4281/<yy><yy+1>/E0.csv`,
+  e.g. `mmz4281/2425/E0.csv` = 2024-25. No key. The `www.` host redirects to
+  the bare one; the server rate-limits (HTTP 429 seen), so completed seasons
+  are fetched once into `data/odds/epl/<season>.json` and committed. Parser
+  and provider: `src/odds/footballData.ts`; store and join: `src/odds/store.ts`.
+- **Columns used:** `Date` (dd/mm/yy up to 2014-15 and in 2016-17, dd/mm/yyyy
+  otherwise), `Time` (UK, from 2019-20), `FTHG/FTAG`, Pinnacle pre-match
+  `PSH/PSD/PSA` and close `PSCH/PSCD/PSCA`, Betfair Exchange close
+  `BFECH/BFECD/BFECA`, market average and best close `AvgC*`/`MaxC*`
+  (from 2019-20; older files only have Betbrain pre-match `BbAv*`/`BbMx*`),
+  plus Bet365, bwin, William Hill and 1xBet pre-match and close.
+- **Sharp reference:** Pinnacle close where present. football-data stopped
+  carrying Pinnacle in mid-January 2026, so later rows use the Betfair
+  Exchange close and, failing that, the market average close; each row's
+  `sharpBook` says which, and the reports show the mix.
+- **Team names:** exact match against `EPL_TEAMS.apiName` plus the
+  football-data spellings in `src/odds/aliases.ts` ("Man United",
+  "Tottenham", "Sheffield United"). Unknown names are printed by
+  `npm run odds:fetch`, never guessed.
+- **Commands:** `npm run odds:fetch -- epl 2012 2026`, `--refresh` to refetch,
+  `--file E0.csv --season 2024` to import a hand-downloaded file.
 
 ## Champions League
 
@@ -136,6 +165,54 @@ Champions League page exist for the final.
   for the process lifetime).
 - **Adding a team:** add the code to both the ratings file and
   `COUNTRY_NAMES`.
+
+## OddsPapi (live sharp prices)
+
+Pinnacle's prices for upcoming games, fetched into the bet forms, and its
+last price before kickoff, written into the ledger as the sharp close. This
+is the live side of the odds layer; the market backtest uses the
+football-data.co.uk files instead.
+
+- **Key:** `ODDSPAPI_API_KEY` in the environment (`.env` is gitignored;
+  run as `ODDSPAPI_API_KEY=... npm run dev`). Optional `ODDSPAPI_BASE_URL`.
+  Without a key every call is a no-op and the forms are filled by hand.
+- **Client:** `src/odds/oddspapi.ts`; team-name tables in
+  `src/odds/oddspapiAliases.ts` (exact match; unknown names are reported,
+  never guessed).
+- **Endpoints used** (base `https://api.oddspapi.io`, `apiKey` query param;
+  https://oddspapi.io/en/docs):
+  `/v4/tournaments?sportId=` (once per sport, cached in
+  `data/odds/oddspapi/tournaments-<sportId>.json`), `/v4/fixtures?tournamentId=&from=&to=`
+  (kickoff ±1 day), `/v4/odds?fixtureId=&bookmakers=pinnacle` (live),
+  `/v4/historical-odds?fixtureId=&bookmakers=pinnacle` (price history, free),
+  `/v4/account` (usage, unmetered).
+- **Ids:** soccer sport 10, ice hockey 15; EPL tournament 17, NHL 234;
+  Pinnacle slug `pinnacle`; soccer "Full Time Result" market 101
+  (outcomes 101/102/103); hockey "Regular Time Result" 153 (153/154/155)
+  and "Winner (incl. overtime and penalties)" 151 (151/152). Liiga and
+  Champions League tournament ids are looked up by slug at first use.
+- **Budget:** the free tier is 250 requests a month; every billable call
+  increments `data/odds/oddspapi/budget.json` (`{month, used}`). Above 200
+  the client refuses unless forced, so a loop cannot burn the month.
+  `/v4/historical-odds` is free and not counted. `npm run odds:budget`
+  prints both the local counter and the account's own count.
+- **Cache:** live prices 15 minutes in memory; per game
+  `data/odds/oddspapi/<league>/<YYYY-MM-DD>_<HOME>_<AWAY>.json` keeps the
+  fixture id and the closing prices for good (gitignored).
+- **Routes and scripts:** `GET /api/odds/sharp?league=&home=&away=` returns
+  `{sharpOdds, moneyline?, sharpSource, fetchedAt, cached, budget}`, 204
+  when unconfigured or unpriced, 503 `{error:"budget"}` when the month is
+  used up. The prediction cards call it after each prediction and fill the
+  sharp fields only while they are still empty. `npm run odds:close
+  [-- --dry-run] [-- --max N]` fills `sharpClosingOdds` on played ledger
+  lines (one billable fixture lookup per game) and the matching
+  prediction-log row.
+- **Unverified** (no example in the public docs): the Liiga and Champions
+  League tournament ids and slugs, OddsPapi's Liiga club spellings, the
+  hockey market ids (taken from the OddsPapi NHL blog post, not the
+  reference), and the exact leaf shape of `/v4/odds` (the parser accepts
+  `price` directly or under `players["0"]`). The first real call for each
+  league confirms them; unmatched names are printed by `odds:close`.
 
 ## Model constants worth knowing
 

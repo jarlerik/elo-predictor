@@ -16,7 +16,28 @@ export interface EloOptions {
    * game is applied. Lets a backtest score predictions in the same walk that
    * produces the live ratings.
    */
-  onGame?: (game: GameRecord, homeElo: number, awayElo: number) => void;
+  onGame?: (
+    game: GameRecord,
+    homeElo: number,
+    awayElo: number,
+    played: GamesPlayed
+  ) => void;
+  /**
+   * Reference instant for the age-based K weight (default Date.now()). A
+   * backtest passes a fixed instant so the walk does not depend on the day
+   * it is run.
+   */
+  now?: number;
+  /** false -> K ignores the game's age (strict walk-forward). Default true. */
+  timeWeighting?: boolean;
+  /** Base K per game, default 20. Exposed for sensitivity grids. */
+  baseK?: number;
+}
+
+/** Games each side had already played in the game's season before it. */
+export interface GamesPlayed {
+  home: number;
+  away: number;
 }
 
 function marginMultiplier(goalDiff: number, eloDiff: number): number {
@@ -26,9 +47,8 @@ function marginMultiplier(goalDiff: number, eloDiff: number): number {
   );
 }
 
-function timeWeight(gameDateStr: string): number {
+function timeWeight(gameDateStr: string, now: number): number {
   const gameDate = new Date(gameDateStr).getTime();
-  const now = Date.now();
   const daysAgo = (now - gameDate) / (1000 * 60 * 60 * 24);
   // newer games -> weight closer to 2, older -> closer to 1
   const weight = 1 + Math.exp(-daysAgo / 365); // ~2 for very recent, ~1 for very old
@@ -42,11 +62,18 @@ export function computeElosFromGames(
   const currentTeams = options.currentTeams ?? CURRENT_NHL_TEAMS;
   const homeAdv = options.homeAdv ?? HOME_ADV;
   const initial = options.initialElos ?? {};
+  const now = options.now ?? Date.now();
+  const timeWeighting = options.timeWeighting ?? true;
+  const baseK = options.baseK ?? BASE_K;
 
   // Keyed by abbreviation: a franchise can change upstream id when it is
   // renamed (e.g. Utah Hockey Club -> Utah Mammoth) but keeps its history.
   const elos = new Map<string, number>();
   const ids = new Map<string, number | string>();
+  // Games played per team in the season being walked, for the early-season
+  // signal passed to onGame. Reset whenever the season label changes.
+  let season: string | null = null;
+  const played = new Map<string, number>();
 
   function ensureTeam(id: number | string, abbr: string) {
     if (!elos.has(abbr)) elos.set(abbr, initial[abbr] ?? BASE_ELO);
@@ -59,7 +86,15 @@ export function computeElosFromGames(
 
     const homeElo = elos.get(g.homeAbbr)!;
     const awayElo = elos.get(g.awayAbbr)!;
-    options.onGame?.(g, homeElo, awayElo);
+    if (g.season !== season) {
+      season = g.season;
+      played.clear();
+    }
+    const homePlayed = played.get(g.homeAbbr) ?? 0;
+    const awayPlayed = played.get(g.awayAbbr) ?? 0;
+    options.onGame?.(g, homeElo, awayElo, { home: homePlayed, away: awayPlayed });
+    played.set(g.homeAbbr, homePlayed + 1);
+    played.set(g.awayAbbr, awayPlayed + 1);
 
     const homeRating = homeElo + homeAdv;
     const awayRating = awayElo;
@@ -80,7 +115,8 @@ export function computeElosFromGames(
     // OT/SO -> reduce impact
     const otFactor = g.decidedInOTorSO ? 0.75 : 1.0;
 
-    const k = BASE_K * marginMult * timeWeight(g.date) * otFactor;
+    const age = timeWeighting ? timeWeight(g.date, now) : 1;
+    const k = baseK * marginMult * age * otFactor;
 
     const deltaHome = k * (actualHome - expectedHome);
     const deltaAway = -deltaHome; // zero-sum

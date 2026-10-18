@@ -13,7 +13,12 @@
     "dev:client": "vite",
     "dev:build": "npm run build:client && npm run dev:server",
     "migrate:ledger": "tsx scripts/migrate-ledger.ts",
-    "fit:homeadv": "tsx scripts/fit-home-advantage.ts"
+    "fit:homeadv": "tsx scripts/fit-home-advantage.ts",
+    "odds:fetch": "tsx scripts/fetch-odds.ts",
+    "games:fetch": "tsx scripts/fetch-games.ts",
+    "backtest:market": "tsx scripts/backtest-market.ts",
+    "odds:close": "tsx scripts/fill-sharp-closing.ts",
+    "odds:budget": "tsx scripts/oddspapi-budget.ts"
   },
   "author": "Jarl-Erik Malmstr\u00f6m",
   "license": "ISC",

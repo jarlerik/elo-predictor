@@ -35,6 +35,8 @@ export interface ModelSnapshot {
   /** Correct-score bets: Poisson means used for the score grid. */
   lambdaHome?: number | null;
   lambdaAway?: number | null;
+  /** Games each side had played in the season before this one (early-season signal). */
+  gamesPlayed?: { home: number; away: number } | null;
 }
 
 export interface LedgerRow {

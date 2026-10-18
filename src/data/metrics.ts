@@ -336,7 +336,9 @@ export type SegmentBy =
   | "oddsBand"
   | "edgeBand"
   | "sharpEdgeBand"
-  | "eloGap";
+  | "eloGap"
+  | "season"
+  | "phase";
 
 export const SEGMENT_KEYS: SegmentBy[] = [
   "leagueMarket",
@@ -347,6 +349,8 @@ export const SEGMENT_KEYS: SegmentBy[] = [
   "edgeBand",
   "sharpEdgeBand",
   "eloGap",
+  "season",
+  "phase",
 ];
 
 export const isSegmentBy = (v: unknown): v is SegmentBy =>
@@ -401,6 +405,23 @@ const ELO_GAP_BANDS: [number, string][] = [
   [100, "50–100"],
   [Infinity, "> 100"],
 ];
+
+/** Games already played by the side with fewer, at bet time. */
+const PHASE_BANDS: [number, string][] = [
+  [5, "0–5 played"],
+  [15, "6–15 played"],
+  [30, "16–30 played"],
+  [Infinity, "31+ played"],
+];
+const HOCKEY_LEAGUES: LedgerLeague[] = ["nhl", "liiga"];
+
+/** Season a game date falls in: July cutoff for soccer, August for hockey. */
+export function seasonOfDate(date: string, league: LedgerLeague | null): string {
+  const d = new Date(date);
+  const cutoff = league && HOCKEY_LEAGUES.includes(league) ? 7 : 6;
+  const start = d.getUTCMonth() >= cutoff ? d.getUTCFullYear() : d.getUTCFullYear() - 1;
+  return `${start}-${String(start + 1).slice(2)}`;
+}
 
 /** First band whose upper bound the value is at or below. */
 function band(bands: [number, string][], v: number): [number, string] {
@@ -471,6 +492,18 @@ function groupOf(row: LedgerRow, by: SegmentBy): {
         return { key: "noSnapshot", order: 99, label: "No model snapshot" };
       const [order, label] = band(ELO_GAP_BANDS, Math.abs(h - a));
       return { key: `gap${order}`, order, label };
+    }
+    case "season": {
+      const date = row.game.date ?? row.placedAt;
+      if (!date) return { key: "noDate", order: 9999, label: "No date" };
+      const label = seasonOfDate(date, row.league);
+      return { key: label, order: Number(label.slice(0, 4)), label };
+    }
+    case "phase": {
+      const gp = row.model?.gamesPlayed;
+      if (!gp) return { key: "noPhase", order: 99, label: "No games-played snapshot" };
+      const [order, label] = band(PHASE_BANDS, Math.min(gp.home, gp.away));
+      return { key: `phase${order}`, order, label };
     }
   }
 }

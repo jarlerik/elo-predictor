@@ -191,7 +191,9 @@ export const SharpOddsFields: React.FC<{
   source: string;
   onSourceChange: (v: string) => void;
   title?: string;
-}> = ({ sides, values, onChange, source, onSourceChange, title = "Sharp odds" }) => {
+  /** Muted caption, e.g. where an auto-filled price came from. */
+  note?: string;
+}> = ({ sides, values, onChange, source, onSourceChange, title = "Sharp odds", note }) => {
   const keys = sides.map((s) => s.key);
   const odds: Record<string, number> = {};
   for (const k of keys) {
@@ -240,9 +242,45 @@ export const SharpOddsFields: React.FC<{
           payout {((1 / margin) * 100).toFixed(1)}%
         </span>
       )}
+      {note && <span className="sharp-odds-margin">{note}</span>}
     </div>
   );
 };
+
+/** "auto-filled from Pinnacle 12:03" for a /api/odds/sharp response. */
+export function sharpFillNote(source: string, fetchedAt: string): string {
+  const t = new Date(fetchedAt);
+  const hhmm = Number.isFinite(t.getTime())
+    ? t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    : "";
+  return `auto-filled from ${source.replace(/\s*\(OddsPapi\)/, "")} ${hhmm}`.trim();
+}
+
+/** Response of GET /api/odds/sharp. */
+export interface SharpOddsResponse {
+  sharpOdds: { home: number; draw?: number; away: number };
+  moneyline?: { home: number; away: number };
+  sharpSource: string;
+  fetchedAt: string;
+}
+
+/** The prefill, or null on 204 / error / no body. Never throws. */
+export async function fetchSharpPrefill(params: {
+  league: string;
+  home: string;
+  away: string;
+}): Promise<SharpOddsResponse | null> {
+  try {
+    const qs = new URLSearchParams(params);
+    const res = await fetch(`/api/odds/sharp?${qs.toString()}`);
+    if (res.status !== 200) return null;
+    const body = await res.json();
+    if (!body || typeof body !== "object" || !body.sharpOdds) return null;
+    return body as SharpOddsResponse;
+  } catch {
+    return null;
+  }
+}
 
 /** De-vigged probabilities from the sharp inputs, or null until complete. */
 export function sharpProbabilities(

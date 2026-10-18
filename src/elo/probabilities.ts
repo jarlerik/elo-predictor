@@ -68,6 +68,10 @@ export function fitDrawFactorFromHistory(
     fallback?: number;
     minGames?: number;
     currentTeams?: Set<string>;
+    /** Elo walk settings, forwarded to computeElosFromGames. */
+    now?: number;
+    timeWeighting?: boolean;
+    baseK?: number;
   } = {}
 ): number {
   const homeAdv = options.homeAdv ?? 60;
@@ -76,6 +80,9 @@ export function fitDrawFactorFromHistory(
   computeElosFromGames(games, {
     currentTeams: options.currentTeams ?? new Set(),
     homeAdv,
+    now: options.now,
+    timeWeighting: options.timeWeighting,
+    baseK: options.baseK,
     onGame: (g, homeElo, awayElo) => {
       diffs.push(homeElo + homeAdv - awayElo);
       if (isDraw(g)) observed++;

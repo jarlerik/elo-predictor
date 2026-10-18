@@ -49,6 +49,13 @@ import {
   writeBankroll,
 } from "../data/bankroll";
 import { backtestFor } from "../data/backtest";
+import {
+  BudgetExceeded,
+  budget as oddsBudget,
+  fetchSharpOdds,
+  isConfigured as oddsConfigured,
+} from "../odds/oddspapi";
+import { isOddsLeague } from "../odds/oddspapiAliases";
 
 const router = express.Router();
 
@@ -1145,6 +1152,33 @@ router.post("/ledger/sharp-closing", async (req, res) => {
   } catch (e) {
     console.error("failed to set sharp closing odds", e);
     res.status(500).json({ error: "failed to set sharp closing odds" });
+  }
+});
+
+/**
+ * Sharp reference prices for an upcoming game from OddsPapi (Pinnacle), to
+ * prefill the bet forms. 204 when the client is not configured, the league
+ * is unsupported or the game is not priced; 503 when the monthly request
+ * budget is used up. The kickoff comes from the league schedule so the
+ * fixture lookup is narrow.
+ */
+router.get("/odds/sharp", async (req, res) => {
+  try {
+    const league = String(req.query.league || "");
+    const home = String(req.query.home || "").toUpperCase();
+    const away = String(req.query.away || "").toUpperCase();
+    if (!isOddsLeague(league) || !home || !away)
+      return res.status(400).json({ error: "league, home and away are required" });
+    if (!oddsConfigured()) return res.status(204).end();
+    const kickoff = await kickoffFor(league, home, away, req.query.kickoff);
+    const { value, cached } = await fetchSharpOdds({ league, home, away, kickoff });
+    if (!value) return res.status(204).end();
+    res.json({ ...value, cached, budget: oddsBudget() });
+  } catch (e) {
+    if (e instanceof BudgetExceeded)
+      return res.status(503).json({ error: "budget", budget: oddsBudget() });
+    console.error("failed to fetch sharp odds", e);
+    res.status(500).json({ error: "failed to fetch sharp odds" });
   }
 });
 

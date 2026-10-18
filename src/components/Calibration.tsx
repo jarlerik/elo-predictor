@@ -65,8 +65,34 @@ export interface Backtest {
   seasons: Segment[];
   rolling: { window: number; step: number; points: RollingPoint[] };
   baseline: { home: number; draw: number; away: number };
-  skillVsMarket: null;
+  skillVsMarket: SkillVsMarket | null;
   computedAt: string;
+}
+
+interface MarketScore {
+  brier: number;
+  logLoss: number;
+}
+
+interface SkillRow {
+  label: string;
+  n: number;
+  model: MarketScore;
+  market: MarketScore;
+  avg: MarketScore | null;
+  baseline: MarketScore;
+  delta: MarketScore;
+}
+
+interface SkillVsMarket {
+  source: string;
+  reference: "sharp-close";
+  books: Record<string, number>;
+  games: number;
+  unmatched: number;
+  overall: SkillRow;
+  seasons: SkillRow[];
+  calibrationMarket: Bucket[];
 }
 
 type Loaded =
@@ -353,6 +379,17 @@ const LeagueCalibration: React.FC<{ bt: Backtest }> = ({ bt }) => {
             {marketLabel} · {bt.games} games · {fmtDate(bt.overall.from)} –{" "}
             {fmtDate(bt.overall.to)} · draw factor {bt.drawFactor.toFixed(2)} ·
             home advantage {bt.homeAdv}
+            {bt.skillVsMarket ? (
+              <>
+                {" "}· vs sharp close ({bt.skillVsMarket.games} games): model log loss{" "}
+                {f3(bt.skillVsMarket.overall.model.logLoss)} / market{" "}
+                {f3(bt.skillVsMarket.overall.market.logLoss)} (Δ{" "}
+                {bt.skillVsMarket.overall.delta.logLoss >= 0 ? "+" : ""}
+                {f3(bt.skillVsMarket.overall.delta.logLoss)})
+              </>
+            ) : (
+              <> · no odds cache (run npm run odds:fetch) for the market comparison</>
+            )}
           </div>
         </div>
         <div className="calibration-controls">
@@ -449,13 +486,22 @@ const LeagueCalibration: React.FC<{ bt: Backtest }> = ({ bt }) => {
               <th>Baseline</th>
               <th>Log loss</th>
               <th>Baseline</th>
+              {bt.skillVsMarket && <th>Market Brier</th>}
+              {bt.skillVsMarket && <th>Market log loss</th>}
               <th>Draw pred / obs</th>
               <th>Home pred / obs</th>
               <th>Score log loss</th>
             </tr>
           </thead>
           <tbody>
-            {[...bt.seasons, bt.overall].map((s) => (
+            {[...bt.seasons, bt.overall].map((s) => {
+              const sv = bt.skillVsMarket;
+              const skill = sv
+                ? s === bt.overall
+                  ? sv.overall
+                  : sv.seasons.find((r) => r.label === s.label) ?? null
+                : null;
+              return (
               <tr key={s.label} className={s === bt.overall ? "total" : ""}>
                 <td>{s.label}</td>
                 <td>{s.n}</td>
@@ -467,6 +513,22 @@ const LeagueCalibration: React.FC<{ bt: Backtest }> = ({ bt }) => {
                   {f3(s.logLoss)}
                 </td>
                 <td>{f3(s.logLossBaseline)}</td>
+                {sv && (
+                  <td
+                    className={skill ? (skill.delta.brier < 0 ? "up" : "down") : ""}
+                    title={skill ? `${skill.n} games with odds; model ${f3(skill.model.brier)}` : undefined}
+                  >
+                    {skill ? f3(skill.market.brier) : "—"}
+                  </td>
+                )}
+                {sv && (
+                  <td
+                    className={skill ? (skill.delta.logLoss < 0 ? "up" : "down") : ""}
+                    title={skill ? `${skill.n} games with odds; model ${f3(skill.model.logLoss)}` : undefined}
+                  >
+                    {skill ? f3(skill.market.logLoss) : "—"}
+                  </td>
+                )}
                 <td>
                   {pct(s.outcomes.draw.predicted)} / {pct(s.outcomes.draw.observed)}
                 </td>
@@ -483,7 +545,8 @@ const LeagueCalibration: React.FC<{ bt: Backtest }> = ({ bt }) => {
                   {f3(s.correctScore.logLoss)}
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>

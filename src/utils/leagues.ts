@@ -123,6 +123,20 @@ export const EPL_TEAMS: Record<string, LeagueTeam> = {
   TOT: { name: "Tottenham Hotspur", apiName: "Spurs" },
   WHU: { name: "West Ham United", apiName: "West Ham" },
   WOL: { name: "Wolverhampton Wanderers", apiName: "Wolves" },
+  // Clubs from earlier seasons, so the odds history (2012-13 onwards) and
+  // older fixture feeds resolve. Codes stay unique across NHL and Liiga
+  // (Cardiff is CDF because CAR is Carolina).
+  CDF: { name: "Cardiff City", apiName: "Cardiff" },
+  HUD: { name: "Huddersfield Town", apiName: "Huddersfield" },
+  MID: { name: "Middlesbrough", apiName: "Middlesbrough" },
+  NOR: { name: "Norwich City", apiName: "Norwich" },
+  QPR: { name: "Queens Park Rangers", apiName: "QPR" },
+  RDG: { name: "Reading", apiName: "Reading" },
+  STK: { name: "Stoke City", apiName: "Stoke" },
+  SWA: { name: "Swansea City", apiName: "Swansea" },
+  WAT: { name: "Watford", apiName: "Watford" },
+  WBA: { name: "West Bromwich Albion", apiName: "West Brom" },
+  WIG: { name: "Wigan Athletic", apiName: "Wigan" },
 };
 
 // UEFA Champions League 2026-27 participants. apiName = team name in

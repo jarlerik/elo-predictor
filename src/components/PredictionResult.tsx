@@ -4,7 +4,9 @@ import {
   BookmakerField,
   OddsInput,
   SharpOddsFields,
+  fetchSharpPrefill,
   parseOdds,
+  sharpFillNote,
   sharpOddsBody,
   sharpProbabilities,
   useBookmaker,
@@ -85,11 +87,48 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
   // Bankroll and Kelly divider for the stake hint and the ledger snapshot.
   const { bankroll, kelly } = useBankroll();
   const useStake = (v: number) => setStake(v.toFixed(2));
+  // Where the sharp prices came from when they were fetched, not typed.
+  const [sharpNote, setSharpNote] = useState<string | null>(null);
   useEffect(() => {
     setBook(emptyBook);
     setSharp(emptyBook);
+    setSharpNote(null);
+    // Prefill the sharp prices from the odds API when it is configured. The
+    // fields stay editable; a response for a card that has since changed,
+    // or one arriving after the user started typing, is ignored.
+    if (!prediction.league) return;
+    let stale = false;
+    const fmt = (n: number | undefined) => (n === undefined ? "" : n.toFixed(2));
+    fetchSharpPrefill({
+      league: prediction.league,
+      home: prediction.homeTeam,
+      away: prediction.awayTeam,
+    }).then((body) => {
+      if (stale || !body) return;
+      const filled: Record<BookKey, string> = {
+        home: fmt(body.sharpOdds.home),
+        draw: fmt(body.sharpOdds.draw),
+        away: fmt(body.sharpOdds.away),
+        mlHome: fmt(body.moneyline?.home),
+        mlAway: fmt(body.moneyline?.away),
+      };
+      let applied = false;
+      setSharp((prev) => {
+        const untouched = Object.values(prev).every((v) => v === "");
+        if (!untouched) return prev;
+        applied = true;
+        return filled;
+      });
+      if (applied) {
+        setSharpNote(sharpFillNote(body.sharpSource, body.fetchedAt));
+        if (!sharpSource) setSharpSource(body.sharpSource);
+      }
+    });
+    return () => {
+      stale = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prediction.homeTeam, prediction.awayTeam]);
+  }, [prediction.league, prediction.homeTeam, prediction.awayTeam]);
 
   // Soccer draws at full time; hockey draws on the 60-minute score (the
   // game goes to OT/SO). Knockout markets can return 0 -> no draw card.
@@ -336,6 +375,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
         onChange={setSharpOdds}
         source={sharpSource}
         onSourceChange={setSharpSource}
+        note={sharpNote ?? undefined}
       />
 
       <div className="probabilities">
@@ -465,6 +505,7 @@ const PredictionResult: React.FC<PredictionResultProps> = ({ prediction }) => {
             onChange={setSharpOdds}
             source={sharpSource}
             onSourceChange={setSharpSource}
+            note={sharpNote ?? undefined}
           />
           <div className="moneyline-rows">
             <div className="moneyline-row">
