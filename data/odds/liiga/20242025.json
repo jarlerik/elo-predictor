@@ -1,0 +1,5075 @@
+{
+ "source": "the-odds-api",
+ "fetchedAt": "2026-10-18T18:52:00.151Z",
+ "startYear": 2024,
+ "complete": true,
+ "records": [
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-01T14:00:00Z",
+   "home": "TPS",
+   "away": "TAP",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.147,
+    "draw": 4.439,
+    "away": 3.237
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.993,
+    "draw": 4.107,
+    "away": 3.026
+   },
+   "max": {
+    "home": 2.08,
+    "draw": 4.3,
+    "away": 3.25
+   },
+   "book": {
+    "onexbet": {
+     "home": 2,
+     "draw": 4.3,
+     "away": 3.03
+    },
+    "betclic": {
+     "home": 2,
+     "draw": 4.1,
+     "away": 3
+    },
+    "winamax_fr": {
+     "home": 1.94,
+     "draw": 4,
+     "away": 2.9
+    },
+    "winamax_de": {
+     "home": 1.98,
+     "draw": 4.1,
+     "away": 3
+    },
+    "everygame": {
+     "home": 1.95,
+     "draw": 4,
+     "away": 2.9
+    },
+    "coolbet": {
+     "home": 2.08,
+     "draw": 4.15,
+     "away": 3.25
+    },
+    "unibet_eu": {
+     "home": 2,
+     "draw": 4.1,
+     "away": 3.1
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.59,
+     "away": 2.37
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.61,
+     "away": 2.356
+    },
+    "max": {
+     "home": 1.62,
+     "away": 2.38
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.59,
+      "away": 2.37
+     },
+     "betsson": {
+      "home": 1.62,
+      "away": 2.38
+     },
+     "nordicbet": {
+      "home": 1.62,
+      "away": 2.38
+     },
+     "williamhill": {
+      "home": 1.62,
+      "away": 2.3
+     },
+     "sport888": {
+      "home": 1.6,
+      "away": 2.35
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 7
+   },
+   "snapshotAt": "2025-03-01T13:44:39Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-01T15:00:00Z",
+   "home": "HPK",
+   "away": "SPO",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.251,
+    "draw": 4.204,
+    "away": 3.146
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.059,
+    "draw": 3.881,
+    "away": 2.984
+   },
+   "max": {
+    "home": 2.12,
+    "draw": 4.05,
+    "away": 3.45
+   },
+   "book": {
+    "onexbet": {
+     "home": 2.12,
+     "draw": 4.05,
+     "away": 2.92
+    },
+    "betclic": {
+     "home": 2.1,
+     "draw": 3.9,
+     "away": 2.9
+    },
+    "winamax_fr": {
+     "home": 2.05,
+     "draw": 3.8,
+     "away": 2.8
+    },
+    "winamax_de": {
+     "home": 2.1,
+     "draw": 3.95,
+     "away": 2.9
+    },
+    "tipico_de": {
+     "home": 1.95,
+     "draw": 3.9,
+     "away": 2.9
+    },
+    "unibet_eu": {
+     "home": 2.05,
+     "draw": 3.85,
+     "away": 3.15
+    },
+    "coolbet": {
+     "home": 2.05,
+     "draw": 3.95,
+     "away": 3.45
+    },
+    "everygame": {
+     "home": 2.05,
+     "draw": 3.65,
+     "away": 2.85
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.66,
+     "away": 2.24
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.682,
+     "away": 2.21
+    },
+    "max": {
+     "home": 1.73,
+     "away": 2.28
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.66,
+      "away": 2.24
+     },
+     "williamhill": {
+      "home": 1.73,
+      "away": 2.1
+     },
+     "nordicbet": {
+      "home": 1.66,
+      "away": 2.28
+     },
+     "betsson": {
+      "home": 1.66,
+      "away": 2.28
+     },
+     "sport888": {
+      "home": 1.7,
+      "away": 2.15
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 2
+   },
+   "snapshotAt": "2025-03-01T13:44:39Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-01T15:00:00Z",
+   "home": "KES",
+   "away": "HIFK",
+   "market": "regulation",
+   "sharp": {
+    "home": 3.802,
+    "draw": 4.53,
+    "away": 1.937
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 3.557,
+    "draw": 4.166,
+    "away": 1.793
+   },
+   "max": {
+    "home": 3.95,
+    "draw": 4.33,
+    "away": 1.84
+   },
+   "book": {
+    "betclic": {
+     "home": 3.5,
+     "draw": 4.2,
+     "away": 1.8
+    },
+    "unibet_eu": {
+     "home": 3.6,
+     "draw": 4.25,
+     "away": 1.82
+    },
+    "onexbet": {
+     "home": 3.56,
+     "draw": 4.33,
+     "away": 1.82
+    },
+    "winamax_de": {
+     "home": 3.55,
+     "draw": 4.2,
+     "away": 1.8
+    },
+    "winamax_fr": {
+     "home": 3.4,
+     "draw": 4.1,
+     "away": 1.76
+    },
+    "tipico_de": {
+     "home": 3.5,
+     "draw": 4.1,
+     "away": 1.7
+    },
+    "coolbet": {
+     "home": 3.95,
+     "draw": 4.3,
+     "away": 1.84
+    },
+    "everygame": {
+     "home": 3.4,
+     "draw": 3.85,
+     "away": 1.8
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 2.64,
+     "away": 1.49
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 2.646,
+     "away": 1.494
+    },
+    "max": {
+     "home": 2.72,
+     "away": 1.5
+    },
+    "book": {
+     "sport888": {
+      "home": 2.55,
+      "away": 1.5
+     },
+     "williamhill": {
+      "home": 2.6,
+      "away": 1.5
+     },
+     "pinnacle": {
+      "home": 2.64,
+      "away": 1.49
+     },
+     "nordicbet": {
+      "home": 2.72,
+      "away": 1.49
+     },
+     "betsson": {
+      "home": 2.72,
+      "away": 1.49
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 4,
+    "awayGoals": 3
+   },
+   "snapshotAt": "2025-03-01T13:43:14Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-01T15:00:00Z",
+   "home": "KAL",
+   "away": "PEL",
+   "market": "regulation",
+   "sharp": {
+    "home": 1.736,
+    "draw": 4.819,
+    "away": 4.621
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.602,
+    "draw": 4.491,
+    "away": 4.315
+   },
+   "max": {
+    "home": 1.65,
+    "draw": 4.75,
+    "away": 4.75
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.6,
+     "draw": 4.75,
+     "away": 4.42
+    },
+    "betclic": {
+     "home": 1.65,
+     "draw": 4.4,
+     "away": 4.1
+    },
+    "winamax_fr": {
+     "home": 1.6,
+     "draw": 4.3,
+     "away": 3.95
+    },
+    "winamax_de": {
+     "home": 1.64,
+     "draw": 4.4,
+     "away": 4.1
+    },
+    "tipico_de": {
+     "home": 1.55,
+     "draw": 4.5,
+     "away": 4
+    },
+    "unibet_eu": {
+     "home": 1.61,
+     "draw": 4.5,
+     "away": 4.6
+    },
+    "coolbet": {
+     "home": 1.64,
+     "draw": 4.75,
+     "away": 4.75
+    },
+    "everygame": {
+     "home": 1.53,
+     "draw": 4.33,
+     "away": 4.6
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.34,
+     "away": 3.23
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.358,
+     "away": 3.186
+    },
+    "max": {
+     "home": 1.4,
+     "away": 3.3
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.34,
+      "away": 3.23
+     },
+     "williamhill": {
+      "home": 1.4,
+      "away": 2.9
+     },
+     "nordicbet": {
+      "home": 1.36,
+      "away": 3.3
+     },
+     "betsson": {
+      "home": 1.36,
+      "away": 3.3
+     },
+     "sport888": {
+      "home": 1.33,
+      "away": 3.2
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 6,
+    "awayGoals": 3
+   },
+   "snapshotAt": "2025-03-01T13:44:39Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-01T15:00:00Z",
+   "home": "SAI",
+   "away": "ILV",
+   "market": "regulation",
+   "sharp": {
+    "home": 3.014,
+    "draw": 4.222,
+    "away": 2.319
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.821,
+    "draw": 3.888,
+    "away": 2.134
+   },
+   "max": {
+    "home": 3.1,
+    "draw": 4.05,
+    "away": 2.2
+   },
+   "book": {
+    "onexbet": {
+     "home": 2.82,
+     "draw": 4.05,
+     "away": 2.17
+    },
+    "winamax_fr": {
+     "home": 2.7,
+     "draw": 3.8,
+     "away": 2.1
+    },
+    "winamax_de": {
+     "home": 2.75,
+     "draw": 3.9,
+     "away": 2.15
+    },
+    "betclic": {
+     "home": 2.75,
+     "draw": 3.9,
+     "away": 2.15
+    },
+    "coolbet": {
+     "home": 3.1,
+     "draw": 3.95,
+     "away": 2.2
+    },
+    "tipico_de": {
+     "home": 2.8,
+     "draw": 3.9,
+     "away": 2
+    },
+    "unibet_eu": {
+     "home": 2.85,
+     "draw": 3.85,
+     "away": 2.2
+    },
+    "everygame": {
+     "home": 2.8,
+     "draw": 3.75,
+     "away": 2.1
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 2.18,
+     "away": 1.69
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 2.146,
+     "away": 1.722
+    },
+    "max": {
+     "home": 2.2,
+     "away": 1.8
+    },
+    "book": {
+     "pinnacle": {
+      "home": 2.18,
+      "away": 1.69
+     },
+     "williamhill": {
+      "home": 2,
+      "away": 1.8
+     },
+     "nordicbet": {
+      "home": 2.2,
+      "away": 1.71
+     },
+     "betsson": {
+      "home": 2.2,
+      "away": 1.71
+     },
+     "sport888": {
+      "home": 2.15,
+      "away": 1.7
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 6
+   },
+   "snapshotAt": "2025-03-01T13:44:39Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-01T15:00:00Z",
+   "home": "ASS",
+   "away": "KAR",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.097,
+    "draw": 4.424,
+    "away": 3.365
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.963,
+    "draw": 4.093,
+    "away": 3.119
+   },
+   "max": {
+    "home": 2.1,
+    "draw": 4.2,
+    "away": 3.3
+   },
+   "book": {
+    "betclic": {
+     "home": 1.95,
+     "draw": 4.1,
+     "away": 3.15
+    },
+    "unibet_eu": {
+     "home": 1.93,
+     "draw": 4.2,
+     "away": 3.3
+    },
+    "onexbet": {
+     "home": 1.95,
+     "draw": 4.2,
+     "away": 3.23
+    },
+    "winamax_de": {
+     "home": 1.96,
+     "draw": 4.2,
+     "away": 3.05
+    },
+    "winamax_fr": {
+     "home": 1.92,
+     "draw": 4,
+     "away": 2.95
+    },
+    "coolbet": {
+     "home": 2.1,
+     "draw": 3.95,
+     "away": 3.3
+    },
+    "tipico_de": {
+     "home": 1.93,
+     "draw": 4,
+     "away": 2.85
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.55,
+     "away": 2.47
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.595,
+     "away": 2.387
+    },
+    "max": {
+     "home": 1.63,
+     "away": 2.47
+    },
+    "book": {
+     "williamhill": {
+      "home": 1.57,
+      "away": 2.38
+     },
+     "pinnacle": {
+      "home": 1.55,
+      "away": 2.47
+     },
+     "nordicbet": {
+      "home": 1.63,
+      "away": 2.35
+     },
+     "betsson": {
+      "home": 1.63,
+      "away": 2.35
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 1
+   },
+   "snapshotAt": "2025-03-01T13:43:14Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-04T16:30:00Z",
+   "home": "TAP",
+   "away": "HPK",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.069,
+    "draw": 4.405,
+    "away": 3.453
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.906,
+    "draw": 4.012,
+    "away": 3.214
+   },
+   "max": {
+    "home": 2.03,
+    "draw": 4.2,
+    "away": 3.55
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.95,
+     "draw": 4.2,
+     "away": 3.21
+    },
+    "betclic": {
+     "home": 1.88,
+     "draw": 4,
+     "away": 3.15
+    },
+    "winamax_de": {
+     "home": 1.92,
+     "draw": 4.1,
+     "away": 3.2
+    },
+    "winamax_fr": {
+     "home": 1.84,
+     "draw": 3.85,
+     "away": 3
+    },
+    "tipico_de": {
+     "home": 1.8,
+     "draw": 4,
+     "away": 3.2
+    },
+    "unibet_eu": {
+     "home": 1.88,
+     "draw": 4.2,
+     "away": 3.4
+    },
+    "everygame": {
+     "home": 1.95,
+     "draw": 3.75,
+     "away": 3
+    },
+    "coolbet": {
+     "home": 2.03,
+     "draw": 4,
+     "away": 3.55
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.56,
+     "away": 2.44
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.56,
+     "away": 2.446
+    },
+    "max": {
+     "home": 1.57,
+     "away": 2.48
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.56,
+      "away": 2.44
+     },
+     "williamhill": {
+      "home": 1.57,
+      "away": 2.38
+     },
+     "betsson": {
+      "home": 1.57,
+      "away": 2.48
+     },
+     "nordicbet": {
+      "home": 1.57,
+      "away": 2.48
+     },
+     "sport888": {
+      "home": 1.53,
+      "away": 2.45
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 1
+   },
+   "snapshotAt": "2025-03-04T16:14:59Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-05T16:30:00Z",
+   "home": "HIFK",
+   "away": "SAI",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.016,
+    "draw": 4.353,
+    "away": 3.647
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.859,
+    "draw": 4.006,
+    "away": 3.404
+   },
+   "max": {
+    "home": 1.93,
+    "draw": 4.15,
+    "away": 3.75
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.9,
+     "draw": 4.05,
+     "away": 3.48
+    },
+    "betclic": {
+     "home": 1.85,
+     "draw": 4,
+     "away": 3.25
+    },
+    "winamax_fr": {
+     "home": 1.84,
+     "draw": 3.95,
+     "away": 3.2
+    },
+    "winamax_de": {
+     "home": 1.88,
+     "draw": 4.1,
+     "away": 3.35
+    },
+    "tipico_de": {
+     "home": 1.75,
+     "draw": 4.1,
+     "away": 3.3
+    },
+    "unibet_eu": {
+     "home": 1.89,
+     "draw": 3.8,
+     "away": 3.65
+    },
+    "everygame": {
+     "home": 1.83,
+     "draw": 3.9,
+     "away": 3.25
+    },
+    "coolbet": {
+     "home": 1.93,
+     "draw": 4.15,
+     "away": 3.75
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.5,
+     "away": 2.6
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.516,
+     "away": 2.57
+    },
+    "max": {
+     "home": 1.53,
+     "away": 2.65
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.5,
+      "away": 2.6
+     },
+     "williamhill": {
+      "home": 1.53,
+      "away": 2.5
+     },
+     "nordicbet": {
+      "home": 1.51,
+      "away": 2.65
+     },
+     "betsson": {
+      "home": 1.51,
+      "away": 2.65
+     },
+     "sport888": {
+      "home": 1.53,
+      "away": 2.45
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 4
+   },
+   "snapshotAt": "2025-03-05T16:14:50Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-05T16:30:00Z",
+   "home": "ILV",
+   "away": "KAL",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.366,
+    "draw": 4.25,
+    "away": 2.923
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.175,
+    "draw": 3.907,
+    "away": 2.725
+   },
+   "max": {
+    "home": 2.27,
+    "draw": 4.05,
+    "away": 2.9
+   },
+   "book": {
+    "onexbet": {
+     "home": 2.27,
+     "draw": 3.86,
+     "away": 2.75
+    },
+    "betclic": {
+     "home": 2.15,
+     "draw": 3.9,
+     "away": 2.65
+    },
+    "winamax_fr": {
+     "home": 2.15,
+     "draw": 3.85,
+     "away": 2.65
+    },
+    "winamax_de": {
+     "home": 2.2,
+     "draw": 3.95,
+     "away": 2.7
+    },
+    "tipico_de": {
+     "home": 2.05,
+     "draw": 3.9,
+     "away": 2.7
+    },
+    "unibet_eu": {
+     "home": 2.16,
+     "draw": 4,
+     "away": 2.85
+    },
+    "everygame": {
+     "home": 2.15,
+     "draw": 3.75,
+     "away": 2.6
+    },
+    "coolbet": {
+     "home": 2.27,
+     "draw": 4.05,
+     "away": 2.9
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.77,
+     "away": 2.07
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.758,
+     "away": 2.084
+    },
+    "max": {
+     "home": 1.77,
+     "away": 2.1
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.77,
+      "away": 2.07
+     },
+     "williamhill": {
+      "home": 1.73,
+      "away": 2.1
+     },
+     "nordicbet": {
+      "home": 1.77,
+      "away": 2.1
+     },
+     "betsson": {
+      "home": 1.77,
+      "away": 2.1
+     },
+     "sport888": {
+      "home": 1.75,
+      "away": 2.05
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 3
+   },
+   "snapshotAt": "2025-03-05T16:14:50Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-05T16:30:00Z",
+   "home": "JUK",
+   "away": "SPO",
+   "market": "regulation",
+   "sharp": {
+    "home": 3.335,
+    "draw": 4.296,
+    "away": 2.139
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 3.102,
+    "draw": 3.971,
+    "away": 1.965
+   },
+   "max": {
+    "home": 3.4,
+    "draw": 4.1,
+    "away": 2.03
+   },
+   "book": {
+    "onexbet": {
+     "home": 3.17,
+     "draw": 3.92,
+     "away": 2.03
+    },
+    "betclic": {
+     "home": 3,
+     "draw": 3.9,
+     "away": 1.95
+    },
+    "winamax_fr": {
+     "home": 3,
+     "draw": 3.9,
+     "away": 1.94
+    },
+    "winamax_de": {
+     "home": 3.05,
+     "draw": 4,
+     "away": 1.98
+    },
+    "tipico_de": {
+     "home": 3.1,
+     "draw": 4,
+     "away": 1.83
+    },
+    "unibet_eu": {
+     "home": 3.2,
+     "draw": 4.1,
+     "away": 1.97
+    },
+    "everygame": {
+     "home": 2.9,
+     "draw": 3.85,
+     "away": 2
+    },
+    "coolbet": {
+     "home": 3.4,
+     "draw": 4.1,
+     "away": 2.02
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 2.28,
+     "away": 1.64
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 2.294,
+     "away": 1.638
+    },
+    "max": {
+     "home": 2.32,
+     "away": 1.65
+    },
+    "book": {
+     "pinnacle": {
+      "home": 2.28,
+      "away": 1.64
+     },
+     "williamhill": {
+      "home": 2.3,
+      "away": 1.62
+     },
+     "nordicbet": {
+      "home": 2.32,
+      "away": 1.64
+     },
+     "betsson": {
+      "home": 2.32,
+      "away": 1.64
+     },
+     "sport888": {
+      "home": 2.25,
+      "away": 1.65
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 6
+   },
+   "snapshotAt": "2025-03-05T16:14:50Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-05T16:30:00Z",
+   "home": "KES",
+   "away": "TPS",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.802,
+    "draw": 4.211,
+    "away": 2.465
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.604,
+    "draw": 3.879,
+    "away": 2.289
+   },
+   "max": {
+    "home": 2.75,
+    "draw": 3.95,
+    "away": 2.45
+   },
+   "book": {
+    "onexbet": {
+     "home": 2.68,
+     "draw": 3.9,
+     "away": 2.29
+    },
+    "betclic": {
+     "home": 2.55,
+     "draw": 3.8,
+     "away": 2.25
+    },
+    "winamax_fr": {
+     "home": 2.5,
+     "draw": 3.8,
+     "away": 2.2
+    },
+    "winamax_de": {
+     "home": 2.6,
+     "draw": 3.95,
+     "away": 2.3
+    },
+    "unibet_eu": {
+     "home": 2.6,
+     "draw": 3.95,
+     "away": 2.33
+    },
+    "everygame": {
+     "home": 2.55,
+     "draw": 3.85,
+     "away": 2.2
+    },
+    "coolbet": {
+     "home": 2.75,
+     "draw": 3.9,
+     "away": 2.45
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 2.07,
+     "away": 1.78
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 2.014,
+     "away": 1.816
+    },
+    "max": {
+     "home": 2.07,
+     "away": 1.85
+    },
+    "book": {
+     "pinnacle": {
+      "home": 2.07,
+      "away": 1.78
+     },
+     "williamhill": {
+      "home": 2,
+      "away": 1.8
+     },
+     "nordicbet": {
+      "home": 2,
+      "away": 1.85
+     },
+     "betsson": {
+      "home": 2,
+      "away": 1.85
+     },
+     "sport888": {
+      "home": 2,
+      "away": 1.8
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 1
+   },
+   "snapshotAt": "2025-03-05T16:14:50Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-05T16:30:00Z",
+   "home": "KAR",
+   "away": "JYP",
+   "market": "regulation",
+   "sharp": {
+    "home": 1.828,
+    "draw": 4.666,
+    "away": 4.188
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.687,
+    "draw": 4.347,
+    "away": 3.906
+   },
+   "max": {
+    "home": 1.73,
+    "draw": 4.45,
+    "away": 4.35
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.73,
+     "draw": 4.33,
+     "away": 3.94
+    },
+    "betclic": {
+     "home": 1.68,
+     "draw": 4.25,
+     "away": 3.75
+    },
+    "winamax_fr": {
+     "home": 1.66,
+     "draw": 4.2,
+     "away": 3.7
+    },
+    "winamax_de": {
+     "home": 1.7,
+     "draw": 4.4,
+     "away": 3.85
+    },
+    "tipico_de": {
+     "home": 1.6,
+     "draw": 4.4,
+     "away": 3.8
+    },
+    "unibet_eu": {
+     "home": 1.71,
+     "draw": 4.4,
+     "away": 3.95
+    },
+    "coolbet": {
+     "home": 1.73,
+     "draw": 4.45,
+     "away": 4.35
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.43,
+     "away": 2.86
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.438,
+     "away": 2.853
+    },
+    "max": {
+     "home": 1.44,
+     "away": 2.9
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.43,
+      "away": 2.86
+     },
+     "williamhill": {
+      "home": 1.44,
+      "away": 2.75
+     },
+     "nordicbet": {
+      "home": 1.44,
+      "away": 2.9
+     },
+     "betsson": {
+      "home": 1.44,
+      "away": 2.9
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 4,
+    "awayGoals": 3
+   },
+   "snapshotAt": "2025-03-05T16:14:50Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-05T16:30:00Z",
+   "home": "PEL",
+   "away": "ASS",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.851,
+    "draw": 4.175,
+    "away": 2.441
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.668,
+    "draw": 3.843,
+    "away": 2.233
+   },
+   "max": {
+    "home": 3.05,
+    "draw": 3.94,
+    "away": 2.3
+   },
+   "book": {
+    "onexbet": {
+     "home": 2.79,
+     "draw": 3.94,
+     "away": 2.22
+    },
+    "betclic": {
+     "home": 2.55,
+     "draw": 3.8,
+     "away": 2.25
+    },
+    "winamax_fr": {
+     "home": 2.55,
+     "draw": 3.75,
+     "away": 2.2
+    },
+    "winamax_de": {
+     "home": 2.6,
+     "draw": 3.9,
+     "away": 2.25
+    },
+    "tipico_de": {
+     "home": 2.4,
+     "draw": 3.8,
+     "away": 2.3
+    },
+    "unibet_eu": {
+     "home": 2.7,
+     "draw": 3.9,
+     "away": 2.3
+    },
+    "everygame": {
+     "home": 2.7,
+     "draw": 3.75,
+     "away": 2.1
+    },
+    "coolbet": {
+     "home": 3.05,
+     "draw": 3.9,
+     "away": 2.24
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 2.15,
+     "away": 1.71
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 2.1,
+     "away": 1.744
+    },
+    "max": {
+     "home": 2.15,
+     "away": 1.8
+    },
+    "book": {
+     "pinnacle": {
+      "home": 2.15,
+      "away": 1.71
+     },
+     "williamhill": {
+      "home": 2,
+      "away": 1.8
+     },
+     "nordicbet": {
+      "home": 2.15,
+      "away": 1.73
+     },
+     "betsson": {
+      "home": 2.15,
+      "away": 1.73
+     },
+     "sport888": {
+      "home": 2.05,
+      "away": 1.75
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 3
+   },
+   "snapshotAt": "2025-03-05T16:14:50Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-07T16:30:00Z",
+   "home": "HPK",
+   "away": "HIFK",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.803,
+    "draw": 4.118,
+    "away": 2.497
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.594,
+    "draw": 3.769,
+    "away": 2.309
+   },
+   "max": {
+    "home": 2.7,
+    "draw": 3.95,
+    "away": 2.53
+   },
+   "book": {
+    "betclic": {
+     "home": 2.5,
+     "draw": 3.75,
+     "away": 2.3
+    },
+    "winamax_fr": {
+     "home": 2.5,
+     "draw": 3.75,
+     "away": 2.25
+    },
+    "winamax_de": {
+     "home": 2.6,
+     "draw": 3.85,
+     "away": 2.3
+    },
+    "onexbet": {
+     "home": 2.65,
+     "draw": 3.95,
+     "away": 2.29
+    },
+    "tipico_de": {
+     "home": 2.6,
+     "draw": 3.6,
+     "away": 2.2
+    },
+    "unibet_eu": {
+     "home": 2.6,
+     "draw": 3.85,
+     "away": 2.4
+    },
+    "everygame": {
+     "home": 2.6,
+     "draw": 3.65,
+     "away": 2.2
+    },
+    "coolbet": {
+     "home": 2.7,
+     "draw": 3.75,
+     "away": 2.53
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 2.06,
+     "away": 1.78
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 2.004,
+     "away": 1.824
+    },
+    "max": {
+     "home": 2.06,
+     "away": 1.87
+    },
+    "book": {
+     "pinnacle": {
+      "home": 2.06,
+      "away": 1.78
+     },
+     "williamhill": {
+      "home": 2,
+      "away": 1.8
+     },
+     "nordicbet": {
+      "home": 1.98,
+      "away": 1.87
+     },
+     "betsson": {
+      "home": 1.98,
+      "away": 1.87
+     },
+     "sport888": {
+      "home": 2,
+      "away": 1.8
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 3
+   },
+   "snapshotAt": "2025-03-07T16:14:13Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-07T16:30:00Z",
+   "home": "KAL",
+   "away": "KES",
+   "market": "regulation",
+   "sharp": {
+    "home": 1.522,
+    "draw": 5.435,
+    "away": 6.29
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.4,
+    "draw": 5.025,
+    "away": 5.978
+   },
+   "max": {
+    "home": 1.43,
+    "draw": 5.45,
+    "away": 6.75
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.43,
+     "draw": 5.25,
+     "away": 5.77
+    },
+    "winamax_fr": {
+     "home": 1.39,
+     "draw": 4.8,
+     "away": 5.5
+    },
+    "winamax_de": {
+     "home": 1.42,
+     "draw": 5.1,
+     "away": 5.8
+    },
+    "betclic": {
+     "home": 1.4,
+     "draw": 4.9,
+     "away": 5.5
+    },
+    "unibet_eu": {
+     "home": 1.4,
+     "draw": 5.1,
+     "away": 6.75
+    },
+    "tipico_de": {
+     "home": 1.33,
+     "draw": 5,
+     "away": 6
+    },
+    "everygame": {
+     "home": 1.4,
+     "draw": 4.6,
+     "away": 5.75
+    },
+    "coolbet": {
+     "home": 1.43,
+     "draw": 5.45,
+     "away": 6.75
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.26,
+     "away": 3.78
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.252,
+     "away": 4.036
+    },
+    "max": {
+     "home": 1.26,
+     "away": 4.2
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.26,
+      "away": 3.78
+     },
+     "williamhill": {
+      "home": 1.25,
+      "away": 4
+     },
+     "nordicbet": {
+      "home": 1.25,
+      "away": 4.2
+     },
+     "betsson": {
+      "home": 1.25,
+      "away": 4.2
+     },
+     "sport888": {
+      "home": 1.25,
+      "away": 4
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 4
+   },
+   "snapshotAt": "2025-03-07T16:14:13Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-07T16:30:00Z",
+   "home": "KOO",
+   "away": "JYP",
+   "market": "regulation",
+   "sharp": {
+    "home": 1.9,
+    "draw": 4.64,
+    "away": 3.875
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.752,
+    "draw": 4.275,
+    "away": 3.625
+   },
+   "max": {
+    "home": 1.8,
+    "draw": 4.5,
+    "away": 4
+   },
+   "book": {
+    "betclic": {
+     "home": 1.72,
+     "draw": 4.2,
+     "away": 3.5
+    },
+    "winamax_fr": {
+     "home": 1.72,
+     "draw": 4.2,
+     "away": 3.5
+    },
+    "winamax_de": {
+     "home": 1.76,
+     "draw": 4.3,
+     "away": 3.6
+    },
+    "unibet_eu": {
+     "home": 1.71,
+     "draw": 4.5,
+     "away": 3.85
+    },
+    "everygame": {
+     "home": 1.8,
+     "draw": 4,
+     "away": 3.3
+    },
+    "coolbet": {
+     "home": 1.8,
+     "draw": 4.45,
+     "away": 4
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.48,
+     "away": 2.65
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.463,
+     "away": 2.76
+    },
+    "max": {
+     "home": 1.48,
+     "away": 2.82
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.48,
+      "away": 2.65
+     },
+     "nordicbet": {
+      "home": 1.46,
+      "away": 2.82
+     },
+     "betsson": {
+      "home": 1.46,
+      "away": 2.82
+     },
+     "sport888": {
+      "home": 1.45,
+      "away": 2.75
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 4,
+    "awayGoals": 6
+   },
+   "snapshotAt": "2025-03-07T16:14:13Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-07T16:30:00Z",
+   "home": "SAI",
+   "away": "JUK",
+   "market": "regulation",
+   "sharp": {
+    "home": 1.508,
+    "draw": 5.528,
+    "away": 6.41
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.391,
+    "draw": 5.1,
+    "away": 5.976
+   },
+   "max": {
+    "home": 1.46,
+    "draw": 5.5,
+    "away": 6.75
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.4,
+     "draw": 5.5,
+     "away": 6.01
+    },
+    "winamax_fr": {
+     "home": 1.39,
+     "draw": 4.9,
+     "away": 5.5
+    },
+    "winamax_de": {
+     "home": 1.41,
+     "draw": 5.1,
+     "away": 5.8
+    },
+    "betclic": {
+     "home": 1.4,
+     "draw": 4.9,
+     "away": 5.5
+    },
+    "unibet_eu": {
+     "home": 1.38,
+     "draw": 5.25,
+     "away": 6.75
+    },
+    "tipico_de": {
+     "home": 1.33,
+     "draw": 5,
+     "away": 6
+    },
+    "everygame": {
+     "home": 1.36,
+     "draw": 4.75,
+     "away": 6
+    },
+    "coolbet": {
+     "home": 1.46,
+     "draw": 5.4,
+     "away": 6.25
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.24,
+     "away": 3.95
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.248,
+     "away": 4.05
+    },
+    "max": {
+     "home": 1.25,
+     "away": 4.15
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.24,
+      "away": 3.95
+     },
+     "williamhill": {
+      "home": 1.25,
+      "away": 4
+     },
+     "nordicbet": {
+      "home": 1.25,
+      "away": 4.15
+     },
+     "betsson": {
+      "home": 1.25,
+      "away": 4.15
+     },
+     "sport888": {
+      "home": 1.25,
+      "away": 4
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 4
+   },
+   "snapshotAt": "2025-03-07T16:14:13Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-07T16:30:00Z",
+   "home": "SPO",
+   "away": "TPS",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.484,
+    "draw": 4.266,
+    "away": 2.754
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.319,
+    "draw": 3.879,
+    "away": 2.536
+   },
+   "max": {
+    "home": 2.47,
+    "draw": 4.15,
+    "away": 2.75
+   },
+   "book": {
+    "onexbet": {
+     "home": 2.31,
+     "draw": 4.15,
+     "away": 2.55
+    },
+    "winamax_fr": {
+     "home": 2.15,
+     "draw": 3.7,
+     "away": 2.4
+    },
+    "winamax_de": {
+     "home": 2.3,
+     "draw": 3.95,
+     "away": 2.55
+    },
+    "betclic": {
+     "home": 2.25,
+     "draw": 3.9,
+     "away": 2.5
+    },
+    "unibet_eu": {
+     "home": 2.45,
+     "draw": 3.75,
+     "away": 2.6
+    },
+    "everygame": {
+     "home": 2.3,
+     "draw": 3.85,
+     "away": 2.4
+    },
+    "coolbet": {
+     "home": 2.47,
+     "draw": 3.85,
+     "away": 2.75
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.87,
+     "away": 1.95
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.848,
+     "away": 1.976
+    },
+    "max": {
+     "home": 1.87,
+     "away": 2
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.87,
+      "away": 1.95
+     },
+     "williamhill": {
+      "home": 1.8,
+      "away": 2
+     },
+     "nordicbet": {
+      "home": 1.86,
+      "away": 1.99
+     },
+     "betsson": {
+      "home": 1.86,
+      "away": 1.99
+     },
+     "sport888": {
+      "home": 1.85,
+      "away": 1.95
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 4
+   },
+   "snapshotAt": "2025-03-07T16:14:13Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-07T16:30:00Z",
+   "home": "ASS",
+   "away": "LUK",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.959,
+    "draw": 4.234,
+    "away": 2.348
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.726,
+    "draw": 3.906,
+    "away": 2.169
+   },
+   "max": {
+    "home": 2.9,
+    "draw": 4.1,
+    "away": 2.3
+   },
+   "book": {
+    "betclic": {
+     "home": 2.52,
+     "draw": 3.9,
+     "away": 2.15
+    },
+    "winamax_fr": {
+     "home": 2.65,
+     "draw": 3.85,
+     "away": 2.15
+    },
+    "winamax_de": {
+     "home": 2.7,
+     "draw": 3.95,
+     "away": 2.2
+    },
+    "onexbet": {
+     "home": 2.79,
+     "draw": 4.05,
+     "away": 2.19
+    },
+    "tipico_de": {
+     "home": 2.7,
+     "draw": 3.7,
+     "away": 2.1
+    },
+    "unibet_eu": {
+     "home": 2.8,
+     "draw": 4.1,
+     "away": 2.16
+    },
+    "everygame": {
+     "home": 2.75,
+     "draw": 3.75,
+     "away": 2.1
+    },
+    "coolbet": {
+     "home": 2.9,
+     "draw": 3.95,
+     "away": 2.3
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 2.23,
+     "away": 1.67
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 2.116,
+     "away": 1.74
+    },
+    "max": {
+     "home": 2.23,
+     "away": 1.8
+    },
+    "book": {
+     "pinnacle": {
+      "home": 2.23,
+      "away": 1.67
+     },
+     "williamhill": {
+      "home": 2,
+      "away": 1.8
+     },
+     "nordicbet": {
+      "home": 2.15,
+      "away": 1.74
+     },
+     "betsson": {
+      "home": 2.15,
+      "away": 1.74
+     },
+     "sport888": {
+      "home": 2.05,
+      "away": 1.75
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 4
+   },
+   "snapshotAt": "2025-03-07T16:14:13Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-07T17:30:00Z",
+   "home": "TAP",
+   "away": "ILV",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.98,
+    "draw": 4.27,
+    "away": 2.324
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.798,
+    "draw": 3.9,
+    "away": 2.151
+   },
+   "max": {
+    "home": 3.05,
+    "draw": 4.1,
+    "away": 2.21
+   },
+   "book": {
+    "betclic": {
+     "home": 2.75,
+     "draw": 4,
+     "away": 2.15
+    },
+    "winamax_fr": {
+     "home": 2.7,
+     "draw": 3.85,
+     "away": 2.1
+    },
+    "winamax_de": {
+     "home": 2.75,
+     "draw": 4,
+     "away": 2.15
+    },
+    "onexbet": {
+     "home": 2.73,
+     "draw": 4.1,
+     "away": 2.21
+    },
+    "tipico_de": {
+     "home": 2.8,
+     "draw": 3.4,
+     "away": 2.15
+    },
+    "unibet_eu": {
+     "home": 3,
+     "draw": 3.95,
+     "away": 2.1
+    },
+    "everygame": {
+     "home": 2.6,
+     "draw": 3.85,
+     "away": 2.15
+    },
+    "coolbet": {
+     "home": 3.05,
+     "draw": 4.05,
+     "away": 2.2
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 2.06,
+     "away": 1.78
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 2.134,
+     "away": 1.73
+    },
+    "max": {
+     "home": 2.18,
+     "away": 1.78
+    },
+    "book": {
+     "pinnacle": {
+      "home": 2.06,
+      "away": 1.78
+     },
+     "williamhill": {
+      "home": 2.1,
+      "away": 1.73
+     },
+     "nordicbet": {
+      "home": 2.18,
+      "away": 1.72
+     },
+     "betsson": {
+      "home": 2.18,
+      "away": 1.72
+     },
+     "sport888": {
+      "home": 2.15,
+      "away": 1.7
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 3
+   },
+   "snapshotAt": "2025-03-07T16:14:13Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-08T15:00:00Z",
+   "home": "ILV",
+   "away": "KOO",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.052,
+    "draw": 4.42,
+    "away": 3.492
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.873,
+    "draw": 4.108,
+    "away": 3.292
+   },
+   "max": {
+    "home": 1.9,
+    "draw": 4.35,
+    "away": 3.7
+   },
+   "book": {
+    "betclic": {
+     "home": 1.88,
+     "draw": 4,
+     "away": 3.15
+    },
+    "winamax_fr": {
+     "home": 1.86,
+     "draw": 4,
+     "away": 3.15
+    },
+    "winamax_de": {
+     "home": 1.9,
+     "draw": 4.1,
+     "away": 3.25
+    },
+    "unibet_eu": {
+     "home": 1.85,
+     "draw": 4.35,
+     "away": 3.4
+    },
+    "coolbet": {
+     "home": 1.9,
+     "draw": 4.3,
+     "away": 3.7
+    },
+    "everygame": {
+     "home": 1.85,
+     "draw": 3.9,
+     "away": 3.1
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.54,
+     "away": 2.5
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.543,
+     "away": 2.498
+    },
+    "max": {
+     "home": 1.55,
+     "away": 2.52
+    },
+    "book": {
+     "sport888": {
+      "home": 1.53,
+      "away": 2.45
+     },
+     "betsson": {
+      "home": 1.55,
+      "away": 2.52
+     },
+     "nordicbet": {
+      "home": 1.55,
+      "away": 2.52
+     },
+     "pinnacle": {
+      "home": 1.54,
+      "away": 2.5
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 2
+   },
+   "snapshotAt": "2025-03-08T14:45:16Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-08T15:00:00Z",
+   "home": "JUK",
+   "away": "KAL",
+   "market": "regulation",
+   "sharp": {
+    "home": 5.782,
+    "draw": 5.277,
+    "away": 1.569
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 5.335,
+    "draw": 4.9,
+    "away": 1.448
+   },
+   "max": {
+    "home": 5.65,
+    "draw": 5.25,
+    "away": 1.52
+   },
+   "book": {
+    "betclic": {
+     "home": 5.25,
+     "draw": 4.75,
+     "away": 1.45
+    },
+    "onexbet": {
+     "home": 5.48,
+     "draw": 5.25,
+     "away": 1.45
+    },
+    "winamax_fr": {
+     "home": 5.1,
+     "draw": 4.7,
+     "away": 1.43
+    },
+    "winamax_de": {
+     "home": 5.3,
+     "draw": 4.9,
+     "away": 1.46
+    },
+    "tipico_de": {
+     "home": 4.9,
+     "draw": 5,
+     "away": 1.4
+    },
+    "unibet_eu": {
+     "home": 5.5,
+     "draw": 5,
+     "away": 1.47
+    },
+    "coolbet": {
+     "home": 5.65,
+     "draw": 5.1,
+     "away": 1.52
+    },
+    "everygame": {
+     "home": 5.5,
+     "draw": 4.5,
+     "away": 1.4
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 3.6,
+     "away": 1.28
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 3.66,
+     "away": 1.29
+    },
+    "max": {
+     "home": 3.8,
+     "away": 1.3
+    },
+    "book": {
+     "sport888": {
+      "home": 3.5,
+      "away": 1.3
+     },
+     "williamhill": {
+      "home": 3.6,
+      "away": 1.29
+     },
+     "nordicbet": {
+      "home": 3.8,
+      "away": 1.29
+     },
+     "betsson": {
+      "home": 3.8,
+      "away": 1.29
+     },
+     "pinnacle": {
+      "home": 3.6,
+      "away": 1.28
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 9
+   },
+   "snapshotAt": "2025-03-08T14:45:02Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-08T15:00:00Z",
+   "home": "JYP",
+   "away": "KES",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.121,
+    "draw": 4.462,
+    "away": 3.284
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.947,
+    "draw": 4.131,
+    "away": 3.061
+   },
+   "max": {
+    "home": 2.01,
+    "draw": 4.3,
+    "away": 3.35
+   },
+   "book": {
+    "betclic": {
+     "home": 1.95,
+     "draw": 4.1,
+     "away": 3
+    },
+    "onexbet": {
+     "home": 2.01,
+     "draw": 4.25,
+     "away": 3.04
+    },
+    "winamax_fr": {
+     "home": 1.92,
+     "draw": 4,
+     "away": 2.95
+    },
+    "winamax_de": {
+     "home": 1.96,
+     "draw": 4.2,
+     "away": 3.05
+    },
+    "tipico_de": {
+     "home": 1.83,
+     "draw": 4.2,
+     "away": 3
+    },
+    "unibet_eu": {
+     "home": 1.96,
+     "draw": 4.1,
+     "away": 3.2
+    },
+    "coolbet": {
+     "home": 2,
+     "draw": 4.3,
+     "away": 3.35
+    },
+    "everygame": {
+     "home": 1.95,
+     "draw": 3.9,
+     "away": 2.9
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.63,
+     "away": 2.29
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.632,
+     "away": 2.308
+    },
+    "max": {
+     "home": 1.67,
+     "away": 2.35
+    },
+    "book": {
+     "sport888": {
+      "home": 1.6,
+      "away": 2.35
+     },
+     "williamhill": {
+      "home": 1.67,
+      "away": 2.2
+     },
+     "nordicbet": {
+      "home": 1.63,
+      "away": 2.35
+     },
+     "betsson": {
+      "home": 1.63,
+      "away": 2.35
+     },
+     "pinnacle": {
+      "home": 1.63,
+      "away": 2.29
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 0
+   },
+   "snapshotAt": "2025-03-08T14:45:16Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-08T15:00:00Z",
+   "home": "LUK",
+   "away": "ASS",
+   "market": "regulation",
+   "sharp": {
+    "home": 1.631,
+    "draw": 5.045,
+    "away": 5.304
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.493,
+    "draw": 4.66,
+    "away": 5.068
+   },
+   "max": {
+    "home": 1.53,
+    "draw": 5.1,
+    "away": 5.95
+   },
+   "book": {
+    "betclic": {
+     "home": 1.5,
+     "draw": 4.6,
+     "away": 4.75
+    },
+    "winamax_fr": {
+     "home": 1.48,
+     "draw": 4.5,
+     "away": 4.7
+    },
+    "winamax_de": {
+     "home": 1.5,
+     "draw": 4.7,
+     "away": 4.9
+    },
+    "onexbet": {
+     "home": 1.53,
+     "draw": 4.95,
+     "away": 4.84
+    },
+    "tipico_de": {
+     "home": 1.45,
+     "draw": 4.5,
+     "away": 4.9
+    },
+    "unibet_eu": {
+     "home": 1.48,
+     "draw": 4.6,
+     "away": 5.75
+    },
+    "everygame": {
+     "home": 1.5,
+     "draw": 4.33,
+     "away": 4.75
+    },
+    "coolbet": {
+     "home": 1.5,
+     "draw": 5.1,
+     "away": 5.95
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.3,
+     "away": 3.47
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.304,
+     "away": 3.554
+    },
+    "max": {
+     "home": 1.31,
+     "away": 3.65
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.3,
+      "away": 3.47
+     },
+     "williamhill": {
+      "home": 1.3,
+      "away": 3.5
+     },
+     "nordicbet": {
+      "home": 1.31,
+      "away": 3.65
+     },
+     "betsson": {
+      "home": 1.31,
+      "away": 3.65
+     },
+     "sport888": {
+      "home": 1.3,
+      "away": 3.5
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 0
+   },
+   "snapshotAt": "2025-03-08T14:45:02Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-08T15:00:00Z",
+   "home": "PEL",
+   "away": "SAI",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.078,
+    "draw": 4.414,
+    "away": 3.421
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.927,
+    "draw": 4.081,
+    "away": 3.139
+   },
+   "max": {
+    "home": 2.02,
+    "draw": 4.25,
+    "away": 3.45
+   },
+   "book": {
+    "winamax_de": {
+     "home": 1.92,
+     "draw": 4.1,
+     "away": 3.2
+    },
+    "winamax_fr": {
+     "home": 1.88,
+     "draw": 4,
+     "away": 3.1
+    },
+    "betclic": {
+     "home": 1.88,
+     "draw": 4,
+     "away": 3.1
+    },
+    "onexbet": {
+     "home": 1.98,
+     "draw": 4.25,
+     "away": 3.11
+    },
+    "tipico_de": {
+     "home": 1.77,
+     "draw": 4.2,
+     "away": 3.2
+    },
+    "unibet_eu": {
+     "home": 2.02,
+     "draw": 4.2,
+     "away": 3.05
+    },
+    "coolbet": {
+     "home": 2.02,
+     "draw": 4.05,
+     "away": 3.45
+    },
+    "everygame": {
+     "home": 1.95,
+     "draw": 3.85,
+     "away": 2.9
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.56,
+     "away": 2.44
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.586,
+     "away": 2.402
+    },
+    "max": {
+     "home": 1.6,
+     "away": 2.44
+    },
+    "book": {
+     "williamhill": {
+      "home": 1.57,
+      "away": 2.38
+     },
+     "sport888": {
+      "home": 1.6,
+      "away": 2.35
+     },
+     "pinnacle": {
+      "home": 1.56,
+      "away": 2.44
+     },
+     "nordicbet": {
+      "home": 1.6,
+      "away": 2.42
+     },
+     "betsson": {
+      "home": 1.6,
+      "away": 2.42
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 4
+   },
+   "snapshotAt": "2025-03-08T14:45:04Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-08T15:00:00Z",
+   "home": "TPS",
+   "away": "SPO",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.06,
+    "draw": 4.394,
+    "away": 3.483
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.919,
+    "draw": 4.086,
+    "away": 3.204
+   },
+   "max": {
+    "home": 2,
+    "draw": 4.25,
+    "away": 3.45
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.97,
+     "draw": 4.25,
+     "away": 3.13
+    },
+    "winamax_fr": {
+     "home": 1.86,
+     "draw": 3.95,
+     "away": 3.15
+    },
+    "winamax_de": {
+     "home": 1.92,
+     "draw": 4.1,
+     "away": 3.25
+    },
+    "betclic": {
+     "home": 1.88,
+     "draw": 4,
+     "away": 3.15
+    },
+    "unibet_eu": {
+     "home": 1.85,
+     "draw": 4.25,
+     "away": 3.4
+    },
+    "everygame": {
+     "home": 1.95,
+     "draw": 3.9,
+     "away": 2.9
+    },
+    "coolbet": {
+     "home": 2,
+     "draw": 4.15,
+     "away": 3.45
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.58,
+     "away": 2.39
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.552,
+     "away": 2.468
+    },
+    "max": {
+     "home": 1.58,
+     "away": 2.5
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.58,
+      "away": 2.39
+     },
+     "williamhill": {
+      "home": 1.53,
+      "away": 2.5
+     },
+     "nordicbet": {
+      "home": 1.56,
+      "away": 2.5
+     },
+     "betsson": {
+      "home": 1.56,
+      "away": 2.5
+     },
+     "sport888": {
+      "home": 1.53,
+      "away": 2.45
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 2
+   },
+   "snapshotAt": "2025-03-08T14:45:02Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-08T16:00:00Z",
+   "home": "KAR",
+   "away": "TAP",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.081,
+    "draw": 4.432,
+    "away": 3.404
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.931,
+    "draw": 4.104,
+    "away": 3.17
+   },
+   "max": {
+    "home": 2.02,
+    "draw": 4.33,
+    "away": 3.45
+   },
+   "book": {
+    "betclic": {
+     "home": 1.85,
+     "draw": 4.1,
+     "away": 3.15
+    },
+    "onexbet": {
+     "home": 1.93,
+     "draw": 4.33,
+     "away": 3.19
+    },
+    "winamax_fr": {
+     "home": 1.9,
+     "draw": 4,
+     "away": 3.05
+    },
+    "winamax_de": {
+     "home": 1.94,
+     "draw": 4.1,
+     "away": 3.15
+    },
+    "unibet_eu": {
+     "home": 1.95,
+     "draw": 3.9,
+     "away": 3.4
+    },
+    "tipico_de": {
+     "home": 1.93,
+     "draw": 4.1,
+     "away": 2.8
+    },
+    "coolbet": {
+     "home": 2.02,
+     "draw": 4.2,
+     "away": 3.45
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.58,
+     "away": 2.4
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.588,
+     "away": 2.405
+    },
+    "max": {
+     "home": 1.6,
+     "away": 2.42
+    },
+    "book": {
+     "williamhill": {
+      "home": 1.57,
+      "away": 2.38
+     },
+     "pinnacle": {
+      "home": 1.58,
+      "away": 2.4
+     },
+     "nordicbet": {
+      "home": 1.6,
+      "away": 2.42
+     },
+     "betsson": {
+      "home": 1.6,
+      "away": 2.42
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 4
+   },
+   "snapshotAt": "2025-03-08T14:45:16Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-11T16:30:00Z",
+   "home": "HPK",
+   "away": "KOO",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.699,
+    "draw": 4.166,
+    "away": 2.567
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.533,
+    "draw": 3.8,
+    "away": 2.363
+   },
+   "max": {
+    "home": 2.65,
+    "draw": 3.9,
+    "away": 2.58
+   },
+   "book": {
+    "betclic": {
+     "home": 2.45,
+     "draw": 3.8,
+     "away": 2.35
+    },
+    "winamax_fr": {
+     "home": 2.4,
+     "draw": 3.75,
+     "away": 2.3
+    },
+    "winamax_de": {
+     "home": 2.5,
+     "draw": 3.9,
+     "away": 2.4
+    },
+    "everygame": {
+     "home": 2.6,
+     "draw": 3.75,
+     "away": 2.15
+    },
+    "unibet_eu": {
+     "home": 2.6,
+     "draw": 3.8,
+     "away": 2.4
+    },
+    "coolbet": {
+     "home": 2.65,
+     "draw": 3.8,
+     "away": 2.58
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.95,
+     "away": 1.87
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.965,
+     "away": 1.865
+    },
+    "max": {
+     "home": 1.98,
+     "away": 1.87
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.95,
+      "away": 1.87
+     },
+     "betsson": {
+      "home": 1.98,
+      "away": 1.87
+     },
+     "nordicbet": {
+      "home": 1.98,
+      "away": 1.87
+     },
+     "sport888": {
+      "home": 1.95,
+      "away": 1.85
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 4,
+    "awayGoals": 6
+   },
+   "snapshotAt": "2025-03-11T16:14:53Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-11T16:30:00Z",
+   "home": "ILV",
+   "away": "PEL",
+   "market": "regulation",
+   "sharp": {
+    "home": 1.973,
+    "draw": 4.384,
+    "away": 3.772
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.818,
+    "draw": 4.063,
+    "away": 3.514
+   },
+   "max": {
+    "home": 1.91,
+    "draw": 4.25,
+    "away": 3.75
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.83,
+     "draw": 4.25,
+     "away": 3.56
+    },
+    "betclic": {
+     "home": 1.8,
+     "draw": 4,
+     "away": 3.4
+    },
+    "winamax_fr": {
+     "home": 1.8,
+     "draw": 3.95,
+     "away": 3.4
+    },
+    "winamax_de": {
+     "home": 1.84,
+     "draw": 4.1,
+     "away": 3.5
+    },
+    "tipico_de": {
+     "home": 1.7,
+     "draw": 4.1,
+     "away": 3.5
+    },
+    "everygame": {
+     "home": 1.83,
+     "draw": 3.85,
+     "away": 3.35
+    },
+    "unibet_eu": {
+     "home": 1.83,
+     "draw": 4.1,
+     "away": 3.65
+    },
+    "coolbet": {
+     "home": 1.91,
+     "draw": 4.15,
+     "away": 3.75
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.51,
+     "away": 2.58
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.51,
+     "away": 2.594
+    },
+    "max": {
+     "home": 1.52,
+     "away": 2.62
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.51,
+      "away": 2.58
+     },
+     "betsson": {
+      "home": 1.52,
+      "away": 2.62
+     },
+     "nordicbet": {
+      "home": 1.52,
+      "away": 2.62
+     },
+     "williamhill": {
+      "home": 1.5,
+      "away": 2.6
+     },
+     "sport888": {
+      "home": 1.5,
+      "away": 2.55
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 4,
+    "awayGoals": 2
+   },
+   "snapshotAt": "2025-03-11T16:14:53Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-11T16:30:00Z",
+   "home": "KES",
+   "away": "JUK",
+   "market": "regulation",
+   "sharp": {
+    "home": 1.446,
+    "draw": 5.744,
+    "away": 7.451
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.336,
+    "draw": 5.331,
+    "away": 6.884
+   },
+   "max": {
+    "home": 1.38,
+    "draw": 5.85,
+    "away": 7.5
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.33,
+     "draw": 5.8,
+     "away": 7.22
+    },
+    "betclic": {
+     "home": 1.35,
+     "draw": 5.25,
+     "away": 6.5
+    },
+    "winamax_fr": {
+     "home": 1.33,
+     "draw": 5.1,
+     "away": 6.25
+    },
+    "winamax_de": {
+     "home": 1.35,
+     "draw": 5.4,
+     "away": 6.5
+    },
+    "tipico_de": {
+     "home": 1.3,
+     "draw": 5,
+     "away": 6.7
+    },
+    "everygame": {
+     "home": 1.3,
+     "draw": 4.75,
+     "away": 7.5
+    },
+    "unibet_eu": {
+     "home": 1.35,
+     "draw": 5.5,
+     "away": 7
+    },
+    "coolbet": {
+     "home": 1.38,
+     "draw": 5.85,
+     "away": 7.4
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.22,
+     "away": 4.1
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.208,
+     "away": 4.5
+    },
+    "max": {
+     "home": 1.22,
+     "away": 4.85
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.22,
+      "away": 4.1
+     },
+     "nordicbet": {
+      "home": 1.2,
+      "away": 4.85
+     },
+     "betsson": {
+      "home": 1.2,
+      "away": 4.85
+     },
+     "williamhill": {
+      "home": 1.22,
+      "away": 4.2
+     },
+     "sport888": {
+      "home": 1.2,
+      "away": 4.5
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 3
+   },
+   "snapshotAt": "2025-03-11T16:14:53Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-12T16:30:00Z",
+   "home": "KAL",
+   "away": "TPS",
+   "market": "regulation",
+   "sharp": {
+    "home": 1.587,
+    "draw": 5.224,
+    "away": 5.599
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.453,
+    "draw": 4.833,
+    "away": 5.247
+   },
+   "max": {
+    "home": 1.47,
+    "draw": 5.2,
+    "away": 5.75
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.47,
+     "draw": 5.2,
+     "away": 5.28
+    },
+    "winamax_de": {
+     "home": 1.47,
+     "draw": 4.9,
+     "away": 5.2
+    },
+    "winamax_fr": {
+     "home": 1.45,
+     "draw": 4.7,
+     "away": 5
+    },
+    "betclic": {
+     "home": 1.45,
+     "draw": 4.7,
+     "away": 5
+    },
+    "unibet_eu": {
+     "home": 1.44,
+     "draw": 5,
+     "away": 5.75
+    },
+    "everygame": {
+     "home": 1.44,
+     "draw": 4.5,
+     "away": 5.25
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.29,
+     "away": 3.5
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.296,
+     "away": 3.6
+    },
+    "max": {
+     "home": 1.3,
+     "away": 3.7
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.29,
+      "away": 3.5
+     },
+     "betsson": {
+      "home": 1.3,
+      "away": 3.7
+     },
+     "nordicbet": {
+      "home": 1.3,
+      "away": 3.7
+     },
+     "williamhill": {
+      "home": 1.29,
+      "away": 3.6
+     },
+     "sport888": {
+      "home": 1.3,
+      "away": 3.5
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 0
+   },
+   "snapshotAt": "2025-03-12T16:14:25Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-12T16:30:00Z",
+   "home": "LUK",
+   "away": "JYP",
+   "market": "regulation",
+   "sharp": {
+    "home": 1.728,
+    "draw": 4.859,
+    "away": 4.643
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.577,
+    "draw": 4.479,
+    "away": 4.267
+   },
+   "max": {
+    "home": 1.62,
+    "draw": 4.75,
+    "away": 4.75
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.6,
+     "draw": 4.75,
+     "away": 4.42
+    },
+    "winamax_de": {
+     "home": 1.6,
+     "draw": 4.5,
+     "away": 4.3
+    },
+    "winamax_fr": {
+     "home": 1.58,
+     "draw": 4.3,
+     "away": 4.1
+    },
+    "betclic": {
+     "home": 1.58,
+     "draw": 4.4,
+     "away": 4.1
+    },
+    "tipico_de": {
+     "home": 1.5,
+     "draw": 4.6,
+     "away": 4.3
+    },
+    "unibet_eu": {
+     "home": 1.56,
+     "draw": 4.7,
+     "away": 4.75
+    },
+    "everygame": {
+     "home": 1.62,
+     "draw": 4.1,
+     "away": 3.9
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.35,
+     "away": 3.19
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.356,
+     "away": 3.178
+    },
+    "max": {
+     "home": 1.37,
+     "away": 3.2
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.35,
+      "away": 3.19
+     },
+     "betsson": {
+      "home": 1.37,
+      "away": 3.2
+     },
+     "nordicbet": {
+      "home": 1.37,
+      "away": 3.2
+     },
+     "williamhill": {
+      "home": 1.36,
+      "away": 3.1
+     },
+     "sport888": {
+      "home": 1.33,
+      "away": 3.2
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 2
+   },
+   "snapshotAt": "2025-03-12T16:14:25Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-12T16:30:00Z",
+   "home": "TAP",
+   "away": "KAR",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.503,
+    "draw": 4.343,
+    "away": 2.701
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.3,
+    "draw": 3.992,
+    "away": 2.475
+   },
+   "max": {
+    "home": 2.35,
+    "draw": 4.15,
+    "away": 2.55
+   },
+   "book": {
+    "onexbet": {
+     "home": 2.35,
+     "draw": 4.15,
+     "away": 2.5
+    },
+    "winamax_de": {
+     "home": 2.35,
+     "draw": 4,
+     "away": 2.5
+    },
+    "winamax_fr": {
+     "home": 2.3,
+     "draw": 3.9,
+     "away": 2.4
+    },
+    "betclic": {
+     "home": 2.25,
+     "draw": 3.9,
+     "away": 2.45
+    },
+    "tipico_de": {
+     "home": 2.2,
+     "draw": 3.9,
+     "away": 2.45
+    },
+    "unibet_eu": {
+     "home": 2.35,
+     "draw": 4.1,
+     "away": 2.55
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.88,
+     "away": 1.94
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.845,
+     "away": 1.985
+    },
+    "max": {
+     "home": 1.88,
+     "away": 2
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.88,
+      "away": 1.94
+     },
+     "betsson": {
+      "home": 1.85,
+      "away": 2
+     },
+     "nordicbet": {
+      "home": 1.85,
+      "away": 2
+     },
+     "williamhill": {
+      "home": 1.8,
+      "away": 2
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 3
+   },
+   "snapshotAt": "2025-03-12T16:14:25Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-13T16:30:00Z",
+   "home": "JUK",
+   "away": "ASS",
+   "market": "regulation",
+   "sharp": {
+    "home": 4.116,
+    "draw": 4.604,
+    "away": 1.852
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 3.85,
+    "draw": 4.225,
+    "away": 1.706
+   },
+   "max": {
+    "home": 4.2,
+    "draw": 4.4,
+    "away": 1.82
+   },
+   "book": {
+    "onexbet": {
+     "home": 4,
+     "draw": 4.4,
+     "away": 1.71
+    },
+    "winamax_fr": {
+     "home": 3.65,
+     "draw": 4.1,
+     "away": 1.68
+    },
+    "winamax_de": {
+     "home": 3.8,
+     "draw": 4.3,
+     "away": 1.72
+    },
+    "betclic": {
+     "home": 3.7,
+     "draw": 4.2,
+     "away": 1.7
+    },
+    "unibet_eu": {
+     "home": 4.2,
+     "draw": 4.4,
+     "away": 1.67
+    },
+    "tipico_de": {
+     "home": 3.6,
+     "draw": 4.3,
+     "away": 1.65
+    },
+    "everygame": {
+     "home": 3.75,
+     "draw": 3.9,
+     "away": 1.7
+    },
+    "coolbet": {
+     "home": 4.1,
+     "draw": 4.2,
+     "away": 1.82
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 2.81,
+     "away": 1.43
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 2.814,
+     "away": 1.44
+    },
+    "max": {
+     "home": 2.88,
+     "away": 1.45
+    },
+    "book": {
+     "pinnacle": {
+      "home": 2.81,
+      "away": 1.43
+     },
+     "williamhill": {
+      "home": 2.75,
+      "away": 1.44
+     },
+     "nordicbet": {
+      "home": 2.88,
+      "away": 1.44
+     },
+     "betsson": {
+      "home": 2.88,
+      "away": 1.44
+     },
+     "sport888": {
+      "home": 2.75,
+      "away": 1.45
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 4,
+    "awayGoals": 3
+   },
+   "snapshotAt": "2025-03-13T16:14:42Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-14T16:30:00Z",
+   "home": "HPK",
+   "away": "SAI",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.806,
+    "draw": 4.206,
+    "away": 2.464
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.591,
+    "draw": 3.881,
+    "away": 2.266
+   },
+   "max": {
+    "home": 2.8,
+    "draw": 4.05,
+    "away": 2.42
+   },
+   "book": {
+    "onexbet": {
+     "home": 2.65,
+     "draw": 4.05,
+     "away": 2.26
+    },
+    "betclic": {
+     "home": 2.5,
+     "draw": 3.8,
+     "away": 2.25
+    },
+    "winamax_de": {
+     "home": 2.55,
+     "draw": 3.9,
+     "away": 2.3
+    },
+    "winamax_fr": {
+     "home": 2.5,
+     "draw": 3.8,
+     "away": 2.25
+    },
+    "tipico_de": {
+     "home": 2.55,
+     "draw": 3.9,
+     "away": 2.15
+    },
+    "everygame": {
+     "home": 2.55,
+     "draw": 3.75,
+     "away": 2.2
+    },
+    "unibet_eu": {
+     "home": 2.63,
+     "draw": 4,
+     "away": 2.3
+    },
+    "coolbet": {
+     "home": 2.8,
+     "draw": 3.85,
+     "away": 2.42
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 2.02,
+     "away": 1.81
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 2.016,
+     "away": 1.814
+    },
+    "max": {
+     "home": 2.03,
+     "away": 1.83
+    },
+    "book": {
+     "pinnacle": {
+      "home": 2.02,
+      "away": 1.81
+     },
+     "nordicbet": {
+      "home": 2.03,
+      "away": 1.83
+     },
+     "betsson": {
+      "home": 2.03,
+      "away": 1.83
+     },
+     "williamhill": {
+      "home": 2,
+      "away": 1.8
+     },
+     "sport888": {
+      "home": 2,
+      "away": 1.8
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 3
+   },
+   "snapshotAt": "2025-03-14T16:14:10Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-14T16:30:00Z",
+   "home": "KOO",
+   "away": "KAL",
+   "market": "regulation",
+   "sharp": {
+    "home": 3.025,
+    "draw": 4.389,
+    "away": 2.265
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.792,
+    "draw": 4.05,
+    "away": 2.105
+   },
+   "max": {
+    "home": 2.9,
+    "draw": 4.15,
+    "away": 2.28
+   },
+   "book": {
+    "betclic": {
+     "home": 2.75,
+     "draw": 4,
+     "away": 2.05
+    },
+    "winamax_de": {
+     "home": 2.8,
+     "draw": 4.1,
+     "away": 2.1
+    },
+    "winamax_fr": {
+     "home": 2.75,
+     "draw": 3.95,
+     "away": 2.05
+    },
+    "unibet_eu": {
+     "home": 2.9,
+     "draw": 4.1,
+     "away": 2.1
+    },
+    "coolbet": {
+     "home": 2.85,
+     "draw": 4.15,
+     "away": 2.28
+    },
+    "everygame": {
+     "home": 2.7,
+     "draw": 4,
+     "away": 2.05
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 2.15,
+     "away": 1.71
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 2.15,
+     "away": 1.723
+    },
+    "max": {
+     "home": 2.15,
+     "away": 1.74
+    },
+    "book": {
+     "pinnacle": {
+      "home": 2.15,
+      "away": 1.71
+     },
+     "betsson": {
+      "home": 2.15,
+      "away": 1.74
+     },
+     "nordicbet": {
+      "home": 2.15,
+      "away": 1.74
+     },
+     "sport888": {
+      "home": 2.15,
+      "away": 1.7
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 5,
+    "awayGoals": 1
+   },
+   "snapshotAt": "2025-03-14T16:12:49Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-14T16:30:00Z",
+   "home": "SPO",
+   "away": "KES",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.429,
+    "draw": 4.156,
+    "away": 2.877
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.239,
+    "draw": 3.825,
+    "away": 2.669
+   },
+   "max": {
+    "home": 2.48,
+    "draw": 4.05,
+    "away": 2.75
+   },
+   "book": {
+    "onexbet": {
+     "home": 2.25,
+     "draw": 4.05,
+     "away": 2.7
+    },
+    "betclic": {
+     "home": 2.2,
+     "draw": 3.75,
+     "away": 2.6
+    },
+    "winamax_de": {
+     "home": 2.25,
+     "draw": 3.85,
+     "away": 2.65
+    },
+    "winamax_fr": {
+     "home": 2.2,
+     "draw": 3.75,
+     "away": 2.6
+    },
+    "tipico_de": {
+     "home": 2.1,
+     "draw": 3.8,
+     "away": 2.65
+    },
+    "everygame": {
+     "home": 2.15,
+     "draw": 3.75,
+     "away": 2.65
+    },
+    "unibet_eu": {
+     "home": 2.28,
+     "draw": 3.85,
+     "away": 2.75
+    },
+    "coolbet": {
+     "home": 2.48,
+     "draw": 3.8,
+     "away": 2.75
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.78,
+     "away": 2.07
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.79,
+     "away": 2.044
+    },
+    "max": {
+     "home": 1.81,
+     "away": 2.07
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.78,
+      "away": 2.07
+     },
+     "nordicbet": {
+      "home": 1.81,
+      "away": 2.05
+     },
+     "betsson": {
+      "home": 1.81,
+      "away": 2.05
+     },
+     "williamhill": {
+      "home": 1.8,
+      "away": 2
+     },
+     "sport888": {
+      "home": 1.75,
+      "away": 2.05
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 2
+   },
+   "snapshotAt": "2025-03-14T16:14:10Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-14T16:30:00Z",
+   "home": "TAP",
+   "away": "PEL",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.482,
+    "draw": 4.269,
+    "away": 2.755
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.283,
+    "draw": 3.944,
+    "away": 2.557
+   },
+   "max": {
+    "home": 2.42,
+    "draw": 4.15,
+    "away": 2.75
+   },
+   "book": {
+    "unibet_eu": {
+     "home": 2.25,
+     "draw": 4,
+     "away": 2.7
+    },
+    "betclic": {
+     "home": 2.25,
+     "draw": 3.9,
+     "away": 2.5
+    },
+    "onexbet": {
+     "home": 2.34,
+     "draw": 4.15,
+     "away": 2.51
+    },
+    "winamax_de": {
+     "home": 2.3,
+     "draw": 3.95,
+     "away": 2.55
+    },
+    "winamax_fr": {
+     "home": 2.25,
+     "draw": 3.85,
+     "away": 2.5
+    },
+    "tipico_de": {
+     "home": 2.15,
+     "draw": 3.9,
+     "away": 2.55
+    },
+    "coolbet": {
+     "home": 2.42,
+     "draw": 3.95,
+     "away": 2.75
+    },
+    "everygame": {
+     "home": 2.3,
+     "draw": 3.85,
+     "away": 2.4
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.86,
+     "away": 1.96
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.826,
+     "away": 2.002
+    },
+    "max": {
+     "home": 1.86,
+     "away": 2.05
+    },
+    "book": {
+     "williamhill": {
+      "home": 1.8,
+      "away": 2
+     },
+     "nordicbet": {
+      "home": 1.81,
+      "away": 2.05
+     },
+     "betsson": {
+      "home": 1.81,
+      "away": 2.05
+     },
+     "sport888": {
+      "home": 1.85,
+      "away": 1.95
+     },
+     "pinnacle": {
+      "home": 1.86,
+      "away": 1.96
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 0,
+    "awayGoals": 1
+   },
+   "snapshotAt": "2025-03-14T16:14:12Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-14T16:30:00Z",
+   "home": "TPS",
+   "away": "LUK",
+   "market": "regulation",
+   "sharp": {
+    "home": 3.023,
+    "draw": 4.284,
+    "away": 2.295
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.797,
+    "draw": 3.964,
+    "away": 2.127
+   },
+   "max": {
+    "home": 2.95,
+    "draw": 4.15,
+    "away": 2.25
+   },
+   "book": {
+    "betclic": {
+     "home": 2.75,
+     "draw": 3.9,
+     "away": 2.1
+    },
+    "winamax_de": {
+     "home": 2.8,
+     "draw": 4,
+     "away": 2.1
+    },
+    "winamax_fr": {
+     "home": 2.7,
+     "draw": 3.85,
+     "away": 2.05
+    },
+    "onexbet": {
+     "home": 2.83,
+     "draw": 4.15,
+     "away": 2.14
+    },
+    "unibet_eu": {
+     "home": 2.8,
+     "draw": 3.95,
+     "away": 2.2
+    },
+    "everygame": {
+     "home": 2.75,
+     "draw": 3.85,
+     "away": 2.05
+    },
+    "coolbet": {
+     "home": 2.95,
+     "draw": 4.05,
+     "away": 2.25
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 2.21,
+     "away": 1.68
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 2.172,
+     "away": 1.702
+    },
+    "max": {
+     "home": 2.21,
+     "away": 1.73
+    },
+    "book": {
+     "williamhill": {
+      "home": 2.1,
+      "away": 1.73
+     },
+     "pinnacle": {
+      "home": 2.21,
+      "away": 1.68
+     },
+     "nordicbet": {
+      "home": 2.2,
+      "away": 1.7
+     },
+     "betsson": {
+      "home": 2.2,
+      "away": 1.7
+     },
+     "sport888": {
+      "home": 2.15,
+      "away": 1.7
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 4
+   },
+   "snapshotAt": "2025-03-14T16:12:49Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-14T17:30:00Z",
+   "home": "HIFK",
+   "away": "KAR",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.216,
+    "draw": 4.336,
+    "away": 3.144
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.043,
+    "draw": 3.986,
+    "away": 2.97
+   },
+   "max": {
+    "home": 2.12,
+    "draw": 4.2,
+    "away": 3.35
+   },
+   "book": {
+    "betclic": {
+     "home": 2.05,
+     "draw": 4,
+     "away": 2.9
+    },
+    "winamax_de": {
+     "home": 2.05,
+     "draw": 4,
+     "away": 2.9
+    },
+    "winamax_fr": {
+     "home": 2,
+     "draw": 3.85,
+     "away": 2.8
+    },
+    "onexbet": {
+     "home": 2.07,
+     "draw": 4.2,
+     "away": 2.94
+    },
+    "tipico_de": {
+     "home": 1.93,
+     "draw": 3.9,
+     "away": 2.9
+    },
+    "unibet_eu": {
+     "home": 2.08,
+     "draw": 4,
+     "away": 3
+    },
+    "coolbet": {
+     "home": 2.12,
+     "draw": 3.95,
+     "away": 3.35
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.65,
+     "away": 2.26
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.675,
+     "away": 2.23
+    },
+    "max": {
+     "home": 1.73,
+     "away": 2.28
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.65,
+      "away": 2.26
+     },
+     "williamhill": {
+      "home": 1.73,
+      "away": 2.1
+     },
+     "betsson": {
+      "home": 1.66,
+      "away": 2.28
+     },
+     "nordicbet": {
+      "home": 1.66,
+      "away": 2.28
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 0
+   },
+   "snapshotAt": "2025-03-14T16:12:49Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-15T15:00:00Z",
+   "home": "JUK",
+   "away": "TAP",
+   "market": "regulation",
+   "sharp": {
+    "home": 3.541,
+    "draw": 4.568,
+    "away": 2.005
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 3.329,
+    "draw": 4.229,
+    "away": 1.836
+   },
+   "max": {
+    "home": 3.6,
+    "draw": 4.5,
+    "away": 1.9
+   },
+   "book": {
+    "onexbet": {
+     "home": 3.28,
+     "draw": 4.33,
+     "away": 1.9
+    },
+    "betclic": {
+     "home": 3.2,
+     "draw": 4.1,
+     "away": 1.85
+    },
+    "winamax_de": {
+     "home": 3.3,
+     "draw": 4.3,
+     "away": 1.86
+    },
+    "winamax_fr": {
+     "home": 3.2,
+     "draw": 4.1,
+     "away": 1.82
+    },
+    "everygame": {
+     "home": 3.1,
+     "draw": 4,
+     "away": 1.85
+    },
+    "tipico_de": {
+     "home": 3.4,
+     "draw": 4.3,
+     "away": 1.7
+    },
+    "unibet_eu": {
+     "home": 3.55,
+     "draw": 4.2,
+     "away": 1.83
+    },
+    "coolbet": {
+     "home": 3.6,
+     "draw": 4.5,
+     "away": 1.88
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 2.4,
+     "away": 1.58
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 2.522,
+     "away": 1.534
+    },
+    "max": {
+     "home": 2.6,
+     "away": 1.58
+    },
+    "book": {
+     "pinnacle": {
+      "home": 2.4,
+      "away": 1.58
+     },
+     "williamhill": {
+      "home": 2.6,
+      "away": 1.5
+     },
+     "betsson": {
+      "home": 2.58,
+      "away": 1.53
+     },
+     "nordicbet": {
+      "home": 2.58,
+      "away": 1.53
+     },
+     "sport888": {
+      "home": 2.45,
+      "away": 1.53
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 6
+   },
+   "snapshotAt": "2025-03-15T14:45:06Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-15T15:00:00Z",
+   "home": "JYP",
+   "away": "SPO",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.056,
+    "draw": 4.33,
+    "away": 3.537
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.884,
+    "draw": 3.988,
+    "away": 3.308
+   },
+   "max": {
+    "home": 1.98,
+    "draw": 4.2,
+    "away": 3.68
+   },
+   "book": {
+    "betclic": {
+     "home": 1.88,
+     "draw": 3.9,
+     "away": 3.2
+    },
+    "winamax_fr": {
+     "home": 1.86,
+     "draw": 3.9,
+     "away": 3.15
+    },
+    "winamax_de": {
+     "home": 1.9,
+     "draw": 4,
+     "away": 3.25
+    },
+    "onexbet": {
+     "home": 1.98,
+     "draw": 4.2,
+     "away": 3.13
+    },
+    "unibet_eu": {
+     "home": 1.85,
+     "draw": 4.1,
+     "away": 3.55
+    },
+    "tipico_de": {
+     "home": 1.77,
+     "draw": 4,
+     "away": 3.3
+    },
+    "everygame": {
+     "home": 1.85,
+     "draw": 3.85,
+     "away": 3.2
+    },
+    "coolbet": {
+     "home": 1.98,
+     "draw": 3.95,
+     "away": 3.68
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.55,
+     "away": 2.47
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.546,
+     "away": 2.484
+    },
+    "max": {
+     "home": 1.56,
+     "away": 2.5
+    },
+    "book": {
+     "sport888": {
+      "home": 1.53,
+      "away": 2.45
+     },
+     "pinnacle": {
+      "home": 1.55,
+      "away": 2.47
+     },
+     "williamhill": {
+      "home": 1.53,
+      "away": 2.5
+     },
+     "betsson": {
+      "home": 1.56,
+      "away": 2.5
+     },
+     "nordicbet": {
+      "home": 1.56,
+      "away": 2.5
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 4
+   },
+   "snapshotAt": "2025-03-15T14:45:21Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-15T15:00:00Z",
+   "home": "KAL",
+   "away": "ILV",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.425,
+    "draw": 4.314,
+    "away": 2.81
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.208,
+    "draw": 3.975,
+    "away": 2.645
+   },
+   "max": {
+    "home": 2.29,
+    "draw": 4.1,
+    "away": 2.9
+   },
+   "book": {
+    "betclic": {
+     "home": 2.2,
+     "draw": 3.9,
+     "away": 2.55
+    },
+    "winamax_fr": {
+     "home": 2.2,
+     "draw": 3.9,
+     "away": 2.5
+    },
+    "winamax_de": {
+     "home": 2.25,
+     "draw": 4,
+     "away": 2.6
+    },
+    "onexbet": {
+     "home": 2.29,
+     "draw": 4.05,
+     "away": 2.61
+    },
+    "unibet_eu": {
+     "home": 2.16,
+     "draw": 4.1,
+     "away": 2.8
+    },
+    "tipico_de": {
+     "home": 2.05,
+     "draw": 4,
+     "away": 2.65
+    },
+    "everygame": {
+     "home": 2.25,
+     "draw": 3.75,
+     "away": 2.55
+    },
+    "coolbet": {
+     "home": 2.26,
+     "draw": 4.1,
+     "away": 2.9
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.83,
+     "away": 2
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.794,
+     "away": 2.04
+    },
+    "max": {
+     "home": 1.83,
+     "away": 2.1
+    },
+    "book": {
+     "sport888": {
+      "home": 1.8,
+      "away": 2
+     },
+     "pinnacle": {
+      "home": 1.83,
+      "away": 2
+     },
+     "williamhill": {
+      "home": 1.8,
+      "away": 2
+     },
+     "nordicbet": {
+      "home": 1.77,
+      "away": 2.1
+     },
+     "betsson": {
+      "home": 1.77,
+      "away": 2.1
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 6,
+    "awayGoals": 3
+   },
+   "snapshotAt": "2025-03-15T14:45:21Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-15T15:00:00Z",
+   "home": "KAR",
+   "away": "HIFK",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.525,
+    "draw": 4.313,
+    "away": 2.687
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 2.35,
+    "draw": 4.014,
+    "away": 2.469
+   },
+   "max": {
+    "home": 2.42,
+    "draw": 4.3,
+    "away": 2.6
+   },
+   "book": {
+    "betclic": {
+     "home": 2.3,
+     "draw": 3.9,
+     "away": 2.45
+    },
+    "winamax_de": {
+     "home": 2.35,
+     "draw": 4,
+     "away": 2.5
+    },
+    "winamax_fr": {
+     "home": 2.3,
+     "draw": 3.85,
+     "away": 2.4
+    },
+    "onexbet": {
+     "home": 2.36,
+     "draw": 4.05,
+     "away": 2.53
+    },
+    "tipico_de": {
+     "home": 2.4,
+     "draw": 3.9,
+     "away": 2.25
+    },
+    "unibet_eu": {
+     "home": 2.32,
+     "draw": 4.1,
+     "away": 2.55
+    },
+    "coolbet": {
+     "home": 2.42,
+     "draw": 4.3,
+     "away": 2.6
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.87,
+     "away": 1.94
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.848,
+     "away": 1.974
+    },
+    "max": {
+     "home": 1.87,
+     "away": 2
+    },
+    "book": {
+     "pinnacle": {
+      "home": 1.87,
+      "away": 1.94
+     },
+     "williamhill": {
+      "home": 1.8,
+      "away": 2
+     },
+     "betsson": {
+      "home": 1.86,
+      "away": 1.99
+     },
+     "nordicbet": {
+      "home": 1.86,
+      "away": 1.99
+     },
+     "sport888": {
+      "home": 1.85,
+      "away": 1.95
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 1,
+    "awayGoals": 2
+   },
+   "snapshotAt": "2025-03-15T14:45:21Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-15T15:00:00Z",
+   "home": "LUK",
+   "away": "HPK",
+   "market": "regulation",
+   "sharp": {
+    "home": 1.363,
+    "draw": 6.543,
+    "away": 8.826
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.254,
+    "draw": 6.038,
+    "away": 8.356
+   },
+   "max": {
+    "home": 1.29,
+    "draw": 7,
+    "away": 9.5
+   },
+   "book": {
+    "betclic": {
+     "home": 1.27,
+     "draw": 5.5,
+     "away": 7.75
+    },
+    "winamax_de": {
+     "home": 1.27,
+     "draw": 5.9,
+     "away": 8
+    },
+    "winamax_fr": {
+     "home": 1.25,
+     "draw": 5.6,
+     "away": 7.75
+    },
+    "unibet_eu": {
+     "home": 1.25,
+     "draw": 7,
+     "away": 8.5
+    },
+    "onexbet": {
+     "home": 1.26,
+     "draw": 6.55,
+     "away": 8.6
+    },
+    "tipico_de": {
+     "home": 1.22,
+     "draw": 6,
+     "away": 7.5
+    },
+    "everygame": {
+     "home": 1.22,
+     "draw": 5.25,
+     "away": 9.5
+    },
+    "coolbet": {
+     "home": 1.29,
+     "draw": 6.5,
+     "away": 9.25
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.13,
+     "away": 5.6
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.164,
+     "away": 5.27
+    },
+    "max": {
+     "home": 1.2,
+     "away": 5.6
+    },
+    "book": {
+     "sport888": {
+      "home": 1.15,
+      "away": 5.25
+     },
+     "williamhill": {
+      "home": 1.2,
+      "away": 4.5
+     },
+     "pinnacle": {
+      "home": 1.13,
+      "away": 5.6
+     },
+     "betsson": {
+      "home": 1.17,
+      "away": 5.5
+     },
+     "nordicbet": {
+      "home": 1.17,
+      "away": 5.5
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 6,
+    "awayGoals": 1
+   },
+   "snapshotAt": "2025-03-15T14:45:06Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-15T15:00:00Z",
+   "home": "PEL",
+   "away": "TPS",
+   "market": "regulation",
+   "sharp": {
+    "home": 2.033,
+    "draw": 4.527,
+    "away": 3.481
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.874,
+    "draw": 4.221,
+    "away": 3.269
+   },
+   "max": {
+    "home": 1.92,
+    "draw": 4.8,
+    "away": 3.45
+   },
+   "book": {
+    "unibet_eu": {
+     "home": 1.85,
+     "draw": 4.25,
+     "away": 3.45
+    },
+    "betclic": {
+     "home": 1.85,
+     "draw": 4.1,
+     "away": 3.15
+    },
+    "winamax_de": {
+     "home": 1.88,
+     "draw": 4.2,
+     "away": 3.25
+    },
+    "winamax_fr": {
+     "home": 1.84,
+     "draw": 4.1,
+     "away": 3.15
+    },
+    "onexbet": {
+     "home": 1.92,
+     "draw": 4.25,
+     "away": 3.28
+    },
+    "everygame": {
+     "home": 1.9,
+     "draw": 3.85,
+     "away": 3.15
+    },
+    "coolbet": {
+     "home": 1.88,
+     "draw": 4.8,
+     "away": 3.45
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.57,
+     "away": 2.43
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.558,
+     "away": 2.452
+    },
+    "max": {
+     "home": 1.57,
+     "away": 2.5
+    },
+    "book": {
+     "sport888": {
+      "home": 1.53,
+      "away": 2.45
+     },
+     "williamhill": {
+      "home": 1.57,
+      "away": 2.38
+     },
+     "pinnacle": {
+      "home": 1.57,
+      "away": 2.43
+     },
+     "nordicbet": {
+      "home": 1.56,
+      "away": 2.5
+     },
+     "betsson": {
+      "home": 1.56,
+      "away": 2.5
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 4
+   },
+   "snapshotAt": "2025-03-15T14:45:06Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-15T15:00:00Z",
+   "home": "SAI",
+   "away": "KOO",
+   "market": "regulation",
+   "sharp": {
+    "home": 1.89,
+    "draw": 4.691,
+    "away": 3.879
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.75,
+    "draw": 4.325,
+    "away": 3.592
+   },
+   "max": {
+    "home": 1.84,
+    "draw": 4.5,
+    "away": 3.75
+   },
+   "book": {
+    "unibet_eu": {
+     "home": 1.77,
+     "draw": 4.35,
+     "away": 3.7
+    },
+    "betclic": {
+     "home": 1.72,
+     "draw": 4.3,
+     "away": 3.5
+    },
+    "winamax_de": {
+     "home": 1.74,
+     "draw": 4.4,
+     "away": 3.6
+    },
+    "winamax_fr": {
+     "home": 1.7,
+     "draw": 4.3,
+     "away": 3.5
+    },
+    "everygame": {
+     "home": 1.73,
+     "draw": 4.1,
+     "away": 3.5
+    },
+    "coolbet": {
+     "home": 1.84,
+     "draw": 4.5,
+     "away": 3.75
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.45,
+     "away": 2.74
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.46,
+     "away": 2.762
+    },
+    "max": {
+     "home": 1.47,
+     "away": 2.78
+    },
+    "book": {
+     "betsson": {
+      "home": 1.47,
+      "away": 2.78
+     },
+     "sport888": {
+      "home": 1.45,
+      "away": 2.75
+     },
+     "nordicbet": {
+      "home": 1.47,
+      "away": 2.78
+     },
+     "pinnacle": {
+      "home": 1.45,
+      "away": 2.74
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 1
+   },
+   "snapshotAt": "2025-03-15T14:45:07Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "liiga",
+   "season": "20242025",
+   "date": "2025-03-15T15:00:00Z",
+   "home": "ASS",
+   "away": "KES",
+   "market": "regulation",
+   "sharp": {
+    "home": 1.766,
+    "draw": 4.767,
+    "away": 4.462
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.628,
+    "draw": 4.356,
+    "away": 4.171
+   },
+   "max": {
+    "home": 1.69,
+    "draw": 4.8,
+    "away": 4.5
+   },
+   "book": {
+    "betclic": {
+     "home": 1.62,
+     "draw": 4.3,
+     "away": 4
+    },
+    "winamax_fr": {
+     "home": 1.6,
+     "draw": 4.3,
+     "away": 4
+    },
+    "winamax_de": {
+     "home": 1.64,
+     "draw": 4.4,
+     "away": 4.1
+    },
+    "onexbet": {
+     "home": 1.65,
+     "draw": 4.5,
+     "away": 4.27
+    },
+    "unibet_eu": {
+     "home": 1.65,
+     "draw": 4.25,
+     "away": 4.5
+    },
+    "tipico_de": {
+     "home": 1.55,
+     "draw": 4.3,
+     "away": 4.2
+    },
+    "everygame": {
+     "home": 1.62,
+     "draw": 4,
+     "away": 4
+    },
+    "coolbet": {
+     "home": 1.69,
+     "draw": 4.8,
+     "away": 4.3
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.35,
+     "away": 3.17
+    },
+    "sharpBook": "pinnacle",
+    "avg": {
+     "home": 1.39,
+     "away": 3.024
+    },
+    "max": {
+     "home": 1.4,
+     "away": 3.17
+    },
+    "book": {
+     "sport888": {
+      "home": 1.4,
+      "away": 2.95
+     },
+     "pinnacle": {
+      "home": 1.35,
+      "away": 3.17
+     },
+     "williamhill": {
+      "home": 1.4,
+      "away": 2.9
+     },
+     "betsson": {
+      "home": 1.4,
+      "away": 3.05
+     },
+     "nordicbet": {
+      "home": 1.4,
+      "away": 3.05
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 4,
+    "awayGoals": 1
+   },
+   "snapshotAt": "2025-03-15T14:45:21Z",
+   "source": "the-odds-api"
+  }
+ ],
+ "unmatched": [],
+ "skipped": {
+  "noResult": 0,
+  "noSharp": 0
+ }
+}

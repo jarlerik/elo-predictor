@@ -13,10 +13,15 @@ import { LeagueId } from "../utils/leagues";
 import { GameRecord } from "../utils/types";
 import { OddsRecord } from "../odds/types";
 import { seasonLabelFor } from "../odds/store";
+import { fetchEplSeason, eplSeasonFor } from "./eplFetcher";
+import { fetchNhlSeason, nhlSeasonFor } from "./nhlFetcher";
+import { fetchLiigaSeason, liigaSeasonFor } from "./liigaFetcher";
 
 export interface GameSeasonFile {
   fetchedAt: string;
   source: "fixturedownload" | "nhl-api" | "liiga-api" | "football-data";
+  /** Extra per-league notes, e.g. NHL game types kept. */
+  note?: string;
   /** True once the season is over and fully stored. */
   complete: boolean;
   games: GameRecord[];
@@ -76,6 +81,55 @@ export function readStoredGames(
   }
   games.sort((a, b) => a.date.localeCompare(b.date) || a.gamePk - b.gamePk);
   return { games, seasons };
+}
+
+/** Start year of the current season in each league's convention. */
+export function currentStartYear(league: LeagueId): number {
+  switch (league) {
+    case "epl":
+      return eplSeasonFor();
+    case "nhl":
+      return Number(nhlSeasonFor().slice(0, 4));
+    case "liiga":
+      return liigaSeasonFor() - 1;
+  }
+}
+
+/**
+ * One season from the league's live feed, as a store file. `onUnknown`
+ * gets team names the league table cannot place (EPL only; the hockey
+ * feeds carry codes). Liiga seasons are keyed by end year upstream, so a
+ * start year of 2024 fetches `season=2025`.
+ */
+export async function fetchSeasonFromFeed(
+  league: LeagueId,
+  startYear: number,
+  onUnknown?: (name: string) => void
+): Promise<GameSeasonFile | null> {
+  const complete = startYear < currentStartYear(league);
+  const now = new Date().toISOString();
+  switch (league) {
+    case "epl": {
+      const s = await fetchEplSeason(startYear, onUnknown);
+      if (!s.games.length) return null;
+      return { fetchedAt: now, source: "fixturedownload", complete: complete && s.games.length >= 380, games: s.games, currentTeams: [...s.teams] };
+    }
+    case "nhl": {
+      const s = await fetchNhlSeason(`${startYear}${startYear + 1}`);
+      if (!s.games.length) return null;
+      const teams = new Set<string>();
+      for (const g of s.games) {
+        teams.add(g.homeAbbr);
+        teams.add(g.awayAbbr);
+      }
+      return { fetchedAt: now, source: "nhl-api", complete, games: s.games, currentTeams: [...teams], note: "regular season and playoffs; preseason dropped" };
+    }
+    case "liiga": {
+      const s = await fetchLiigaSeason(startYear + 1);
+      if (!s.games.length) return null;
+      return { fetchedAt: now, source: "liiga-api", complete, games: s.games, currentTeams: [...s.teams], note: "regular season (runkosarja) only" };
+    }
+  }
 }
 
 /**

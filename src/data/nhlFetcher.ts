@@ -1,7 +1,6 @@
 import axios from "axios";
 import NodeCache from "node-cache";
 import { GameRecord, UpcomingGame } from "../utils/types";
-import { CURRENT_NHL_TEAMS } from "../utils/teamData";
 
 const cache = new NodeCache({ stdTTL: 60 * 60 * 6 }); // 6h
 
@@ -22,8 +21,9 @@ async function getTeamMapping(): Promise<Map<number, string>> {
   const mapping = new Map<number, string>();
 
   for (const team of teams) {
-    // Only include current NHL teams
-    if (CURRENT_NHL_TEAMS.has(team.triCode)) {
+    // Every franchise with a code, so past seasons resolve too (Arizona is
+    // ARI); the rating list is still filtered to CURRENT_NHL_TEAMS.
+    if (typeof team.triCode === "string" && /^[A-Z]{3}$/.test(team.triCode)) {
       mapping.set(team.id, team.triCode);
     }
   }
@@ -126,7 +126,13 @@ async function fetchSeasonData(season: string): Promise<NhlSeason> {
         continue;
       }
 
-      // period 4 = overtime, 5 = shootout (gameType is preseason/regular/playoffs)
+      // Only regular-season (2) and playoff (3) results feed the ratings:
+      // preseason (1) is exhibition, and All-Star, 4 Nations and Olympic
+      // games appear in the feed under other types with national or
+      // all-star sides.
+      if (g.gameType !== 2 && g.gameType !== 3) continue;
+
+      // period 4 = overtime, 5 = shootout
       const decidedInOTorSO = (g.period as number) >= 4;
 
       games.push({
@@ -154,6 +160,11 @@ async function fetchSeasonData(season: string): Promise<NhlSeason> {
 
 async function fetchSeasonGames(season: string): Promise<GameRecord[]> {
   return (await fetchSeasonData(season)).games;
+}
+
+/** One season ("20242025") of played games and remaining schedule. */
+export async function fetchNhlSeason(season: string): Promise<NhlSeason> {
+  return fetchSeasonData(season);
 }
 
 /** NHL season id ("20262027") for a date; the season starting in October belongs to that year. */

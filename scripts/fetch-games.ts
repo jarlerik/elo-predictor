@@ -8,29 +8,27 @@
  *
  * EPL: fixturedownload.com covers 2016-17 onwards; earlier seasons are
  * derived from the football-data odds files (which carry the results), so
- * `npm run odds:fetch` must have stored them first. --verify compares the
- * two sources on every season that has both and fails on any mismatch.
+ * `npm run odds:fetch` must have stored them first. NHL: the stats API,
+ * regular season and playoffs (preseason dropped). Liiga: liiga.fi, regular
+ * season only. --verify compares the games with the odds files on every
+ * season that has both and fails on any score mismatch.
  */
-import { fetchEplSeason, eplSeasonFor } from "../src/data/eplFetcher";
 import {
+  currentStartYear,
+  fetchSeasonFromFeed,
   gamesFromOdds,
   readGameSeason,
   writeGameSeason,
   GameSeasonFile,
 } from "../src/data/gameStore";
-import { readOddsSeason, seasonLabelFor, joinOdds } from "../src/odds/store";
+import { readOddsSeason, seasonLabelFor, joinOdds, gameKey } from "../src/odds/store";
 import { LeagueId, isLeagueId } from "../src/utils/leagues";
-import { GameRecord } from "../src/utils/types";
 
 const args = process.argv.slice(2);
 const has = (name: string) => args.includes(name);
 const positional = args.filter((a) => !a.startsWith("--"));
 const league: LeagueId = isLeagueId(positional[0]) ? positional[0] : "epl";
-if (league !== "epl") {
-  console.error("games:fetch currently supports epl only (NHL/Liiga: see docs/CONTINUOUS_IMPROVEMENT.md backlog)");
-  process.exit(1);
-}
-const thisSeason = eplSeasonFor();
+const thisSeason = currentStartYear(league);
 const from = Number(positional[1]) || thisSeason - 2;
 const to = Number(positional[2]) || (Number(positional[1]) ? from : thisSeason);
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -47,26 +45,19 @@ for (let y = from; y <= to; y++) {
 
   if (!file) {
     const unknown = new Set<string>();
-    let fromFeed: { games: GameRecord[]; teams: Set<string> } | null = null;
+    let fromFeed: GameSeasonFile | null = null;
     try {
-      const s = await fetchEplSeason(y, (n) => unknown.add(n));
-      if (s.games.length) fromFeed = s;
+      fromFeed = await fetchSeasonFromFeed(league, y, (n) => unknown.add(n));
     } catch (e) {
-      console.log(`${season}: fixturedownload unavailable (${(e as Error).message.slice(0, 60)})`);
+      console.log(`${season}: feed unavailable (${(e as Error).message.slice(0, 60)})`);
     }
     if (unknown.size) {
-      console.error(`${season}: UNKNOWN team names in the fixture feed: ${[...unknown].join(" | ")} (add to EPL_TEAMS)`);
+      console.error(`${season}: UNKNOWN team names in the fixture feed: ${[...unknown].join(" | ")} (add to the league's team table)`);
       failed = true;
       continue;
     }
     if (fromFeed) {
-      file = {
-        fetchedAt: new Date().toISOString(),
-        source: "fixturedownload",
-        complete: y < thisSeason && fromFeed.games.length >= 380,
-        games: fromFeed.games,
-        currentTeams: [...fromFeed.teams],
-      };
+      file = fromFeed;
     } else {
       const odds = readOddsSeason(league, season);
       if (!odds) {
@@ -108,7 +99,7 @@ for (let y = from; y <= to; y++) {
     const join = joinOdds(file.games, odds.records);
     let mismatches = 0;
     for (const g of file.games) {
-      const o = join.matched.get(g.gamePk);
+      const o = join.matched.get(gameKey(g));
       if (!o?.result) continue;
       if (o.result.homeGoals !== g.homeGoals || o.result.awayGoals !== g.awayGoals) {
         mismatches++;

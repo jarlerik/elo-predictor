@@ -89,9 +89,12 @@ function shiftDay(day: string, days: number): string {
     .slice(0, 10);
 }
 
+/** Join key of a game: ids repeat across Liiga seasons, so the season is part of it. */
+export const gameKey = (g: GameRecord) => `${g.season}|${g.gamePk}`;
+
 export interface OddsJoin {
-  /** Odds per game, keyed by gamePk. */
-  matched: Map<number, OddsRecord>;
+  /** Odds per game, keyed by `gameKey(game)`. */
+  matched: Map<string, OddsRecord>;
   unmatchedGames: GameRecord[];
   unmatchedOdds: OddsRecord[];
   /** Pairs that appeared more than once inside the tolerance window. */
@@ -118,7 +121,7 @@ export function joinOdds(
     else byKey.set(k, [o]);
   }
   const used = new Set<OddsRecord>();
-  const matched = new Map<number, OddsRecord>();
+  const matched = new Map<string, OddsRecord>();
   const unmatchedGames: GameRecord[] = [];
   const duplicates: string[] = [];
   const offsets = [0];
@@ -133,7 +136,7 @@ export function joinOdds(
       if (off === 0 && candidates.length) break;
     }
     if (candidates.length === 1) {
-      matched.set(g.gamePk, candidates[0]);
+      matched.set(gameKey(g), candidates[0]);
       used.add(candidates[0]);
     } else {
       if (candidates.length > 1) duplicates.push(`${day} ${g.homeAbbr}-${g.awayAbbr}`);

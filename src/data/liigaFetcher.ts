@@ -27,11 +27,16 @@ function teamIdOf(team: { teamId: string }): number | string {
   return Number.isNaN(n) ? team.teamId : n;
 }
 
-type LiigaSeason = {
+export type LiigaSeason = {
   games: GameRecord[];
   teams: Set<string>;
   upcoming: UpcomingGame[];
 };
+
+/** One regular season by its end year (2025 = 2024-25). */
+export async function fetchLiigaSeason(season: number): Promise<LiigaSeason> {
+  return fetchSeason(season);
+}
 
 async function fetchSeason(season: number): Promise<LiigaSeason> {
   const cacheKey = `liiga_${season}`;

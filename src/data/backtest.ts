@@ -29,7 +29,7 @@ import { eloToWinProb, NO_DRAW } from "../elo/probabilities";
 import { computeRecentStatsForTeam } from "../score/recentStats";
 import { computeExpectedGoals } from "../score/expectedGoals";
 import { computeScoreProbabilities, poissonPmf } from "../score/correctScore";
-import { readAllOdds, joinOdds } from "../odds/store";
+import { readAllOdds, joinOdds, gameKey } from "../odds/store";
 import { devig, MARKET_SIDES } from "../utils/sharp";
 import { PriceTrio } from "../odds/types";
 
@@ -206,11 +206,11 @@ function toProbs(trio: PriceTrio | undefined): [number, number, number] | null {
 export function marketFor(league: LeagueId, games: GameRecord[]) {
   const odds = readAllOdds(league);
   const join = odds.length ? joinOdds(games, odds) : null;
-  const byGame = new Map<number, GamePrediction["market"]>();
+  const byGame = new Map<string, GamePrediction["market"]>();
   if (join) {
-    for (const [pk, o] of join.matched) {
+    for (const [key, o] of join.matched) {
       const p = toProbs(o.sharp);
-      if (p) byGame.set(pk, { p, avg: toProbs(o.avg), book: o.sharpBook });
+      if (p) byGame.set(key, { p, avg: toProbs(o.avg), book: o.sharpBook });
     }
   }
   return { byGame, unmatched: join ? join.unmatchedGames.length : 0, source: odds[0]?.source ?? null };
@@ -220,7 +220,7 @@ export function predictHistory(
   league: LeagueId,
   state: LeagueState,
   homeAdv = HOME_ADV,
-  market: Map<number, GamePrediction["market"]> = new Map()
+  market: Map<string, GamePrediction["market"]> = new Map()
 ): GamePrediction[] {
   const sport = LEAGUES[league].sport;
   const maxGoals = sport === "soccer" ? 6 : 8;
@@ -282,7 +282,7 @@ export function predictHistory(
         p,
         y: outcomeOf(g, sport),
         ml,
-        market: market.get(g.gamePk) ?? null,
+        market: market.get(gameKey(g)) ?? null,
         score: {
           home: g.homeGoals,
           away: g.awayGoals,

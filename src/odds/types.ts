@@ -19,7 +19,19 @@ export interface PriceTrio {
 }
 
 export type OddsSource = "football-data" | "oddspapi" | "the-odds-api";
-export type SharpBook = "pinnacle" | "betfair-exchange" | "avg";
+/**
+ * Which price stands as the sharp reference: Pinnacle, the Betfair
+ * Exchange, the median of the books that price the market ("consensus",
+ * used for the hockey 60-minute market Pinnacle does not offer), or the
+ * plain market average as the last resort.
+ */
+export type SharpBook = "pinnacle" | "betfair-exchange" | "consensus" | "avg";
+
+/** Decimal odds of a two-way market. */
+export interface TwoWay {
+  home: number;
+  away: number;
+}
 
 export interface OddsRecord {
   league: LeagueId;
@@ -49,6 +61,19 @@ export interface OddsRecord {
   book?: Record<string, PriceTrio>;
   /** Final score when the source carries results (football-data). */
   result?: { homeGoals: number; awayGoals: number };
+  /**
+   * Hockey: the winner-incl.-OT/SO market alongside the regulation 1X2 the
+   * record itself describes.
+   */
+  moneyline?: {
+    sharp: TwoWay;
+    sharpBook: SharpBook;
+    avg?: TwoWay;
+    max?: TwoWay;
+    book?: Record<string, TwoWay>;
+  };
+  /** When the snapshot was taken, for sources that sample (The Odds API). */
+  snapshotAt?: string;
   source: OddsSource;
 }
 

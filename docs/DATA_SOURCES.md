@@ -25,6 +25,8 @@ in-memory data keeps being served and the error is logged.
 | World Cup        | `data/soccer/ratings.json`              | —                     | none              | seed before and during the tournament                               |
 | EPL odds history | `football-data.co.uk/mmz4281/<yy><yy>/E0.csv` → `data/odds/epl/` | 2012-13 onwards | `npm run odds:fetch` (current season refetched after a day) | extend `src/odds/aliases.ts` when a club name is reported unmatched |
 | EPL game history | `data/games/epl/` from fixturedownload (2016-17+) or the odds files (older) | 2012-13 onwards | `npm run games:fetch` | none |
+| NHL / Liiga odds history | The Odds API daily snapshots → `data/odds/<league>/` | NHL 2020-21+, Liiga March 2025+ | `npm run odds:fetch -- nhl\|liiga` (needs `THE_ODDS_API_KEY`) | none |
+| NHL / Liiga game history | `data/games/<league>/` from the league APIs | 2019-20 onwards | `npm run games:fetch -- nhl\|liiga` | none |
 
 Team tables live in `src/utils/leagues.ts` (Liiga, EPL, UCL) and
 `src/utils/teamData.ts` (NHL). Codes must be unique across every league
@@ -165,6 +167,39 @@ Champions League page exist for the final.
   for the process lifetime).
 - **Adding a team:** add the code to both the ratings file and
   `COUNTRY_NAMES`.
+
+## Hockey odds history (The Odds API)
+
+- **Endpoint:** `GET https://api.the-odds-api.com/v4/historical/sports/<sport>/odds?regions=eu&markets=h2h&date=<ISO>`
+  with `icehockey_nhl` or `icehockey_liiga`, one call per game day at ten
+  minutes before the day's first puck drop. Returns every event not yet
+  started at that snapshot with each bookmaker's head-to-head prices.
+  Provider: `src/odds/theOddsApi.ts`.
+- **Cost:** 10 credits per call (per market and region). A season is about
+  1,500 (Liiga) to 1,800 (NHL) credits; the paid 20K plan ($30 a month)
+  covers several seasons. The provider stops at 300 credits left. Raw
+  snapshots are kept under `data/odds/raw/the-odds-api/` (ignored) so a
+  rerun or a reparse costs nothing; the parsed season files are committed.
+- **Markets:** Pinnacle prices only the two-way winner incl. OT/SO here, so
+  it anchors the `moneyline` field. The 60-minute 1X2 (the record's own
+  market, `regulation`) has no Pinnacle price: its sharp reference is the
+  median of the de-vigged probabilities of the European books that carry a
+  Draw (`sharpBook: "consensus"`, 6–13 books on an NHL day, about 10 on a
+  Liiga day), with their average and best closing prices alongside. The
+  `h2h_3_way` market key exists only on the per-event endpoint at the same
+  cost per game and was not worth it.
+- **Coverage (checked 2026-10-18):** NHL from the 2020 restart, Liiga from
+  March 2025. Days before `ARCHIVE_START` in the provider are skipped.
+- **Team names:** NHL names folded (accents and dots dropped) against
+  `NHL_TEAM_NAMES` plus "St Louis Blues", "Montréal Canadiens", "Arizona
+  Coyotes", "Utah Hockey Club"; Liiga uses the short club names that match
+  `LIIGA_TEAMS.apiName`, with the OddsPapi alias table as fallback.
+- **Game history:** `npm run games:fetch -- nhl 2020 2026` stores regular
+  season and playoffs (preseason, All-Star, 4 Nations and Olympic games are
+  dropped by game type; the live NHL fetcher drops them too since this
+  change). Liiga stores the regular season only. Liiga game ids repeat
+  across seasons, so joins key on season and id together.
+- **Key:** `THE_ODDS_API_KEY` in `.env`. Subscribe for a month, pull, cancel.
 
 ## OddsPapi (live sharp prices)
 

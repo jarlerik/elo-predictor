@@ -26,6 +26,7 @@ import { LeagueId, LEAGUES } from "../utils/leagues";
 import { computeElosFromGames } from "../elo/calculator";
 import {
   eloToWinProb,
+  NO_DRAW,
   fitDrawFactorFromHistory,
   isFullTimeDraw,
   isRegulationDraw,
@@ -35,7 +36,7 @@ import {
 import { devig, MARKET_SIDES } from "../utils/sharp";
 import { kellyStake } from "../utils/kelly";
 import { OddsRecord, PriceTrio } from "../odds/types";
-import { joinOdds } from "../odds/store";
+import { joinOdds, gameKey } from "../odds/store";
 import { computeRecentStatsForTeam } from "../score/recentStats";
 import { computeExpectedGoals } from "../score/expectedGoals";
 import { soccerExpectedGoals } from "../score/soccerGoals";
@@ -139,6 +140,8 @@ export interface WalkRow {
   /** De-vigged sharp close and market average close, when priced. */
   pSharp: [number, number, number] | null;
   pAvg: [number, number, number] | null;
+  /** Hockey: two-way winner incl. OT/SO, model vs the de-vigged sharp two-way price. */
+  ml: { p: [number, number]; y: 0 | 1; pSharp: [number, number] | null } | null;
 }
 
 export interface WalkResult {
@@ -170,9 +173,96 @@ function toProbs(trio: PriceTrio | undefined): [number, number, number] | null {
   return p ? [p.home, p.draw, p.away] : null;
 }
 
+function mlRow(
+  homeElo: number,
+  awayElo: number,
+  homeAdv: number,
+  scale: number,
+  g: GameRecord,
+  o: OddsRecord | null
+): WalkRow["ml"] {
+  const two = eloToWinProb(homeElo, awayElo, homeAdv, NO_DRAW, scale);
+  const sharp = o?.moneyline?.sharp;
+  let pSharp: [number, number] | null = null;
+  if (sharp && sharp.home > 1 && sharp.away > 1) {
+    const t = 1 / sharp.home + 1 / sharp.away;
+    pSharp = [1 / sharp.home / t, 1 / sharp.away / t];
+  }
+  return { p: [two.homeWin, two.awayWin], y: g.homeGoals > g.awayGoals ? 0 : 1, pSharp };
+}
+
+/**
+ * Best blend of model and market: log loss of w × model + (1 − w) × sharp
+ * for each weight, over the priced rows. A best weight of 0 means the model
+ * adds nothing to the market price.
+ */
+export function blendCurve(rows: WalkRow[], weights = [0, 0.1, 0.2, 0.3, 0.5, 1]): { weight: number; logLoss: number }[] {
+  const priced = rows.filter((r) => r.pSharp);
+  return weights.map((w) => {
+    let ll = 0;
+    for (const r of priced) ll += logLossOf(mix(r.p, r.pSharp!, w), r.y);
+    return { weight: w, logLoss: priced.length ? round4(ll / priced.length) : Number.NaN };
+  });
+}
+
+/** Two-way skill (hockey): model vs the sharp moneyline, over rows with both. */
+export function skillMlOf(label: string, rows: WalkRow[]): SkillRow | null {
+  const priced = rows.filter((r) => r.ml?.pSharp);
+  const n = priced.length;
+  if (!n) return null;
+  const acc = { model: [0, 0], market: [0, 0], base: [0, 0], shrunk: [0, 0] };
+  let homeRate = 0;
+  for (const r of priced) if (r.ml!.y === 0) homeRate++;
+  homeRate /= n;
+  const diffs: number[] = [];
+  for (const r of priced) {
+    const m = r.ml!;
+    const sh = m.pSharp!;
+    acc.model[0] += brierOf(m.p, m.y);
+    acc.model[1] += logLossOf(m.p, m.y);
+    acc.market[0] += brierOf(sh, m.y);
+    acc.market[1] += logLossOf(sh, m.y);
+    acc.base[0] += brierOf([homeRate, 1 - homeRate], m.y);
+    acc.base[1] += logLossOf([homeRate, 1 - homeRate], m.y);
+    const s = [0.5 * m.p[0] + 0.5 * sh[0], 0.5 * m.p[1] + 0.5 * sh[1]];
+    acc.shrunk[0] += brierOf(s, m.y);
+    acc.shrunk[1] += logLossOf(s, m.y);
+    diffs.push(logLossOf(m.p, m.y) - logLossOf(sh, m.y));
+  }
+  const score = (a: number[]): Score => ({ brier: round4(a[0] / n), logLoss: round4(a[1] / n) });
+  const model = score(acc.model);
+  const market = score(acc.market);
+  const meanDiff = diffs.reduce((a, d) => a + d, 0) / n;
+  const varDiff = diffs.reduce((a, d) => a + (d - meanDiff) ** 2, 0) / Math.max(1, n - 1);
+  return {
+    label,
+    n,
+    model,
+    market,
+    avg: null,
+    baseline: score(acc.base),
+    shrunk: score(acc.shrunk),
+    delta: { brier: round4(model.brier - market.brier), logLoss: round4(model.logLoss - market.logLoss) },
+    deltaLogLossSe: round4(Math.sqrt(varDiff / n)),
+  };
+}
+
 export function seasonsOf(games: GameRecord[]): string[] {
   return [...new Set(games.map((g) => g.season))].sort();
 }
+
+/**
+ * Start year of a season label: "20242025" -> 2024, Liiga's end-year "2025"
+ * -> 2024. Train/test splits compare these, so the two conventions mix.
+ */
+export function seasonStartYear(label: string): number {
+  if (/^\d{8}$/.test(label)) return Number(label.slice(0, 4));
+  if (/^\d{4}$/.test(label)) return Number(label) - 1;
+  return Number.NaN;
+}
+
+const isTrain = (season: string, trainUntil: string) =>
+  seasonStartYear(season) <= seasonStartYear(trainUntil);
 
 /** Replay the history; one row per scored game. */
 export function walkForward(
@@ -264,7 +354,7 @@ export function walkForward(
       }
       historyOf(g.homeAbbr).push(g);
       historyOf(g.awayAbbr).push(g);
-      const o = join.matched.get(g.gamePk) ?? null;
+      const o = join.matched.get(gameKey(g)) ?? null;
       rows.push({
         gamePk: g.gamePk,
         date: g.date,
@@ -281,6 +371,7 @@ export function walkForward(
         odds: o,
         pSharp: o ? toProbs(o.sharp) : null,
         pAvg: o ? toProbs(o.avg) : null,
+        ml: hockey ? mlRow(homeElo, awayElo, cfg.elo.homeAdv, probScale, g, o) : null,
       });
     },
   });
@@ -575,8 +666,8 @@ export interface PolicyReport {
 
 export function reportPolicy(walk: WalkResult, policy: Policy): PolicyReport {
   const { rows, stats } = simulate(walk.rows, policy, walk.config.league);
-  const train = rows.filter((r) => seasonOfRow(r) <= walk.config.trainUntil);
-  const test = rows.filter((r) => seasonOfRow(r) > walk.config.trainUntil);
+  const train = rows.filter((r) => isTrain(seasonOfRow(r), walk.config.trainUntil));
+  const test = rows.filter((r) => !isTrain(seasonOfRow(r), walk.config.trainUntil));
   const bySeason = walk.config.seasons
     .slice(walk.config.burnInSeasons)
     .map((season) => ({
@@ -695,8 +786,8 @@ export function grid(games: GameRecord[], odds: OddsRecord[], base: WalkForwardC
             drawFactorScale,
           };
           const walk = walkForward(games, odds, cfg);
-          const trainRows = walk.rows.filter((r) => r.season <= base.trainUntil);
-          const testRows = walk.rows.filter((r) => r.season > base.trainUntil);
+          const trainRows = walk.rows.filter((r) => isTrain(r.season, base.trainUntil));
+          const testRows = walk.rows.filter((r) => !isTrain(r.season, base.trainUntil));
           const st = skillOf("train", trainRows);
           const te = skillOf("test", testRows);
           let best: GridCell["policy"] | null = null;
@@ -749,6 +840,10 @@ export interface MarketBacktestReport {
     overall: SkillRow | null;
     train: SkillRow | null;
     test: SkillRow | null;
+    /** Hockey: winner incl. OT/SO vs the sharp two-way price (Pinnacle). */
+    moneyline: { overall: SkillRow | null; test: SkillRow | null } | null;
+    /** Log loss of w × model + (1 − w) × sharp on the test rows. */
+    blendTest: { weight: number; logLoss: number }[];
     bySeason: SkillRow[];
     /** Test seasons only, by games played: where in the season the gap sits. */
     byPhase: SkillRow[];
@@ -765,8 +860,8 @@ export function buildReport(
   policies: Policy[],
   sensitivity: GridResult | null
 ): MarketBacktestReport {
-  const train = walk.rows.filter((r) => r.season <= walk.config.trainUntil);
-  const test = walk.rows.filter((r) => r.season > walk.config.trainUntil);
+  const train = walk.rows.filter((r) => isTrain(r.season, walk.config.trainUntil));
+  const test = walk.rows.filter((r) => !isTrain(r.season, walk.config.trainUntil));
   return {
     league: walk.config.league,
     generatedAt: new Date().toISOString(),
@@ -776,6 +871,10 @@ export function buildReport(
       overall: skillOf("All scored seasons", walk.rows),
       train: skillOf("Train", train),
       test: skillOf("Test", test),
+      moneyline: walk.rows.some((r) => r.ml)
+        ? { overall: skillMlOf("Moneyline, all", walk.rows), test: skillMlOf("Moneyline, test", test) }
+        : null,
+      blendTest: blendCurve(test),
       bySeason: skillBySeason(walk.rows),
       byPhase: skillByPhase(test),
       calibration: calibrationOf(walk.rows),
@@ -830,6 +929,15 @@ export function reportMarkdown(r: MarketBacktestReport): string {
   lines.push("");
   const skillRows = [r.skill.overall, r.skill.train, r.skill.test, ...r.skill.bySeason].filter((x): x is SkillRow => !!x);
   lines.push(skillTable(skillRows));
+  lines.push("");
+  if (r.skill.moneyline) {
+    const ml = [r.skill.moneyline.overall, r.skill.moneyline.test].filter((x): x is SkillRow => !!x);
+    lines.push("### Moneyline (winner incl. OT/SO) vs the sharp two-way price");
+    lines.push("");
+    lines.push(skillTable(ml));
+    lines.push("");
+  }
+  lines.push(`Blend on the test rows, log loss of w × model + (1 − w) × sharp: ${r.skill.blendTest.map((b) => `w=${b.weight}: ${f3(b.logLoss)}`).join(", ")}. The best weight is how much the model adds to the market price.`);
   lines.push("");
   lines.push("### By season phase (test seasons)");
   lines.push("");
