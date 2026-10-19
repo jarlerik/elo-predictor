@@ -1,6 +1,6 @@
 {
  "source": "the-odds-api",
- "fetchedAt": "2026-10-19T08:17:59.675Z",
+ "fetchedAt": "2026-10-19T08:38:04.482Z",
  "startYear": 2026,
  "complete": false,
  "records": [
@@ -17523,6 +17523,256 @@
     "awayGoals": 2
    },
    "snapshotAt": "2026-10-16T23:45:18Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nhl",
+   "season": "20262027",
+   "date": "2026-10-18",
+   "home": "MIN",
+   "away": "CBJ",
+   "market": "regulation",
+   "sharp": {
+    "home": 1.939,
+    "draw": 4.734,
+    "away": 3.663
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 1.809,
+    "draw": 4.396,
+    "away": 3.431
+   },
+   "max": {
+    "home": 1.92,
+    "draw": 4.6,
+    "away": 3.55
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.92,
+     "draw": 4.46,
+     "away": 3.49
+    },
+    "marathonbet": {
+     "home": 1.89,
+     "draw": 4.4,
+     "away": 3.44
+    },
+    "betclic_fr": {
+     "home": 1.78,
+     "draw": 4.4,
+     "away": 3.53
+    },
+    "unibet_fr": {
+     "home": 1.69,
+     "draw": 4,
+     "away": 3.25
+    },
+    "codere_it": {
+     "home": 1.76,
+     "draw": 4.3,
+     "away": 3.45
+    },
+    "unibet_se": {
+     "home": 1.88,
+     "draw": 4.6,
+     "away": 3.55
+    },
+    "leovegas_se": {
+     "home": 1.88,
+     "draw": 4.6,
+     "away": 3.55
+    },
+    "unibet_nl": {
+     "home": 1.83,
+     "draw": 4.5,
+     "away": 3.45
+    },
+    "winamax_fr": {
+     "home": 1.7,
+     "draw": 4.2,
+     "away": 3.2
+    },
+    "winamax_de": {
+     "home": 1.76,
+     "draw": 4.5,
+     "away": 3.4
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 1.517,
+     "away": 2.599
+    },
+    "sharpBook": "avg",
+    "avg": {
+     "home": 1.517,
+     "away": 2.6
+    },
+    "max": {
+     "home": 1.53,
+     "away": 2.68
+    },
+    "book": {
+     "sport888": {
+      "home": 1.5,
+      "away": 2.6
+     },
+     "williamhill": {
+      "home": 1.5,
+      "away": 2.6
+     },
+     "gtbets": {
+      "home": 1.53,
+      "away": 2.6
+     },
+     "nordicbet": {
+      "home": 1.52,
+      "away": 2.53
+     },
+     "betsson": {
+      "home": 1.52,
+      "away": 2.53
+     },
+     "betonlineag": {
+      "home": 1.53,
+      "away": 2.66
+     },
+     "matchbook": {
+      "home": 1.52,
+      "away": 2.68
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 2,
+    "awayGoals": 1
+   },
+   "snapshotAt": "2026-10-17T23:45:23Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nhl",
+   "season": "20262027",
+   "date": "2026-10-18",
+   "home": "CGY",
+   "away": "CAR",
+   "market": "regulation",
+   "sharp": {
+    "home": 3.763,
+    "draw": 4.662,
+    "away": 1.924
+   },
+   "sharpBook": "consensus",
+   "avg": {
+    "home": 3.563,
+    "draw": 4.371,
+    "away": 1.769
+   },
+   "max": {
+    "home": 4,
+    "draw": 4.51,
+    "away": 1.86
+   },
+   "book": {
+    "onexbet": {
+     "home": 3.69,
+     "draw": 4.51,
+     "away": 1.86
+    },
+    "marathonbet": {
+     "home": 3.64,
+     "draw": 4.45,
+     "away": 1.83
+    },
+    "betclic_fr": {
+     "home": 3.45,
+     "draw": 4.45,
+     "away": 1.8
+    },
+    "unibet_fr": {
+     "home": 3.15,
+     "draw": 4,
+     "away": 1.69
+    },
+    "codere_it": {
+     "home": 3.4,
+     "draw": 4.3,
+     "away": 1.77
+    },
+    "leovegas_se": {
+     "home": 4,
+     "draw": 4.5,
+     "away": 1.78
+    },
+    "unibet_se": {
+     "home": 4,
+     "draw": 4.5,
+     "away": 1.78
+    },
+    "unibet_nl": {
+     "home": 3.95,
+     "draw": 4.4,
+     "away": 1.74
+    },
+    "winamax_fr": {
+     "home": 3.05,
+     "draw": 4.1,
+     "away": 1.68
+    },
+    "winamax_de": {
+     "home": 3.3,
+     "draw": 4.5,
+     "away": 1.76
+    }
+   },
+   "moneyline": {
+    "sharp": {
+     "home": 2.657,
+     "away": 1.495
+    },
+    "sharpBook": "avg",
+    "avg": {
+     "home": 2.658,
+     "away": 1.495
+    },
+    "max": {
+     "home": 2.79,
+     "away": 1.5
+    },
+    "book": {
+     "sport888": {
+      "home": 2.6,
+      "away": 1.5
+     },
+     "williamhill": {
+      "home": 2.6,
+      "away": 1.5
+     },
+     "gtbets": {
+      "home": 2.7,
+      "away": 1.5
+     },
+     "nordicbet": {
+      "home": 2.63,
+      "away": 1.49
+     },
+     "betsson": {
+      "home": 2.63,
+      "away": 1.49
+     },
+     "betonlineag": {
+      "home": 2.79,
+      "away": 1.49
+     }
+    }
+   },
+   "result": {
+    "homeGoals": 3,
+    "awayGoals": 2
+   },
+   "snapshotAt": "2026-10-17T23:45:23Z",
    "source": "the-odds-api"
   }
  ],

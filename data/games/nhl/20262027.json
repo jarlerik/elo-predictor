@@ -1,5 +1,5 @@
 {
- "fetchedAt": "2026-10-18T18:51:53.349Z",
+ "fetchedAt": "2026-10-19T08:38:01.851Z",
  "source": "nhl-api",
  "complete": false,
  "games": [
@@ -1608,6 +1608,30 @@
    "homeAbbr": "VGK",
    "awayAbbr": "PIT",
    "homeGoals": 6,
+   "awayGoals": 2,
+   "decidedInOTorSO": false
+  },
+  {
+   "gamePk": 2026020135,
+   "season": "20262027",
+   "date": "2026-10-18",
+   "homeTeamId": 30,
+   "awayTeamId": 29,
+   "homeAbbr": "MIN",
+   "awayAbbr": "CBJ",
+   "homeGoals": 2,
+   "awayGoals": 1,
+   "decidedInOTorSO": false
+  },
+  {
+   "gamePk": 2026020136,
+   "season": "20262027",
+   "date": "2026-10-18",
+   "homeTeamId": 20,
+   "awayTeamId": 12,
+   "homeAbbr": "CGY",
+   "awayAbbr": "CAR",
+   "homeGoals": 3,
    "awayGoals": 2,
    "decidedInOTorSO": false
   }
