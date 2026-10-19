@@ -222,6 +222,9 @@ panel will show the new numbers on the next refresh.
 
 ## Backlog, ranked
 
+The overall verdict on whether this loop can reach profit, and what the
+alternative routes are, is in docs/CAN_ELO_BEAT_THE_BOOKS.md.
+
 1. **NHL probability scale.** K 10 with scale 500 is the next candidate
    (see the fourth turn); decide on it with 2026-27 as a fresh test season.
    Then `npm run fit:homeadv` style re-fit of the NHL home advantage with

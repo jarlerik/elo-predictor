@@ -83,7 +83,7 @@ Live sources are re-fetched every 6 hours. The Champions League and World Cup se
 - `npm run odds:close` / `npm run odds:budget` - Fill sharp closing prices on settled bets from OddsPapi, and show the month's request budget
 - `npm run fit:homeadv` - Grid-fit the Elo home advantage per league
 
-See [docs/CONTINUOUS_IMPROVEMENT.md](docs/CONTINUOUS_IMPROVEMENT.md) for the improvement loop these scripts support.
+See [docs/CONTINUOUS_IMPROVEMENT.md](docs/CONTINUOUS_IMPROVEMENT.md) for the improvement loop these scripts support. [docs/CAN_ELO_BEAT_THE_BOOKS.md](docs/CAN_ELO_BEAT_THE_BOOKS.md) is the assessment of whether the model can beat the bookmakers and what profitable betting would take.
 
 ### Development URLs
 
