@@ -157,14 +157,78 @@ Side finding: the recent-form Poisson layer, which prices the app's
 correct-score bets, is 0.08 log loss behind the market on 1X2. Correct-
 score bets should not be placed on it without a market comparison.
 
+## Fourth turn: the hockey leagues (18 October 2026)
+
+Prices from The Odds API (docs/DATA_SOURCES.md, "Hockey odds history"):
+one snapshot per game day, Pinnacle for the moneyline, the de-vigged
+median of the European three-way books for the 60-minute 1X2.
+`npm run backtest:compare -- liiga --train-until 2024` and
+`npm run backtest:market -- liiga --train-until 2024`.
+
+**Liiga** (report `data/reports/backtest-liiga-20261018-1856.md`): prices
+exist from March 2025, so the test set is 2025-26 plus the start of
+2026-27, 596 games, and the train side is only 48 games.
+
+| Scope | n | Model LL | Market LL | Δ (±se) |
+| --- | ---: | ---: | ---: | ---: |
+| 60-minute 1X2, test, vs consensus | 596 | 1.039 | 1.012 | +0.026 (±0.008) |
+| Moneyline, all, vs Pinnacle | 644 | 0.672 | 0.647 | +0.025 (±0.009) |
+
+- Best blend weight on the model: 0, in every variant tried (K 15/30,
+  no margin multiplier, probability scale 500, early-season K).
+- The gap is in the first fifteen games of a season (+0.054 and +0.046 by
+  phase) and nearly closed from game sixteen on (+0.005, +0.012): Liiga
+  rosters turn over heavily in the summer, and a results-only rating
+  cannot see it.
+- Betting the model's edge at the fair consensus price loses 2.1 % over
+  596 games; at the best market price every policy is negative.
+
+Verdict: same as the EPL. The market, even a consensus of soft books,
+already contains everything the rating knows.
+
+**NHL** (report `data/reports/backtest-nhl-20261019-0818.md`, with
+`--grid`): prices from 2020-21 to date, 8,061 games. Train 2020-21 to
+2022-23 (3,736), test 2023-24 to 2026-27 (4,325), burn-in 2019-20.
+
+| Scope | n | Model LL | Market LL | Δ (±se) |
+| --- | ---: | ---: | ---: | ---: |
+| 60-minute 1X2, train, vs consensus | 3736 | 1.038 | 1.031 | +0.007 (±0.003) |
+| 60-minute 1X2, test, vs consensus | 4325 | 1.053 | 1.040 | +0.013 (±0.002) |
+| Moneyline, test, vs Pinnacle | 4325 | — | — | +0.020 (±0.003) |
+
+- This is the league where the rating is closest to the market: 0.013
+  behind the consensus against 0.02–0.03 in soccer and Liiga, and level
+  with it in the first five games of a season.
+- **Grid, chosen on train:** K 10 (home advantage 35, scale 400). Test
+  window, K 20 → K 10: 60-minute Δ +0.013 → +0.009 (se 0.002), moneyline
+  vs Pinnacle Δ +0.020 → +0.014 (se 0.003). Both improve by two standard
+  errors, the training seasons improve (+0.007 → +0.004), and every K from
+  10 to 30 is ordered the same way on train and test: at K 20 the NHL
+  rating moves too fast.
+- Second holdout, 2025-26 and 2026-27 alone (1,527 games) with training
+  through 2024-25: K 10 and K 20 tie at +0.009. The gain is in 2023-25 and
+  absent in 2025-26, so it is real but small, and it is calibration: the
+  best blend weight on the model is still 0.
+- K 10 with probability scale 500 reaches +0.006 on test and +0.008 on the
+  moneyline but only ties K 10 on train; it is the first candidate for
+  next season's turn, not applied now.
+- Betting the model's edge at the fair consensus price: +7.9 % and +6.0 %
+  in 2021-22 and 2022-23, −3 to −4 % in the other seasons, noise around
+  zero, as the blend weight says.
+
+**Accepted: NHL base K 20 → 10** (`LEAGUES.nhl.baseK`), the first change
+to pass the rule. It changes the live NHL ratings; the Dashboard's model
+panel will show the new numbers on the next refresh.
+
 ## Backlog, ranked
 
-1. **Hockey history.** The EPL market is the tightest there is; the model
-   may carry information in Liiga and the NHL that it does not here. This
-   is the only route to a model edge left, and it needs the price history
-   (The Odds API for one month, provider slot in `src/odds/theOddsApi.ts`;
-   `npm run games:fetch` extended to the hockey fetchers).
-2. **Soft-book edge, not model edge.** For the EPL the question is whether
+1. **NHL probability scale.** K 10 with scale 500 is the next candidate
+   (see the fourth turn); decide on it with 2026-27 as a fresh test season.
+   Then `npm run fit:homeadv` style re-fit of the NHL home advantage with
+   K 10, on train seasons only.
+2. **Soft-book edge, not model edge.** Hockey history is now stored for
+   both leagues (The Odds API, docs/DATA_SOURCES.md), and the verdict is
+   the same as the EPL: the blend weight on the model is zero everywhere. For the EPL the question is whether
    Veikkaus prices worse than Pinnacle on some games: live CLV against the
    sharp close, read at 50 bets.
 3. **Richer inputs** if the model is to beat the market anywhere: expected
@@ -212,3 +276,5 @@ score bets should not be placed on it without a market comparison.
 | 2026-10-18 | Promoted clubs start at 1400: **not accepted** (test −0.004, under 1 se; train +0.002) | +0.021 | +0.022 | — | `backtest-epl-20261018-1809` |
 | 2026-10-18 | Signed / no margin multiplier, K 30, early-season K, probability scale, goal-margin updates, Poisson 1X2 and blends: **all rejected** (best test Δ +0.022, under 1 se) | +0.018–+0.056 | +0.022–+0.080 | −6.6 % to −15.6 % at avg close | `npm run backtest:compare` table above |
 | 2026-10-18 | Model–market blend: best weight on the model is 0 on train, test and the market average | — | — | — | section "Third turn" |
+| 2026-10-18 | Liiga: baseline vs consensus 60-minute price and Pinnacle moneyline; blend weight 0; every Elo variant rejected | — | +0.026 | −2.1 % (596, sharp-model-0) | `backtest-liiga-20261018-1856` |
+| 2026-10-19 | NHL: grid chooses K 10 on train; **accepted** (test 2023-27 Δ 0.013 → 0.009 and moneyline 0.020 → 0.014, both 2 se; flat on 2025-26 alone) | +0.007 → +0.004 | +0.013 → +0.009 | −7.8 % → −9.4 % (avg close, model edge) | `backtest-nhl-20261019-0818` |

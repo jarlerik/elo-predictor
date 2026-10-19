@@ -125,16 +125,18 @@ export async function ensureLeague(league: LeagueId): Promise<LeagueState> {
   const p = (async () => {
     try {
       const data = await loadLeagueData(league);
-      const homeAdv = LEAGUES[league].homeAdv;
+      const { homeAdv, baseK } = LEAGUES[league];
       const elos = computeElosFromGames(data.games, {
         currentTeams: data.currentTeams,
         homeAdv,
+        baseK,
       });
       const drawFactor = drawFactorFor(
         league,
         data.games,
         data.currentTeams,
-        homeAdv
+        homeAdv,
+        { baseK }
       );
       const state: LeagueState = {
         ...data,

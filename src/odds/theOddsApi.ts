@@ -116,19 +116,35 @@ async function snapshotAt(league: LeagueId, season: string, day: string, at: str
   if (remaining !== null && remaining < CREDIT_FLOOR) {
     throw new Error(`the-odds-api: only ${remaining} credits left this month; stopping (floor ${CREDIT_FLOOR})`);
   }
-  const resp = await axios.get<Snapshot>(`${BASE}/historical/sports/${SPORT[league]}/odds`, {
-    params: { regions: REGIONS, markets: MARKETS, date: at, apiKey: key },
-    timeout: 60_000,
-    validateStatus: () => true,
-  });
-  const left = Number(resp.headers?.["x-requests-remaining"]);
-  if (Number.isFinite(left)) remaining = left;
-  if (resp.status !== 200) {
-    throw new Error(`the-odds-api: HTTP ${resp.status} for ${day}: ${JSON.stringify(resp.data).slice(0, 200)}`);
+  // A timed-out or 5xx call is retried a few times; a 4xx is not (it is
+  // not charged and will not change).
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    if (attempt) await new Promise((r) => setTimeout(r, 5_000 * attempt));
+    try {
+      const resp = await axios.get<Snapshot>(`${BASE}/historical/sports/${SPORT[league]}/odds`, {
+        params: { regions: REGIONS, markets: MARKETS, date: at, apiKey: key },
+        timeout: 60_000,
+        validateStatus: () => true,
+      });
+      const left = Number(resp.headers?.["x-requests-remaining"]);
+      if (Number.isFinite(left)) remaining = left;
+      if (resp.status >= 500 || resp.status === 429) {
+        lastError = new Error(`the-odds-api: HTTP ${resp.status} for ${day}`);
+        continue;
+      }
+      if (resp.status !== 200) {
+        throw new Error(`the-odds-api: HTTP ${resp.status} for ${day}: ${JSON.stringify(resp.data).slice(0, 200)}`);
+      }
+      fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(file, JSON.stringify(resp.data));
+      return resp.data;
+    } catch (e) {
+      if (!axios.isAxiosError(e)) throw e;
+      lastError = e;
+    }
   }
-  fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(file, JSON.stringify(resp.data));
-  return resp.data;
+  throw lastError instanceof Error ? lastError : new Error(String(lastError));
 }
 
 // ---------------------------------------------------------------------------

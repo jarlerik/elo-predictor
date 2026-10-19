@@ -23,6 +23,12 @@ export interface LeagueInfo {
    * fitted with the draw factor fitted from the same history.
    */
   homeAdv: number;
+  /**
+   * Base K of the Elo update per game, before the margin and age
+   * multipliers. Chosen on the market backtest's training seasons
+   * (docs/CONTINUOUS_IMPROVEMENT.md); 20 is the historical default.
+   */
+  baseK: number;
 }
 
 export const LEAGUES: Record<LeagueId, LeagueInfo> = {
@@ -35,6 +41,11 @@ export const LEAGUES: Record<LeagueId, LeagueInfo> = {
     homeLabel: "Home Team",
     awayLabel: "Away Team",
     homeAdv: 35,
+    // 10, not the default 20: chosen on the 2020-23 training seasons of the
+    // market backtest and better on 2023-27 by two standard errors against
+    // both the consensus 60-minute price and Pinnacle's moneyline
+    // (docs/CONTINUOUS_IMPROVEMENT.md, fourth turn).
+    baseK: 10,
   },
   liiga: {
     id: "liiga",
@@ -45,6 +56,7 @@ export const LEAGUES: Record<LeagueId, LeagueInfo> = {
     homeLabel: "Home Team",
     awayLabel: "Away Team",
     homeAdv: 60,
+    baseK: 20,
   },
   epl: {
     id: "epl",
@@ -55,6 +67,7 @@ export const LEAGUES: Record<LeagueId, LeagueInfo> = {
     homeLabel: "Home Team",
     awayLabel: "Away Team",
     homeAdv: 45,
+    baseK: 20,
   },
 };
 

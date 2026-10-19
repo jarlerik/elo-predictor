@@ -22,6 +22,8 @@ import { readAllOdds } from "../src/odds/store";
 import {
   buildReport,
   DEFAULT_POLICIES,
+  DEFAULT_AXES,
+  HOCKEY_AXES,
   grid,
   reportMarkdown,
   seasonsOf,
@@ -62,7 +64,7 @@ const cfg: WalkForwardConfig = {
   trainUntil,
   elo: {
     homeAdv: Number(flag("--homeadv") ?? LEAGUES[league].homeAdv),
-    baseK: Number(flag("--k") ?? 20),
+    baseK: Number(flag("--k") ?? LEAGUES[league].baseK),
     timeWeighting: has("--age-weighting"),
     seasonRegression: Number(flag("--regress") ?? 0),
     newTeamElo: Number(flag("--new-team") ?? 1500),
@@ -79,7 +81,9 @@ console.error(
 );
 const t0 = Date.now();
 const walk = walkForward(games, odds, cfg);
-const sensitivity = has("--grid") ? grid(games, odds, cfg) : null;
+const sensitivity = has("--grid")
+  ? grid(games, odds, cfg, LEAGUES[league].sport === "hockey" ? HOCKEY_AXES : DEFAULT_AXES)
+  : null;
 const report = buildReport(walk, DEFAULT_POLICIES, sensitivity);
 const md = reportMarkdown(report);
 console.error(`computed in ${((Date.now() - t0) / 1000).toFixed(1)}s`);

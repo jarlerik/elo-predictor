@@ -32,11 +32,13 @@ for (const league of leagues) {
   );
   const scores: { homeAdv: number; logLoss: number }[] = [];
   for (let homeAdv = 0; homeAdv <= 120; homeAdv += step) {
+    const baseK = LEAGUES[league].baseK;
     const elos = computeElosFromGames(state.games, {
       currentTeams: state.currentTeams,
       homeAdv,
+      baseK,
     });
-    const drawFactor = drawFactorFor(league, state.games, state.currentTeams, homeAdv);
+    const drawFactor = drawFactorFor(league, state.games, state.currentTeams, homeAdv, { baseK });
     const o = backtestLeague(league, { ...state, elos, drawFactor, homeAdv }, homeAdv)
       .overall;
     scores.push({ homeAdv, logLoss: o.logLoss });

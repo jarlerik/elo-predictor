@@ -39,7 +39,7 @@ const base: WalkForwardConfig = {
   seasons: seasonsOf(games),
   burnInSeasons: Number(flagValue("--burnin") ?? 2),
   trainUntil: `${trainUntilYear}${trainUntilYear + 1}`,
-  elo: { homeAdv: LEAGUES[league].homeAdv, baseK: 20, timeWeighting: false, seasonRegression: 0, newTeamElo: 1500 },
+  elo: { homeAdv: LEAGUES[league].homeAdv, baseK: LEAGUES[league].baseK, timeWeighting: false, seasonRegression: 0, newTeamElo: 1500 },
   drawFactorScale: 1,
 };
 console.log(`${LEAGUES[league].name}: ${games.length} games, ${odds.length} odds rows, seasons ${seasons[0]}..${seasons[seasons.length - 1]}, burn-in ${base.burnInSeasons}, train until ${base.trainUntil}`);

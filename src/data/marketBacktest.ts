@@ -730,6 +730,8 @@ export interface GridAxes {
   drawFactorScale: number[];
   seasonRegression: number[];
   newTeamElo: number[];
+  /** Divisor mapping the rating gap to probabilities (400 = classic). */
+  probScale: number[];
   minEdge: number[];
   shrinkWeight: number[];
 }
@@ -740,14 +742,18 @@ export interface GridAxes {
  */
 export const DEFAULT_AXES: GridAxes = {
   homeAdv: [30, 45, 60],
-  baseK: [15, 20, 25, 30],
+  baseK: [10, 15, 20, 25, 30],
   timeWeighting: [false],
   drawFactorScale: [1],
-  seasonRegression: [0, 0.2, 1 / 3, 0.5],
-  newTeamElo: [1500, 1450, 1400],
+  seasonRegression: [0],
+  newTeamElo: [1500],
+  probScale: [400, 450, 500, 550],
   minEdge: [0.02, 0.03, 0.05, 0.08],
   shrinkWeight: [0, 0.5, 1],
 };
+
+/** Hockey leagues: home advantage sits lower than in soccer. */
+export const HOCKEY_AXES: GridAxes = { ...DEFAULT_AXES, homeAdv: [20, 35, 50] };
 
 export interface GridCell {
   elo: {
@@ -757,6 +763,7 @@ export interface GridCell {
     drawFactorScale: number;
     seasonRegression: number;
     newTeamElo: number;
+    probScale: number;
   };
   /** Model log loss on priced train / test games. */
   train: { n: number; logLoss: number; delta: number };
@@ -779,10 +786,11 @@ export function grid(games: GameRecord[], odds: OddsRecord[], base: WalkForwardC
       for (const timeWeighting of axes.timeWeighting)
         for (const drawFactorScale of axes.drawFactorScale)
         for (const seasonRegression of axes.seasonRegression)
-        for (const newTeamElo of axes.newTeamElo) {
+        for (const newTeamElo of axes.newTeamElo)
+        for (const probScale of axes.probScale) {
           const cfg: WalkForwardConfig = {
             ...base,
-            elo: { ...base.elo, homeAdv, baseK, timeWeighting, seasonRegression, newTeamElo },
+            elo: { ...base.elo, homeAdv, baseK, timeWeighting, seasonRegression, newTeamElo, probScale },
             drawFactorScale,
           };
           const walk = walkForward(games, odds, cfg);
@@ -817,7 +825,7 @@ export function grid(games: GameRecord[], odds: OddsRecord[], base: WalkForwardC
               if (!best || score(cand) > score(best)) best = cand;
             }
           cells.push({
-            elo: { homeAdv, baseK, timeWeighting, drawFactorScale, seasonRegression, newTeamElo },
+            elo: { homeAdv, baseK, timeWeighting, drawFactorScale, seasonRegression, newTeamElo, probScale },
             train: { n: st?.n ?? 0, logLoss: st?.model.logLoss ?? NaN, delta: st?.delta.logLoss ?? NaN },
             test: { n: te?.n ?? 0, logLoss: te?.model.logLoss ?? NaN, delta: te?.delta.logLoss ?? NaN },
             policy: best!,
@@ -993,25 +1001,25 @@ export function reportMarkdown(r: MarketBacktestReport): string {
     lines.push("## Sensitivity (chosen on train log loss, reported on test)");
     lines.push("");
     const c = g.chosen;
-    lines.push(`Chosen: homeAdv ${c.elo.homeAdv}, K ${c.elo.baseK}, age weighting ${c.elo.timeWeighting ? "on" : "off"}, draw scale ${c.elo.drawFactorScale}, regression ${c.elo.seasonRegression.toFixed(2)}, new-team ${c.elo.newTeamElo} → train LL ${f3(c.train.logLoss)} (Δ ${f3(c.train.delta)}), test LL ${f3(c.test.logLoss)} (Δ ${f3(c.test.delta)}). Best train policy there: min edge ${pct(c.policy.minEdge)}, model weight ${c.policy.shrinkWeight}: train yield ${pct(c.policy.trainYield)} (${c.policy.trainBets} bets), test yield ${pct(c.policy.testYield)} (${c.policy.testBets} bets).`);
+    lines.push(`Chosen: homeAdv ${c.elo.homeAdv}, K ${c.elo.baseK}, probability scale ${c.elo.probScale}, age weighting ${c.elo.timeWeighting ? "on" : "off"}, draw scale ${c.elo.drawFactorScale}, regression ${c.elo.seasonRegression.toFixed(2)}, new-team ${c.elo.newTeamElo} → train LL ${f3(c.train.logLoss)} (Δ ${f3(c.train.delta)}), test LL ${f3(c.test.logLoss)} (Δ ${f3(c.test.delta)}). Best train policy there: min edge ${pct(c.policy.minEdge)}, model weight ${c.policy.shrinkWeight}: train yield ${pct(c.policy.trainYield)} (${c.policy.trainBets} bets), test yield ${pct(c.policy.testYield)} (${c.policy.testBets} bets).`);
     lines.push("");
-    lines.push("| homeAdv | K | regress | new team | train LL | train Δ | test LL | test Δ | policy (edge / w) | train yield (bets) | test yield (bets) |\n| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | ---: | ---: |");
+    lines.push("| homeAdv | K | scale | regress / new team | train LL | train Δ | test LL | test Δ | policy (edge / w) | train yield (bets) | test yield (bets) |\n| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | ---: | ---: |");
     const sorted = [...g.cells].sort((a, b) => a.train.logLoss - b.train.logLoss);
     for (const cell of sorted.slice(0, 24)) {
-      lines.push(`| ${cell.elo.homeAdv} | ${cell.elo.baseK} | ${cell.elo.seasonRegression.toFixed(2)} | ${cell.elo.newTeamElo} | ${f3(cell.train.logLoss)} | ${f3(cell.train.delta)} | ${f3(cell.test.logLoss)} | ${f3(cell.test.delta)} | ${pct(cell.policy.minEdge)} / ${cell.policy.shrinkWeight} | ${pct(cell.policy.trainYield)} (${cell.policy.trainBets}) | ${pct(cell.policy.testYield)} (${cell.policy.testBets}) |`);
+      lines.push(`| ${cell.elo.homeAdv} | ${cell.elo.baseK} | ${cell.elo.probScale} | ${cell.elo.seasonRegression.toFixed(2)} / ${cell.elo.newTeamElo} | ${f3(cell.train.logLoss)} | ${f3(cell.train.delta)} | ${f3(cell.test.logLoss)} | ${f3(cell.test.delta)} | ${pct(cell.policy.minEdge)} / ${cell.policy.shrinkWeight} | ${pct(cell.policy.trainYield)} (${cell.policy.trainBets}) | ${pct(cell.policy.testYield)} (${cell.policy.testBets}) |`);
     }
     if (sorted.length > 24) lines.push(`| … ${sorted.length - 24} more cells in the JSON | | | | | | | | | | |`);
     lines.push("");
-    lines.push("Best cell per season-regression setting (train log loss):");
+    lines.push("Best cell per K (train log loss):");
     lines.push("");
-    lines.push("| regress | new team | homeAdv | K | train LL | train Δ | test LL | test Δ |\n| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
-    const byReg = new Map<number, GridCell>();
+    lines.push("| K | scale | homeAdv | train LL | train Δ | test LL | test Δ |\n| ---: | ---: | ---: | ---: | ---: | ---: | ---: |");
+    const byK = new Map<number, GridCell>();
     for (const cell of g.cells) {
-      const cur = byReg.get(cell.elo.seasonRegression);
-      if (!cur || cell.train.logLoss < cur.train.logLoss) byReg.set(cell.elo.seasonRegression, cell);
+      const cur = byK.get(cell.elo.baseK);
+      if (!cur || cell.train.logLoss < cur.train.logLoss) byK.set(cell.elo.baseK, cell);
     }
-    for (const cell of [...byReg.values()].sort((a, b) => a.elo.seasonRegression - b.elo.seasonRegression)) {
-      lines.push(`| ${cell.elo.seasonRegression.toFixed(2)} | ${cell.elo.newTeamElo} | ${cell.elo.homeAdv} | ${cell.elo.baseK} | ${f3(cell.train.logLoss)} | ${f3(cell.train.delta)} | ${f3(cell.test.logLoss)} | ${f3(cell.test.delta)} |`);
+    for (const cell of [...byK.values()].sort((a, b) => a.elo.baseK - b.elo.baseK)) {
+      lines.push(`| ${cell.elo.baseK} | ${cell.elo.probScale} | ${cell.elo.homeAdv} | ${f3(cell.train.logLoss)} | ${f3(cell.train.delta)} | ${f3(cell.test.logLoss)} | ${f3(cell.test.delta)} |`);
     }
     lines.push("");
   }
