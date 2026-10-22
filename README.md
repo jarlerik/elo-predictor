@@ -82,8 +82,10 @@ Live sources are re-fetched every 6 hours. The Champions League and World Cup se
 - `npm run backtest:market -- epl [--grid]` - Walk-forward backtest of the model against the stored odds; writes `data/reports/`
 - `npm run odds:close` / `npm run odds:budget` - Fill sharp closing prices on settled bets from OddsPapi, and show the month's request budget
 - `npm run fit:homeadv` - Grid-fit the Elo home advantage per league
+- `npm run scan` - Morning scan: today's games, the bookmakers' consensus and the Finnish books' prices from The Odds API, with every price that clears the outlier rule; writes `data/scans/`
+- `npm run backtest:outliers -- nhl` - The same outlier rule on the stored per-book closing lines, with an α sweep; writes `data/reports/`
 
-See [docs/CONTINUOUS_IMPROVEMENT.md](docs/CONTINUOUS_IMPROVEMENT.md) for the improvement loop these scripts support. [docs/CAN_ELO_BEAT_THE_BOOKS.md](docs/CAN_ELO_BEAT_THE_BOOKS.md) is the assessment of whether the model can beat the bookmakers and what profitable betting would take.
+See [docs/CONTINUOUS_IMPROVEMENT.md](docs/CONTINUOUS_IMPROVEMENT.md) for the improvement loop these scripts support. [docs/CAN_ELO_BEAT_THE_BOOKS.md](docs/CAN_ELO_BEAT_THE_BOOKS.md) is the assessment of whether the model can beat the bookmakers and what profitable betting would take. [docs/MORNING_SCAN.md](docs/MORNING_SCAN.md) is the daily procedure for the alternative: betting where a Finnish book stands above the market consensus.
 
 ### Development URLs
 

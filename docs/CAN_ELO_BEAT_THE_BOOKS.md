@@ -116,6 +116,10 @@ means an edge exists and the questions become stake size and account
 survival. Negative means the mispricing being hunted does not exist at the
 prices available, and neither a model nor a consensus rule fixes that.
 
+The daily procedure that implements this, with the first board and a
+backtest of the rule on the stored per-book lines, is in
+[MORNING_SCAN.md](MORNING_SCAN.md).
+
 ## Sources
 
 - Hubacek, Sourek, Zelezny, Exploiting sports-betting market using machine

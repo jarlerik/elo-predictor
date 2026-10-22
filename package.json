@@ -19,9 +19,11 @@
     "backtest:market": "tsx scripts/backtest-market.ts",
     "backtest:compare": "tsx scripts/backtest-compare.ts",
     "odds:close": "tsx scripts/fill-sharp-closing.ts",
-    "odds:budget": "tsx scripts/oddspapi-budget.ts"
+    "odds:budget": "tsx scripts/oddspapi-budget.ts",
+    "scan": "tsx scripts/morning-scan.ts",
+    "backtest:outliers": "tsx scripts/backtest-outliers.ts"
   },
-  "author": "Jarl-Erik Malmstr\u00f6m",
+  "author": "Jarl-Erik Malmström",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.12.2",

@@ -223,7 +223,10 @@ panel will show the new numbers on the next refresh.
 ## Backlog, ranked
 
 The overall verdict on whether this loop can reach profit, and what the
-alternative routes are, is in docs/CAN_ELO_BEAT_THE_BOOKS.md.
+alternative routes are, is in docs/CAN_ELO_BEAT_THE_BOOKS.md. The route
+that does not depend on the model, betting where a Finnish book stands
+above the bookmakers' consensus, has its own procedure and backtest in
+docs/MORNING_SCAN.md (`npm run scan`, `npm run backtest:outliers`).
 
 1. **NHL probability scale.** K 10 with scale 500 is the next candidate
    (see the fourth turn); decide on it with 2026-27 as a fresh test season.
@@ -281,3 +284,4 @@ alternative routes are, is in docs/CAN_ELO_BEAT_THE_BOOKS.md.
 | 2026-10-18 | Model–market blend: best weight on the model is 0 on train, test and the market average | — | — | — | section "Third turn" |
 | 2026-10-18 | Liiga: baseline vs consensus 60-minute price and Pinnacle moneyline; blend weight 0; every Elo variant rejected | — | +0.026 | −2.1 % (596, sharp-model-0) | `backtest-liiga-20261018-1856` |
 | 2026-10-19 | NHL: grid chooses K 10 on train; **accepted** (test 2023-27 Δ 0.013 → 0.009 and moneyline 0.020 → 0.014, both 2 se; flat on 2025-26 alone) | +0.007 → +0.004 | +0.013 → +0.009 | −7.8 % → −9.4 % (avg close, model edge) | `backtest-nhl-20261019-0818` |
+| 2026-10-19 | Outlier rule (Kaunitz 2017) on the stored per-book lines, every book a candidate: hit rate matches mean(p_cons − α); NHL moneyline +2.0 % ± 3.3 at α 0.02 (1,020 bets), other markets ≈ 0 at the sharp price; almost no bets at α 0.05 with 6–14 books per market | — | — | see docs/MORNING_SCAN.md | `outliers-{nhl,liiga,epl}-20261019-1050` |
