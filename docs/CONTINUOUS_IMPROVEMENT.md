@@ -31,8 +31,8 @@ rules for reading the answer.
 4. **Record it.** Add a row to the changelog below with the report file.
    Reports live in `data/reports/backtest-<league>-<stamp>.{json,md}`; the
    Markdown is the thing to read.
-5. **Track it live.** The Dashboard's sharp view, CLV vs the sharp close
-   and the profit z-score are the live versions of the same numbers.
+5. **Track it live.** `npm run metrics` prints the sharp view, CLV vs the
+   sharp close and the profit z-score: the live versions of the same numbers.
    `npm run odds:close` fills the sharp closing prices on settled bets so
    CLV accumulates without typing. Segment stop rules are in
    docs/METRICS_AND_DASHBOARD.md ("Decision rules").
@@ -217,8 +217,8 @@ already contains everything the rating knows.
   zero, as the blend weight says.
 
 **Accepted: NHL base K 20 → 10** (`LEAGUES.nhl.baseK`), the first change
-to pass the rule. It changes the live NHL ratings; the Dashboard's model
-panel will show the new numbers on the next refresh.
+to pass the rule. It changes the live NHL ratings that `npm run bet`
+attaches to each NHL bet.
 
 ## Backlog, ranked
 
@@ -246,8 +246,8 @@ docs/MORNING_SCAN.md (`npm run scan`, `npm run backtest:outliers`).
 5. **Draw model**: the model under-predicts draws at parity; try fitting the
    Davidson factor per season phase or adding a rating-gap term.
 6. **Market-informed probabilities as the live default**: expose
-   `shrinkWeight` from the backtest in the bet forms (today the Kelly hint
-   uses the sharp probability outright when one is typed or prefilled).
+   `shrinkWeight` from the backtest in `npm run bet` (today its Kelly line
+   uses the sharp probability outright).
 7. **NHL and Liiga history (details).** Store the game history with
    `npm run games:fetch` (NHL via `fetchMultipleSeasons`, Liiga once
    `fetchSeason` is exported; filter NHL preseason and playoffs by
@@ -256,8 +256,8 @@ docs/MORNING_SCAN.md (`npm run scan`, `npm run backtest:outliers`).
    Liiga coverage is unverified; check `/v4/tournaments` with a key.
 8. **Shin de-vig** instead of proportional, for the longshot bands.
 9. **Early-season guard**: `Policy.minGamesPlayed` exists in the backtest;
-   wire `model.gamesPlayed` into live bet rows so the `phase` segment works
-   on the Dashboard too.
+   wire `model.gamesPlayed` into live bet rows so the `phase` slice of
+   `npm run metrics` works too.
 10. **Two-way soccer sharp lists and correct-score prices** are dropped on
    save (see docs/METRICS_AND_DASHBOARD.md step 8); needs a `sides` notion
    on the ledger row.

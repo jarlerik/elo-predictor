@@ -74,13 +74,20 @@ which is the figure the ledger's closing line value is measured on.
    expected value, the sharp edge and the book's own overround. No
    candidate means no book cleared the bar; the per-league tables still
    show the consensus, Pinnacle and the Finnish lines for every game.
-5. **Placing and logging.** Open the game's bet form in the app, which
-   prefills Pinnacle's prices from OddsPapi, enter the Finnish book's
-   price and stake, and save. The ledger then carries the sharp price at
-   bet time and, after `npm run odds:close`, the sharp close, so the
-   closing line value accumulates without any extra work. The decision
-   point is the one already in the verdict document: read the sharp CLV
-   at fifty logged bets.
+5. **Placing and logging.** Check the price is still up on the book's
+   site, place it, then log it by its number in the candidates table:
+
+       npm run bet -- --candidate 2 --stake 10
+
+   The ledger row carries the book's full line and the sharp line from
+   the scan, the model's probability and ratings, and the kickoff. (A bet
+   that is not a scan candidate is logged with the positional form,
+   `npm run bet -- liiga LUK TPS LUK 1.82 10 --market moneyline --line 1.82,1.98`;
+   without `--sharp` Pinnacle's price is fetched from OddsPapi.) After the
+   game `npm run settle` reads the result and `npm run odds:close` fills
+   the sharp close, so the closing line value accumulates without typing;
+   `npm run metrics` prints it. The decision point is the one already in
+   the verdict document: read the sharp CLV at fifty logged bets.
 
 Each run writes `data/scans/scan-<date>-<time>.md` and `.json` (the JSON
 keeps every candidate with the book's full line and the sharp line, so

@@ -122,8 +122,8 @@ against each other. Instead:
    on top of the seed (`src/data/uclFetcher.ts`, using
    `computeElosFromGames` with `initialElos`).
 
-`GET /api/ucl/teams` shows `seedElo`, current `elo` and `played` per club, and
-the seed date, so you can see how far ratings have drifted from the seed.
+`ensureUcl()` in `src/data/uclFetcher.ts` returns `seedElo`, current `elo`
+and `played` per club and the seed date, so drift from the seed can be checked.
 
 ### Refreshing the Champions League seed (once per season)
 
@@ -203,14 +203,15 @@ Champions League page exist for the final.
 
 ## OddsPapi (live sharp prices)
 
-Pinnacle's prices for upcoming games, fetched into the bet forms, and its
-last price before kickoff, written into the ledger as the sharp close. This
+Pinnacle's prices for upcoming games, attached to bets by `npm run bet`
+when no `--sharp` list is given, and its last price before kickoff, written
+into the ledger as the sharp close. This
 is the live side of the odds layer; the market backtest uses the
 football-data.co.uk files instead.
 
-- **Key:** `ODDSPAPI_API_KEY` in the environment (`.env` is gitignored;
-  run as `ODDSPAPI_API_KEY=... npm run dev`). Optional `ODDSPAPI_BASE_URL`.
-  Without a key every call is a no-op and the forms are filled by hand.
+- **Key:** `ODDSPAPI_API_KEY` in `.env` (gitignored; the scripts read it).
+  Optional `ODDSPAPI_BASE_URL`. Without a key every call is a no-op and a
+  bet gets a sharp price only from the scan or `--sharp`.
 - **Client:** `src/odds/oddspapi.ts`; team-name tables in
   `src/odds/oddspapiAliases.ts` (exact match; unknown names are reported,
   never guessed).
@@ -234,14 +235,11 @@ football-data.co.uk files instead.
 - **Cache:** live prices 15 minutes in memory; per game
   `data/odds/oddspapi/<league>/<YYYY-MM-DD>_<HOME>_<AWAY>.json` keeps the
   fixture id and the closing prices for good (gitignored).
-- **Routes and scripts:** `GET /api/odds/sharp?league=&home=&away=` returns
-  `{sharpOdds, moneyline?, sharpSource, fetchedAt, cached, budget}`, 204
-  when unconfigured or unpriced, 503 `{error:"budget"}` when the month is
-  used up. The prediction cards call it after each prediction and fill the
-  sharp fields only while they are still empty. `npm run odds:close
-  [-- --dry-run] [-- --max N]` fills `sharpClosingOdds` on played ledger
-  lines (one billable fixture lookup per game) and the matching
-  prediction-log row.
+- **Scripts:** `npm run bet` calls `fetchSharpOdds` (one billable fixture
+  lookup plus one odds call) for a bet logged without `--sharp` and outside
+  the scan. `npm run odds:close [-- --dry-run] [-- --max N]` fills
+  `sharpClosingOdds` on played ledger lines (one billable fixture lookup
+  per game) and the matching prediction-log row.
 - **Unverified** (no example in the public docs): the Liiga and Champions
   League tournament ids and slugs, OddsPapi's Liiga club spellings, the
   hockey market ids (taken from the OddsPapi NHL blog post, not the

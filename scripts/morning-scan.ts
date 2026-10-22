@@ -56,8 +56,8 @@ const lineOf = (o: Record<string, number> | null | undefined) =>
 const shortBook = (b: string) => b.replace(/_fi$/, "").replace(/_/g, " ");
 const marketLabel: Record<string, string> = { fullTime: "1X2", regulation: "1X2 60'", moneyline: "ML" };
 
-function candidateRow(c: Candidate): string {
-  return `| ${localTime(c.commence)} | ${c.league.toUpperCase()} | ${c.home} v ${c.away} | ${marketLabel[c.market]} | ${c.pick} | ${shortBook(c.book)} | ${o2(c.odds)} | ${o2(c.meanOdds)} | ${p3(c.pCons)} | ${o2(c.threshold)} | ${pct(c.ev)} | ${pct(c.sharpEdge)} (${c.sharpSource === "pinnacle" ? "Pin" : c.sharpSource ? "med" : "–"}) | ${c.bookOverround == null ? "–" : ((c.bookOverround - 1) * 100).toFixed(1) + " %"} |`;
+function candidateRow(c: Candidate, n: number): string {
+  return `| ${n} | ${localTime(c.commence)} | ${c.league.toUpperCase()} | ${c.home} v ${c.away} | ${marketLabel[c.market]} | ${c.pick} | ${shortBook(c.book)} | ${o2(c.odds)} | ${o2(c.meanOdds)} | ${p3(c.pCons)} | ${o2(c.threshold)} | ${pct(c.ev)} | ${pct(c.sharpEdge)} (${c.sharpSource === "pinnacle" ? "Pin" : c.sharpSource ? "med" : "–"}) | ${c.bookOverround == null ? "–" : ((c.bookOverround - 1) * 100).toFixed(1) + " %"} |`;
 }
 
 function gameRow(g: LeagueScan["games"][number], books: string[]): string {
@@ -110,9 +110,11 @@ async function main() {
   lines.push(`## Candidates (${all.length})`);
   lines.push("");
   if (all.length) {
-    lines.push("| Kickoff | League | Game | Market | Pick | Book | Odds | Mean odds | p_cons % | Must beat | EV (α) | Sharp edge | Book margin |");
-    lines.push("|---|---|---|---|---|---|---|---|---|---|---|---|---|");
-    for (const c of all) lines.push(candidateRow(c));
+    lines.push("| # | Kickoff | League | Game | Market | Pick | Book | Odds | Mean odds | p_cons % | Must beat | EV (α) | Sharp edge | Book margin |");
+    lines.push("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|");
+    all.forEach((c, i) => lines.push(candidateRow(c, i + 1)));
+    lines.push("");
+    lines.push("Log a candidate with `npm run bet -- --candidate <#> --stake <amount>`.");
   } else {
     lines.push("No book clears the threshold on any game in the window.");
   }

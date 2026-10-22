@@ -3,45 +3,31 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "test": "test",
-    "build": "npm run build:client",
-    "build:server": "tsc",
-    "build:client": "vite build",
-    "start": "NODE_ENV=production tsx src/server/index.ts",
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
-    "dev:server": "tsx watch src/server/index.ts",
-    "dev:client": "vite",
-    "dev:build": "npm run build:client && npm run dev:server",
-    "migrate:ledger": "tsx scripts/migrate-ledger.ts",
-    "fit:homeadv": "tsx scripts/fit-home-advantage.ts",
+    "typecheck": "tsc --noEmit",
+    "scan": "tsx scripts/morning-scan.ts",
+    "bet": "tsx scripts/bet.ts",
+    "settle": "tsx scripts/settle.ts",
+    "metrics": "tsx scripts/metrics.ts",
+    "bankroll": "tsx scripts/bankroll.ts",
+    "odds:close": "tsx scripts/fill-sharp-closing.ts",
+    "odds:budget": "tsx scripts/oddspapi-budget.ts",
     "odds:fetch": "tsx scripts/fetch-odds.ts",
     "games:fetch": "tsx scripts/fetch-games.ts",
     "backtest:market": "tsx scripts/backtest-market.ts",
     "backtest:compare": "tsx scripts/backtest-compare.ts",
-    "odds:close": "tsx scripts/fill-sharp-closing.ts",
-    "odds:budget": "tsx scripts/oddspapi-budget.ts",
-    "scan": "tsx scripts/morning-scan.ts",
-    "backtest:outliers": "tsx scripts/backtest-outliers.ts"
+    "backtest:outliers": "tsx scripts/backtest-outliers.ts",
+    "fit:homeadv": "tsx scripts/fit-home-advantage.ts"
   },
   "author": "Jarl-Erik Malmström",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.12.2",
-    "express": "^4.19.2",
-    "node-cache": "^5.1.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "node-cache": "^5.1.2"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
     "@types/node": "^24.9.1",
-    "@types/react": "^18.2.66",
-    "@types/react-dom": "^18.2.22",
-    "@vitejs/plugin-react": "^4.2.1",
-    "concurrently": "^8.2.2",
-    "ts-node-dev": "^2.0.0",
     "tsx": "^4.7.0",
-    "typescript": "^5.9.3",
-    "vite": "^5.2.0"
-  }
+    "typescript": "^5.9.3"
+  },
+  "description": "Command-line betting ledger, bookmaker scan and Elo backtests for the NHL, SM-liiga, Premier League and Champions League"
 }

@@ -1,5 +1,11 @@
 # Metrics and dashboard plan
 
+> **22 October 2026:** the web app, its dashboard and the `/api` routes were
+> removed; the project is a command-line tool. The ledger, metric and
+> bankroll modules this plan describes are unchanged and are now printed by
+> `npm run metrics` and `npm run bankroll` (see the "Command line" section
+> below, which replaces the old "Dashboard" and "API" sections).
+
 Goal: replace "Total staked / Total return / Return rate" on the Results page
 with enough measurement to answer three questions before the next bet is
 placed:
@@ -180,44 +186,22 @@ form reads it so the Kelly stake can be shown next to the stake input.
 per-game predictions in memory alongside the Elo cache (same 6-hour refresh).
 Nothing is written to disk; the history is already available.
 
-## Dashboard
+## Command line
 
-A new **Dashboard** page in the sidebar. Panels, top to bottom:
+The figures are printed from the ledger on each run:
 
-1. **Headline tiles.** Bankroll, yield, profit vs expected profit, CLV, max
-   drawdown, bet count. Each tile shows the sample size; under 30 settled bets
-   the tile is muted with a "not enough data" hint.
-2. **Cumulative profit chart.** Actual profit line, model-expected line,
-   market-expected line, shaded ±1σ band from the z-score variance. Time on
-   the x-axis, one point per settled bet.
-3. **Calibration chart** per league (backtest). Predicted vs observed with
-   bucket sizes as bar heights below, plus Brier / log loss against the
-   baseline.
-4. **Segment table.** Rows = league × market; columns = bets, turnover, yield,
-   expected yield, CLV, hit rate vs expected. Toggle to slice by odds band or
-   edge band instead.
-5. **Open positions.** Pending bets with stake, model edge, and exposure as %
-   of bankroll; a warning row when daily exposure exceeds a set fraction.
-6. **Staking chart.** Scatter of stake / Kelly stake per bet over time.
+| Command | Prints |
+| --- | --- |
+| `npm run metrics` | headline figures (settled / pending counts, turnover, profit and yield with its standard error, model-expected profit and z-score, hit rate vs expected, the sharp sample and its expectation, sharp CLV, book CLV, max drawdown, open stake, bankroll), the open bets, and the league × market segment table |
+| `npm run metrics -- --by <slice>` | one more segment table: `league`, `market`, `pick`, `oddsBand`, `edgeBand`, `sharpEdgeBand`, `eloGap`, `season`, `phase` |
+| `npm run metrics -- --json` | the raw `summarize` and `segments` output |
+| `npm run bankroll` | bankroll state; `--set`, `--deposit`, `--withdraw` change it |
+| `npm run backtest:market -- <league>` | model quality against the market (section A), strict walk-forward; see docs/CONTINUOUS_IMPROVEMENT.md |
 
-Charts can be small inline SVG components (a line, a bar, a scatter); no
-charting dependency is needed for this volume of data. If a library is wanted
-later, pick one that renders SVG so it fits the existing CSS.
+Samples under 30 bets are shown but mean nothing; the cumulative profit
+series and the staking scatter are kept in the JSON output only.
 
-### API
-
-| Endpoint                          | Returns                                                                     |
-| --------------------------------- | --------------------------------------------------------------------------- |
-| `GET /api/metrics/summary`        | headline tiles + cumulative series (actual, expected, market-expected)       |
-| `GET /api/metrics/segments?by=`   | segment table for `league`, `market`, `oddsBand`, `edgeBand`, `pick`         |
-| `GET /api/metrics/model?league=`  | backtest: Brier, log loss, calibration buckets, draw and home-adv checks     |
-| `GET /api/metrics/staking`        | per-bet stake vs Kelly, exposure by day                                      |
-| `GET /api/bankroll`, `POST /api/bankroll/movement` | bankroll figure and deposits/withdrawals                    |
-
-All metric endpoints read the ledger; the ledger is small enough to parse on
-every request for a long time.
-
-## Decision rules the dashboard should support
+## Decision rules
 
 The point of the numbers is to change behaviour. Suggested rules, to be
 tuned once there is data:

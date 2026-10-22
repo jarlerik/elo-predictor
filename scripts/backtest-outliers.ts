@@ -96,7 +96,7 @@ for (const g of games) {
       market,
       lines: three,
       outcome: outcomeOf(g, market),
-      sharp: devig(o.sharp, MARKET_SIDES[market]),
+      sharp: devig({ ...o.sharp } as Record<string, number>, MARKET_SIDES[market]),
       sharpBook: o.sharpBook,
     });
   }
@@ -109,7 +109,7 @@ for (const g of games) {
       market: "moneyline",
       lines,
       outcome: outcomeOf(g, "moneyline"),
-      sharp: devig(o.moneyline.sharp, MARKET_SIDES.moneyline),
+      sharp: devig({ ...o.moneyline.sharp } as Record<string, number>, MARKET_SIDES.moneyline),
       sharpBook: o.moneyline.sharpBook,
     });
   }

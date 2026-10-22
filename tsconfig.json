@@ -1,27 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ES2020",
+    "target": "ES2022",
+    "module": "ES2022",
     "moduleResolution": "node",
-    "outDir": "dist/server",
-    "rootDir": "src",
+    "noEmit": true,
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "jsx": "react-jsx"
+    "skipLibCheck": true
   },
-  "include": [
-    "src/server/**/*",
-    "src/data/**/*",
-    "src/elo/**/*",
-    "src/odds/**/*",
-    "src/utils/**/*"
-  ],
-  "exclude": [
-    "src/**/*.tsx",
-    "src/components/**/*",
-    "src/App.tsx",
-    "src/main.tsx"
-  ]
-}   
+  "include": ["src/**/*", "scripts/**/*"]
+}

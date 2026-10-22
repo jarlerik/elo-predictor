@@ -72,9 +72,10 @@ The published record agrees:
 The model is a good instrument and a poor oracle. It is calibrated, better
 than the base rate, and within reach of the market in the NHL. Its job is
 to size and sanity-check bets; the backtest loop keeps it honest season by
-season. Profit, if it comes, comes from the price: the prefilled Pinnacle
-number, the Veikkaus price next to it, and the closing line value that
-accumulates on the Dashboard. If fifty bets show no CLV, no Elo work will
+season. Profit, if it comes, comes from the price: the Pinnacle number the
+scan and `npm run bet` attach to each bet, the Veikkaus price next to it,
+and the closing line value `npm run metrics` reports. If fifty bets show no
+CLV, no Elo work will
 create it, and the next real investment is a feature-based model with
 expected goals and lineups aimed at one thin hockey market.
 
