@@ -62,7 +62,14 @@ Live sources are re-fetched every 6 hours. The Champions League and World Cup se
    npm install
    ```
 
-3. **Start development servers**
+3. **Add the odds API keys** to a `.env` file in the project root (gitignored, never commit it):
+   ```
+   THE_ODDS_API_KEY=...   # the morning scan and the hockey odds history (the-odds-api.com; the free tier covers the daily scan)
+   ODDSPAPI_API_KEY=...   # Pinnacle prices prefilled on the bet forms and the sharp closing prices (oddspapi.io, free tier)
+   ```
+   The app runs without them; the scan and the sharp-price features do not.
+
+4. **Start development servers**
    ```bash
    npm run dev
    ```
@@ -86,6 +93,27 @@ Live sources are re-fetched every 6 hours. The Champions League and World Cup se
 - `npm run backtest:outliers -- nhl` - The same outlier rule on the stored per-book closing lines, with an α sweep; writes `data/reports/`
 
 See [docs/CONTINUOUS_IMPROVEMENT.md](docs/CONTINUOUS_IMPROVEMENT.md) for the improvement loop these scripts support. [docs/CAN_ELO_BEAT_THE_BOOKS.md](docs/CAN_ELO_BEAT_THE_BOOKS.md) is the assessment of whether the model can beat the bookmakers and what profitable betting would take. [docs/MORNING_SCAN.md](docs/MORNING_SCAN.md) is the daily procedure for the alternative: betting where a Finnish book stands above the market consensus.
+
+### Daily betting routine
+
+The model does not beat the market ([docs/CAN_ELO_BEAT_THE_BOOKS.md](docs/CAN_ELO_BEAT_THE_BOOKS.md)), so the betting routine is the outlier rule of Kaunitz et al. (2017): bet where a Finnish book's price stands clearly above the bookmakers' consensus. Full procedure and the evidence in [docs/MORNING_SCAN.md](docs/MORNING_SCAN.md).
+
+1. **Morning: run the scan** (eight The Odds API credits for the four leagues; reruns within 30 minutes are free).
+   ```bash
+   npm run scan
+   ```
+   The "Candidates" table lists every outcome where Veikkaus, Unibet FI or LeoVegas FI prices above `1 / (p_cons − 0.05)`. Read the columns `Must beat`, `EV (α)` and `Sharp edge`; a candidate with a positive sharp edge is the strongest kind. An empty table means no bet today, which is the usual outcome. The per-league tables below it show the consensus, Pinnacle and the Finnish lines for every game.
+2. **Place and log a candidate.** Check the price is still live on the book's site, then save the bet through the app's bet form for that game: it prefills Pinnacle's price from OddsPapi, so the ledger carries the sharp reference. Enter the Finnish book's price and the stake.
+3. **Before the first kickoff** (optional): `npm run scan -- --max-age 0` fetches a fresh board to catch moved prices.
+4. **After the games:** settle the bets on the dashboard and fill the sharp closing prices with `npm run odds:close`, so the closing line value accumulates.
+5. **Weekly:** refresh the stored games and prices for the backtests:
+   ```bash
+   npm run games:fetch -- nhl 2026 --refresh && npm run games:fetch -- liiga 2026 --refresh
+   npm run odds:fetch -- nhl 2026 && npm run odds:fetch -- liiga 2026
+   ```
+6. **Verdict:** read the dashboard's sharp CLV at fifty scan-driven bets. Positive means the Finnish books give away value at the prices taken; around zero means the rule does not work for these accounts.
+
+Useful flags: `npm run scan -- nhl liiga` (leagues), `--hours 24` (window), `--alpha 0.03` (looser bar), `--books veikkaus_fi` (candidate books), `--offline` (last cached board, no credits). `npm run backtest:outliers -- nhl` reruns the rule on the stored history.
 
 ### Development URLs
 
