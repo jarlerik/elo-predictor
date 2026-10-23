@@ -6,6 +6,9 @@
  *   npm run odds:budget
  */
 import { accountUsage, budget, isConfigured } from "../src/odds/oddspapi";
+import { loadDotEnv } from "../src/utils/env";
+
+loadDotEnv();
 
 const b = budget();
 console.log(`oddspapi ${b.month}: ${b.used} of ${b.limit} requests used locally (soft limit ${b.softLimit})`);

@@ -14,6 +14,9 @@
  * pairing, shown within 14 days before kickoff) gets its closing list too.
  */
 import { ensureLedger, LedgerRow, setSharpClosingOdds } from "../src/data/ledger";
+import { loadDotEnv } from "../src/utils/env";
+
+loadDotEnv();
 import { readPredictions, setPredictionClosing } from "../src/data/predictions";
 import {
   BudgetExceeded,

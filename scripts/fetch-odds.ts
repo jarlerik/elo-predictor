@@ -11,12 +11,14 @@
  * place are printed so src/odds/aliases.ts can be extended; nothing is
  * guessed.
  */
+import { loadDotEnv } from "../src/utils/env";
 import { importSeasonFile } from "../src/odds/footballData";
 import { historicalProviderFor } from "../src/odds";
 import { readOddsSeason, seasonLabelFor, joinOdds } from "../src/odds/store";
 import { readGameSeason } from "../src/data/gameStore";
 import { LeagueId, isLeagueId } from "../src/utils/leagues";
 
+loadDotEnv();
 const args = process.argv.slice(2);
 const flag = (name: string) => {
   const i = args.indexOf(name);
