@@ -1,0 +1,2029 @@
+{
+ "source": "the-odds-api",
+ "fetchedAt": "2026-10-23T14:02:42.935Z",
+ "startYear": 2026,
+ "complete": false,
+ "records": [
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-20T19:00:00Z",
+   "home": "DET",
+   "away": "BOS",
+   "market": "moneyline",
+   "sharp": {
+    "home": 2.08,
+    "away": 1.85
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 2.027,
+    "away": 1.806
+   },
+   "max": {
+    "home": 2.12,
+    "away": 1.88
+   },
+   "book": {
+    "unibet_se": {
+     "home": 2.07,
+     "away": 1.79
+    },
+    "pmu_fr": {
+     "home": 1.96,
+     "away": 1.7
+    },
+    "leovegas_se": {
+     "home": 2.05,
+     "away": 1.76
+    },
+    "unibet_nl": {
+     "home": 2.08,
+     "away": 1.78
+    },
+    "onexbet": {
+     "home": 2.03,
+     "away": 1.84
+    },
+    "betonlineag": {
+     "home": 2.04,
+     "away": 1.81
+    },
+    "gtbets": {
+     "home": 2.05,
+     "away": 1.8
+    },
+    "tipico_de": {
+     "home": 2,
+     "away": 1.77
+    },
+    "unibet_fr": {
+     "home": 1.98,
+     "away": 1.77
+    },
+    "betclic_fr": {
+     "home": 1.98,
+     "away": 1.8
+    },
+    "sport888": {
+     "home": 2,
+     "away": 1.8
+    },
+    "betsson": {
+     "home": 2,
+     "away": 1.8
+    },
+    "nordicbet": {
+     "home": 2,
+     "away": 1.8
+    },
+    "winamax_fr": {
+     "home": 1.98,
+     "away": 1.8
+    },
+    "winamax_de": {
+     "home": 2,
+     "away": 1.84
+    },
+    "marathonbet": {
+     "home": 2.04,
+     "away": 1.81
+    },
+    "betanysports": {
+     "home": 2.05,
+     "away": 1.8
+    },
+    "pinnacle": {
+     "home": 2.08,
+     "away": 1.85
+    },
+    "williamhill": {
+     "home": 2,
+     "away": 1.8
+    },
+    "coolbet": {
+     "home": 2.03,
+     "away": 1.82
+    },
+    "mybookieag": {
+     "home": 1.99,
+     "away": 1.83
+    },
+    "betfair_ex_eu": {
+     "home": 2.12,
+     "away": 1.87
+    },
+    "codere_it": {
+     "home": 2.02,
+     "away": 1.8
+    },
+    "everygame": {
+     "home": 2,
+     "away": 1.83
+    },
+    "matchbook": {
+     "home": 2.12,
+     "away": 1.88
+    }
+   },
+   "result": {
+    "homeGoals": 121,
+    "awayGoals": 113
+   },
+   "snapshotAt": "2026-10-20T18:45:27Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-20T23:00:00Z",
+   "home": "NYK",
+   "away": "PHI",
+   "market": "moneyline",
+   "sharp": {
+    "home": 1.59,
+    "away": 2.53
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 1.549,
+    "away": 2.5
+   },
+   "max": {
+    "home": 1.61,
+    "away": 2.62
+   },
+   "book": {
+    "unibet_se": {
+     "home": 1.54,
+     "away": 2.55
+    },
+    "pmu_fr": {
+     "home": 1.45,
+     "away": 2.43
+    },
+    "leovegas_se": {
+     "home": 1.51,
+     "away": 2.5
+    },
+    "unibet_nl": {
+     "home": 1.54,
+     "away": 2.55
+    },
+    "onexbet": {
+     "home": 1.56,
+     "away": 2.54
+    },
+    "betonlineag": {
+     "home": 1.57,
+     "away": 2.53
+    },
+    "gtbets": {
+     "home": 1.56,
+     "away": 2.5
+    },
+    "tipico_de": {
+     "home": 1.57,
+     "away": 2.35
+    },
+    "unibet_fr": {
+     "home": 1.52,
+     "away": 2.45
+    },
+    "betclic_fr": {
+     "home": 1.51,
+     "away": 2.5
+    },
+    "sport888": {
+     "home": 1.53,
+     "away": 2.5
+    },
+    "betsson": {
+     "home": 1.53,
+     "away": 2.45
+    },
+    "nordicbet": {
+     "home": 1.53,
+     "away": 2.45
+    },
+    "winamax_fr": {
+     "home": 1.54,
+     "away": 2.45
+    },
+    "winamax_de": {
+     "home": 1.56,
+     "away": 2.5
+    },
+    "marathonbet": {
+     "home": 1.55,
+     "away": 2.51
+    },
+    "betanysports": {
+     "home": 1.57,
+     "away": 2.51
+    },
+    "pinnacle": {
+     "home": 1.59,
+     "away": 2.53
+    },
+    "williamhill": {
+     "home": 1.53,
+     "away": 2.5
+    },
+    "coolbet": {
+     "home": 1.55,
+     "away": 2.53
+    },
+    "mybookieag": {
+     "home": 1.56,
+     "away": 2.46
+    },
+    "betfair_ex_eu": {
+     "home": 1.61,
+     "away": 2.62
+    },
+    "codere_it": {
+     "home": 1.54,
+     "away": 2.5
+    },
+    "everygame": {
+     "home": 1.59,
+     "away": 2.5
+    },
+    "matchbook": {
+     "home": 1.61,
+     "away": 2.6
+    }
+   },
+   "result": {
+    "homeGoals": 100,
+    "awayGoals": 106
+   },
+   "snapshotAt": "2026-10-20T18:45:27Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-21T01:30:00Z",
+   "home": "SAS",
+   "away": "OKC",
+   "market": "moneyline",
+   "sharp": {
+    "home": 1.99,
+    "away": 1.92
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 1.954,
+    "away": 1.871
+   },
+   "max": {
+    "home": 2.02,
+    "away": 1.98
+   },
+   "book": {
+    "unibet_se": {
+     "home": 1.93,
+     "away": 1.89
+    },
+    "pmu_fr": {
+     "home": 1.83,
+     "away": 1.8
+    },
+    "leovegas_se": {
+     "home": 1.91,
+     "away": 1.88
+    },
+    "unibet_nl": {
+     "home": 1.93,
+     "away": 1.89
+    },
+    "onexbet": {
+     "home": 1.96,
+     "away": 1.91
+    },
+    "betonlineag": {
+     "home": 1.95,
+     "away": 1.87
+    },
+    "gtbets": {
+     "home": 1.95,
+     "away": 1.87
+    },
+    "tipico_de": {
+     "home": 1.87,
+     "away": 1.9
+    },
+    "unibet_fr": {
+     "home": 1.95,
+     "away": 1.83
+    },
+    "betclic_fr": {
+     "home": 1.97,
+     "away": 1.81
+    },
+    "sport888": {
+     "home": 2,
+     "away": 1.8
+    },
+    "betsson": {
+     "home": 1.92,
+     "away": 1.88
+    },
+    "nordicbet": {
+     "home": 1.92,
+     "away": 1.88
+    },
+    "winamax_fr": {
+     "home": 1.96,
+     "away": 1.84
+    },
+    "winamax_de": {
+     "home": 2,
+     "away": 1.88
+    },
+    "marathonbet": {
+     "home": 1.94,
+     "away": 1.89
+    },
+    "betanysports": {
+     "home": 2,
+     "away": 1.83
+    },
+    "pinnacle": {
+     "home": 1.99,
+     "away": 1.92
+    },
+    "williamhill": {
+     "home": 2,
+     "away": 1.8
+    },
+    "coolbet": {
+     "home": 1.91,
+     "away": 1.93
+    },
+    "mybookieag": {
+     "home": 1.96,
+     "away": 1.85
+    },
+    "betfair_ex_eu": {
+     "home": 2.02,
+     "away": 1.96
+    },
+    "codere_it": {
+     "home": 1.97,
+     "away": 1.85
+    },
+    "everygame": {
+     "home": 2,
+     "away": 1.83
+    },
+    "matchbook": {
+     "home": 2,
+     "away": 1.98
+    }
+   },
+   "result": {
+    "homeGoals": 104,
+    "awayGoals": 116
+   },
+   "snapshotAt": "2026-10-21T01:14:56Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-21T23:00:00Z",
+   "home": "ORL",
+   "away": "ATL",
+   "market": "moneyline",
+   "sharp": {
+    "home": 1.7,
+    "away": 2.27
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 1.667,
+    "away": 2.219
+   },
+   "max": {
+    "home": 1.73,
+    "away": 2.36
+   },
+   "book": {
+    "gtbets": {
+     "home": 1.69,
+     "away": 2.25
+    },
+    "onexbet": {
+     "home": 1.65,
+     "away": 2.32
+    },
+    "unibet_fr": {
+     "home": 1.63,
+     "away": 2.15
+    },
+    "sport888": {
+     "home": 1.67,
+     "away": 2.2
+    },
+    "betclic_fr": {
+     "home": 1.65,
+     "away": 2.2
+    },
+    "winamax_de": {
+     "home": 1.68,
+     "away": 2.2
+    },
+    "winamax_fr": {
+     "home": 1.66,
+     "away": 2.15
+    },
+    "betsson": {
+     "home": 1.65,
+     "away": 2.2
+    },
+    "nordicbet": {
+     "home": 1.65,
+     "away": 2.2
+    },
+    "tipico_de": {
+     "home": 1.62,
+     "away": 2.25
+    },
+    "betonlineag": {
+     "home": 1.71,
+     "away": 2.2
+    },
+    "unibet_se": {
+     "home": 1.68,
+     "away": 2.2
+    },
+    "unibet_nl": {
+     "home": 1.68,
+     "away": 2.2
+    },
+    "pmu_fr": {
+     "home": 1.6,
+     "away": 2.1
+    },
+    "leovegas_se": {
+     "home": 1.66,
+     "away": 2.18
+    },
+    "pinnacle": {
+     "home": 1.7,
+     "away": 2.27
+    },
+    "williamhill": {
+     "home": 1.67,
+     "away": 2.2
+    },
+    "betfair_ex_eu": {
+     "home": 1.73,
+     "away": 2.36
+    },
+    "coolbet": {
+     "home": 1.7,
+     "away": 2.21
+    },
+    "mybookieag": {
+     "home": 1.67,
+     "away": 2.21
+    },
+    "codere_it": {
+     "home": 1.6,
+     "away": 2.1
+    },
+    "marathonbet": {
+     "home": 1.64,
+     "away": 2.3
+    },
+    "betanysports": {
+     "home": 1.69,
+     "away": 2.25
+    },
+    "matchbook": {
+     "home": 1.73,
+     "away": 2.36
+    }
+   },
+   "result": {
+    "homeGoals": 125,
+    "awayGoals": 132
+   },
+   "snapshotAt": "2026-10-21T01:14:55Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-21T23:00:00Z",
+   "home": "WAS",
+   "away": "MIL",
+   "market": "moneyline",
+   "sharp": {
+    "home": 1.55,
+    "away": 2.59
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 1.527,
+    "away": 2.529
+   },
+   "max": {
+    "home": 1.58,
+    "away": 2.7
+   },
+   "book": {
+    "gtbets": {
+     "home": 1.54,
+     "away": 2.55
+    },
+    "onexbet": {
+     "home": 1.5,
+     "away": 2.7
+    },
+    "sport888": {
+     "home": 1.53,
+     "away": 2.5
+    },
+    "unibet_fr": {
+     "home": 1.52,
+     "away": 2.35
+    },
+    "betclic_fr": {
+     "home": 1.54,
+     "away": 2.42
+    },
+    "winamax_de": {
+     "home": 1.56,
+     "away": 2.45
+    },
+    "winamax_fr": {
+     "home": 1.54,
+     "away": 2.4
+    },
+    "betsson": {
+     "home": 1.53,
+     "away": 2.45
+    },
+    "nordicbet": {
+     "home": 1.53,
+     "away": 2.45
+    },
+    "tipico_de": {
+     "home": 1.5,
+     "away": 2.55
+    },
+    "betonlineag": {
+     "home": 1.56,
+     "away": 2.57
+    },
+    "leovegas_se": {
+     "home": 1.49,
+     "away": 2.6
+    },
+    "unibet_nl": {
+     "home": 1.5,
+     "away": 2.6
+    },
+    "pmu_fr": {
+     "home": 1.43,
+     "away": 2.48
+    },
+    "unibet_se": {
+     "home": 1.5,
+     "away": 2.6
+    },
+    "pinnacle": {
+     "home": 1.55,
+     "away": 2.59
+    },
+    "williamhill": {
+     "home": 1.53,
+     "away": 2.5
+    },
+    "betfair_ex_eu": {
+     "home": 1.58,
+     "away": 2.68
+    },
+    "coolbet": {
+     "home": 1.53,
+     "away": 2.58
+    },
+    "mybookieag": {
+     "home": 1.56,
+     "away": 2.45
+    },
+    "codere_it": {
+     "home": 1.5,
+     "away": 2.31
+    },
+    "marathonbet": {
+     "home": 1.49,
+     "away": 2.68
+    },
+    "betanysports": {
+     "home": 1.56,
+     "away": 2.55
+    },
+    "matchbook": {
+     "home": 1.58,
+     "away": 2.68
+    }
+   },
+   "result": {
+    "homeGoals": 128,
+    "awayGoals": 116
+   },
+   "snapshotAt": "2026-10-21T01:14:55Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-21T23:30:00Z",
+   "home": "MIA",
+   "away": "MIN",
+   "market": "moneyline",
+   "sharp": {
+    "home": 1.86,
+    "away": 2.03
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 1.838,
+    "away": 1.971
+   },
+   "max": {
+    "home": 1.94,
+    "away": 2.04
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.85,
+     "away": 2.01
+    },
+    "unibet_fr": {
+     "home": 1.76,
+     "away": 1.96
+    },
+    "betclic_fr": {
+     "home": 1.86,
+     "away": 1.91
+    },
+    "winamax_de": {
+     "home": 1.86,
+     "away": 1.96
+    },
+    "winamax_fr": {
+     "home": 1.84,
+     "away": 1.92
+    },
+    "tipico_de": {
+     "home": 1.77,
+     "away": 2
+    },
+    "marathonbet": {
+     "home": 1.84,
+     "away": 2
+    },
+    "gtbets": {
+     "home": 1.83,
+     "away": 2
+    },
+    "betsson": {
+     "home": 1.82,
+     "away": 1.98
+    },
+    "nordicbet": {
+     "home": 1.82,
+     "away": 1.98
+    },
+    "betonlineag": {
+     "home": 1.87,
+     "away": 1.95
+    },
+    "leovegas_se": {
+     "home": 1.81,
+     "away": 1.96
+    },
+    "unibet_se": {
+     "home": 1.83,
+     "away": 2
+    },
+    "pmu_fr": {
+     "home": 1.75,
+     "away": 1.89
+    },
+    "unibet_nl": {
+     "home": 1.83,
+     "away": 2
+    },
+    "pinnacle": {
+     "home": 1.86,
+     "away": 2.03
+    },
+    "coolbet": {
+     "home": 1.86,
+     "away": 1.99
+    },
+    "mybookieag": {
+     "home": 1.88,
+     "away": 1.93
+    },
+    "betfair_ex_eu": {
+     "home": 1.94,
+     "away": 2.04
+    },
+    "codere_it": {
+     "home": 1.79,
+     "away": 1.84
+    },
+    "matchbook": {
+     "home": 1.93,
+     "away": 2.04
+    }
+   },
+   "result": {
+    "homeGoals": 106,
+    "awayGoals": 131
+   },
+   "snapshotAt": "2026-10-21T01:15:15Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-21T23:30:00Z",
+   "home": "BKN",
+   "away": "CHA",
+   "market": "moneyline",
+   "sharp": {
+    "home": 1.73,
+    "away": 2.22
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 1.671,
+    "away": 2.212
+   },
+   "max": {
+    "home": 1.75,
+    "away": 2.3
+   },
+   "book": {
+    "gtbets": {
+     "home": 1.71,
+     "away": 2.2
+    },
+    "onexbet": {
+     "home": 1.69,
+     "away": 2.25
+    },
+    "sport888": {
+     "home": 1.67,
+     "away": 2.2
+    },
+    "unibet_fr": {
+     "home": 1.61,
+     "away": 2.2
+    },
+    "betclic_fr": {
+     "home": 1.63,
+     "away": 2.23
+    },
+    "winamax_de": {
+     "home": 1.66,
+     "away": 2.25
+    },
+    "winamax_fr": {
+     "home": 1.64,
+     "away": 2.2
+    },
+    "betsson": {
+     "home": 1.68,
+     "away": 2.15
+    },
+    "nordicbet": {
+     "home": 1.68,
+     "away": 2.15
+    },
+    "tipico_de": {
+     "home": 1.65,
+     "away": 2.2
+    },
+    "betonlineag": {
+     "home": 1.7,
+     "away": 2.22
+    },
+    "leovegas_se": {
+     "home": 1.65,
+     "away": 2.2
+    },
+    "unibet_nl": {
+     "home": 1.67,
+     "away": 2.23
+    },
+    "pmu_fr": {
+     "home": 1.57,
+     "away": 2.12
+    },
+    "unibet_se": {
+     "home": 1.67,
+     "away": 2.23
+    },
+    "pinnacle": {
+     "home": 1.73,
+     "away": 2.22
+    },
+    "williamhill": {
+     "home": 1.67,
+     "away": 2.2
+    },
+    "betfair_ex_eu": {
+     "home": 1.75,
+     "away": 2.3
+    },
+    "coolbet": {
+     "home": 1.72,
+     "away": 2.18
+    },
+    "mybookieag": {
+     "home": 1.66,
+     "away": 2.23
+    },
+    "codere_it": {
+     "home": 1.6,
+     "away": 2.11
+    },
+    "marathonbet": {
+     "home": 1.68,
+     "away": 2.23
+    },
+    "betanysports": {
+     "home": 1.67,
+     "away": 2.3
+    },
+    "matchbook": {
+     "home": 1.75,
+     "away": 2.3
+    }
+   },
+   "result": {
+    "homeGoals": 103,
+    "awayGoals": 110
+   },
+   "snapshotAt": "2026-10-21T01:14:55Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-21T23:30:00Z",
+   "home": "TOR",
+   "away": "CHI",
+   "market": "moneyline",
+   "sharp": {
+    "home": 1.24,
+    "away": 4.37
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 1.23,
+    "away": 4.135
+   },
+   "max": {
+    "home": 1.29,
+    "away": 4.4
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.25,
+     "away": 4.23
+    },
+    "betfair_ex_eu": {
+     "home": 1.29,
+     "away": 4.4
+    },
+    "betsson": {
+     "home": 1.21,
+     "away": 4
+    },
+    "nordicbet": {
+     "home": 1.21,
+     "away": 4
+    },
+    "pmu_fr": {
+     "home": 1.18,
+     "away": 4
+    },
+    "unibet_nl": {
+     "home": 1.23,
+     "away": 4.2
+    },
+    "leovegas_se": {
+     "home": 1.22,
+     "away": 4.2
+    },
+    "unibet_se": {
+     "home": 1.23,
+     "away": 4.2
+    },
+    "coolbet": {
+     "home": 1.25,
+     "away": 4.2
+    },
+    "gtbets": {
+     "home": 1.23,
+     "away": 4.3
+    },
+    "unibet_fr": {
+     "home": 1.22,
+     "away": 3.85
+    },
+    "sport888": {
+     "home": 1.22,
+     "away": 4.2
+    },
+    "betclic_fr": {
+     "home": 1.23,
+     "away": 4.05
+    },
+    "williamhill": {
+     "home": 1.22,
+     "away": 4.2
+    },
+    "codere_it": {
+     "home": 1.2,
+     "away": 3.7
+    },
+    "mybookieag": {
+     "home": 1.24,
+     "away": 4.1
+    },
+    "winamax_fr": {
+     "home": 1.19,
+     "away": 3.45
+    },
+    "winamax_de": {
+     "home": 1.25,
+     "away": 4.1
+    },
+    "betonlineag": {
+     "home": 1.24,
+     "away": 4.3
+    },
+    "marathonbet": {
+     "home": 1.24,
+     "away": 4.2
+    },
+    "pinnacle": {
+     "home": 1.24,
+     "away": 4.37
+    },
+    "tipico_de": {
+     "home": 1.2,
+     "away": 4.4
+    },
+    "betanysports": {
+     "home": 1.24,
+     "away": 4.2
+    },
+    "matchbook": {
+     "home": 1.29,
+     "away": 4.4
+    }
+   },
+   "result": {
+    "homeGoals": 135,
+    "awayGoals": 92
+   },
+   "snapshotAt": "2026-10-21T01:15:15Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-22T00:00:00Z",
+   "home": "MEM",
+   "away": "UTA",
+   "market": "moneyline",
+   "sharp": {
+    "home": 1.78,
+    "away": 2.19
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 1.774,
+    "away": 2.065
+   },
+   "max": {
+    "home": 1.83,
+    "away": 2.22
+   },
+   "book": {
+    "gtbets": {
+     "home": 1.8,
+     "away": 2.05
+    },
+    "onexbet": {
+     "home": 1.81,
+     "away": 2.06
+    },
+    "sport888": {
+     "home": 1.8,
+     "away": 2
+    },
+    "unibet_fr": {
+     "home": 1.7,
+     "away": 2.05
+    },
+    "betclic_fr": {
+     "home": 1.73,
+     "away": 2.07
+    },
+    "winamax_de": {
+     "home": 1.76,
+     "away": 2.1
+    },
+    "winamax_fr": {
+     "home": 1.7,
+     "away": 2
+    },
+    "nordicbet": {
+     "home": 1.78,
+     "away": 2.02
+    },
+    "betsson": {
+     "home": 1.78,
+     "away": 2.02
+    },
+    "tipico_de": {
+     "home": 1.75,
+     "away": 2.05
+    },
+    "betonlineag": {
+     "home": 1.75,
+     "away": 2.13
+    },
+    "unibet_se": {
+     "home": 1.83,
+     "away": 2.02
+    },
+    "unibet_nl": {
+     "home": 1.83,
+     "away": 2.02
+    },
+    "pmu_fr": {
+     "home": 1.73,
+     "away": 1.92
+    },
+    "leovegas_se": {
+     "home": 1.8,
+     "away": 2
+    },
+    "pinnacle": {
+     "home": 1.78,
+     "away": 2.19
+    },
+    "williamhill": {
+     "home": 1.8,
+     "away": 2
+    },
+    "betfair_ex_eu": {
+     "home": 1.79,
+     "away": 2.22
+    },
+    "coolbet": {
+     "home": 1.8,
+     "away": 2.06
+    },
+    "mybookieag": {
+     "home": 1.75,
+     "away": 2.08
+    },
+    "codere_it": {
+     "home": 1.75,
+     "away": 2.09
+    },
+    "marathonbet": {
+     "home": 1.8,
+     "away": 2.05
+    },
+    "everygame": {
+     "home": 1.77,
+     "away": 2.1
+    },
+    "betanysports": {
+     "home": 1.77,
+     "away": 2.1
+    },
+    "matchbook": {
+     "home": 1.79,
+     "away": 2.22
+    }
+   },
+   "result": {
+    "homeGoals": 123,
+    "awayGoals": 103
+   },
+   "snapshotAt": "2026-10-21T23:44:51Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-22T00:00:00Z",
+   "home": "NOP",
+   "away": "IND",
+   "market": "moneyline",
+   "sharp": {
+    "home": 2.28,
+    "away": 1.72
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 2.227,
+    "away": 1.67
+   },
+   "max": {
+    "home": 2.34,
+    "away": 1.74
+   },
+   "book": {
+    "gtbets": {
+     "home": 2.2,
+     "away": 1.71
+    },
+    "onexbet": {
+     "home": 2.25,
+     "away": 1.69
+    },
+    "sport888": {
+     "home": 2.2,
+     "away": 1.67
+    },
+    "unibet_fr": {
+     "home": 2.2,
+     "away": 1.61
+    },
+    "betclic_fr": {
+     "home": 2.27,
+     "away": 1.62
+    },
+    "winamax_de": {
+     "home": 2.2,
+     "away": 1.66
+    },
+    "winamax_fr": {
+     "home": 2.15,
+     "away": 1.62
+    },
+    "nordicbet": {
+     "home": 2.15,
+     "away": 1.68
+    },
+    "betsson": {
+     "home": 2.15,
+     "away": 1.68
+    },
+    "tipico_de": {
+     "home": 2.25,
+     "away": 1.62
+    },
+    "betonlineag": {
+     "home": 2.18,
+     "away": 1.72
+    },
+    "leovegas_se": {
+     "home": 2.25,
+     "away": 1.63
+    },
+    "pmu_fr": {
+     "home": 2.17,
+     "away": 1.56
+    },
+    "unibet_se": {
+     "home": 2.28,
+     "away": 1.65
+    },
+    "unibet_nl": {
+     "home": 2.28,
+     "away": 1.65
+    },
+    "pinnacle": {
+     "home": 2.28,
+     "away": 1.72
+    },
+    "williamhill": {
+     "home": 2.2,
+     "away": 1.67
+    },
+    "betfair_ex_eu": {
+     "home": 2.32,
+     "away": 1.74
+    },
+    "coolbet": {
+     "home": 2.25,
+     "away": 1.68
+    },
+    "mybookieag": {
+     "home": 2.22,
+     "away": 1.67
+    },
+    "codere_it": {
+     "home": 2.25,
+     "away": 1.65
+    },
+    "marathonbet": {
+     "home": 2.23,
+     "away": 1.68
+    },
+    "everygame": {
+     "home": 2.2,
+     "away": 1.71
+    },
+    "betanysports": {
+     "home": 2.2,
+     "away": 1.71
+    },
+    "matchbook": {
+     "home": 2.34,
+     "away": 1.74
+    }
+   },
+   "result": {
+    "homeGoals": 120,
+    "awayGoals": 123
+   },
+   "snapshotAt": "2026-10-21T23:44:51Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-22T00:30:00Z",
+   "home": "HOU",
+   "away": "DAL",
+   "market": "moneyline",
+   "sharp": {
+    "home": 1.26,
+    "away": 4.35
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 1.232,
+    "away": 4.184
+   },
+   "max": {
+    "home": 1.27,
+    "away": 4.5
+   },
+   "book": {
+    "gtbets": {
+     "home": 1.24,
+     "away": 4.25
+    },
+    "onexbet": {
+     "home": 1.25,
+     "away": 4.23
+    },
+    "sport888": {
+     "home": 1.22,
+     "away": 4.2
+    },
+    "unibet_fr": {
+     "home": 1.21,
+     "away": 3.9
+    },
+    "betclic_fr": {
+     "home": 1.21,
+     "away": 4.25
+    },
+    "winamax_de": {
+     "home": 1.23,
+     "away": 4.2
+    },
+    "winamax_fr": {
+     "home": 1.21,
+     "away": 4
+    },
+    "nordicbet": {
+     "home": 1.21,
+     "away": 4
+    },
+    "betsson": {
+     "home": 1.21,
+     "away": 4
+    },
+    "tipico_de": {
+     "home": 1.22,
+     "away": 4.1
+    },
+    "betonlineag": {
+     "home": 1.24,
+     "away": 4.27
+    },
+    "pmu_fr": {
+     "home": 1.19,
+     "away": 3.9
+    },
+    "unibet_se": {
+     "home": 1.25,
+     "away": 4.1
+    },
+    "unibet_nl": {
+     "home": 1.25,
+     "away": 4.1
+    },
+    "leovegas_se": {
+     "home": 1.23,
+     "away": 4.1
+    },
+    "pinnacle": {
+     "home": 1.26,
+     "away": 4.35
+    },
+    "williamhill": {
+     "home": 1.22,
+     "away": 4.2
+    },
+    "betfair_ex_eu": {
+     "home": 1.27,
+     "away": 4.5
+    },
+    "coolbet": {
+     "home": 1.25,
+     "away": 4.2
+    },
+    "mybookieag": {
+     "home": 1.23,
+     "away": 4.2
+    },
+    "codere_it": {
+     "home": 1.23,
+     "away": 4.2
+    },
+    "marathonbet": {
+     "home": 1.24,
+     "away": 4.2
+    },
+    "everygame": {
+     "home": 1.24,
+     "away": 4.3
+    },
+    "betanysports": {
+     "home": 1.23,
+     "away": 4.35
+    },
+    "matchbook": {
+     "home": 1.27,
+     "away": 4.5
+    }
+   },
+   "result": {
+    "homeGoals": 128,
+    "awayGoals": 110
+   },
+   "snapshotAt": "2026-10-21T23:44:51Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-22T02:00:00Z",
+   "home": "LAL",
+   "away": "GSW",
+   "market": "moneyline",
+   "sharp": {
+    "home": 1.46,
+    "away": 2.97
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 1.424,
+    "away": 2.887
+   },
+   "max": {
+    "home": 1.49,
+    "away": 3
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.44,
+     "away": 2.92
+    },
+    "unibet_fr": {
+     "home": 1.42,
+     "away": 2.8
+    },
+    "betclic_fr": {
+     "home": 1.41,
+     "away": 2.87
+    },
+    "sport888": {
+     "home": 1.4,
+     "away": 2.9
+    },
+    "winamax_de": {
+     "home": 1.42,
+     "away": 2.9
+    },
+    "winamax_fr": {
+     "home": 1.4,
+     "away": 2.8
+    },
+    "tipico_de": {
+     "home": 1.4,
+     "away": 2.9
+    },
+    "marathonbet": {
+     "home": 1.43,
+     "away": 2.9
+    },
+    "nordicbet": {
+     "home": 1.42,
+     "away": 2.77
+    },
+    "betsson": {
+     "home": 1.42,
+     "away": 2.77
+    },
+    "gtbets": {
+     "home": 1.43,
+     "away": 2.9
+    },
+    "betonlineag": {
+     "home": 1.43,
+     "away": 2.92
+    },
+    "leovegas_se": {
+     "home": 1.4,
+     "away": 2.9
+    },
+    "pmu_fr": {
+     "home": 1.35,
+     "away": 2.8
+    },
+    "unibet_se": {
+     "home": 1.42,
+     "away": 2.95
+    },
+    "unibet_nl": {
+     "home": 1.42,
+     "away": 2.95
+    },
+    "pinnacle": {
+     "home": 1.46,
+     "away": 2.97
+    },
+    "williamhill": {
+     "home": 1.4,
+     "away": 2.9
+    },
+    "coolbet": {
+     "home": 1.44,
+     "away": 2.9
+    },
+    "mybookieag": {
+     "home": 1.43,
+     "away": 2.85
+    },
+    "betfair_ex_eu": {
+     "home": 1.48,
+     "away": 3
+    },
+    "codere_it": {
+     "home": 1.43,
+     "away": 2.85
+    },
+    "everygame": {
+     "home": 1.44,
+     "away": 2.85
+    },
+    "betanysports": {
+     "home": 1.43,
+     "away": 2.9
+    },
+    "matchbook": {
+     "home": 1.49,
+     "away": 3
+    }
+   },
+   "result": {
+    "homeGoals": 127,
+    "awayGoals": 105
+   },
+   "snapshotAt": "2026-10-21T23:44:49Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-22T02:00:00Z",
+   "home": "POR",
+   "away": "PHX",
+   "market": "moneyline",
+   "sharp": {
+    "home": 1.71,
+    "away": 2.25
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 1.69,
+    "away": 2.191
+   },
+   "max": {
+    "home": 1.74,
+    "away": 2.32
+   },
+   "book": {
+    "gtbets": {
+     "home": 1.71,
+     "away": 2.2
+    },
+    "onexbet": {
+     "home": 1.7,
+     "away": 2.23
+    },
+    "sport888": {
+     "home": 1.7,
+     "away": 2.15
+    },
+    "unibet_fr": {
+     "home": 1.66,
+     "away": 2.1
+    },
+    "betclic_fr": {
+     "home": 1.66,
+     "away": 2.18
+    },
+    "winamax_de": {
+     "home": 1.68,
+     "away": 2.2
+    },
+    "winamax_fr": {
+     "home": 1.64,
+     "away": 2.15
+    },
+    "nordicbet": {
+     "home": 1.68,
+     "away": 2.15
+    },
+    "betsson": {
+     "home": 1.68,
+     "away": 2.15
+    },
+    "tipico_de": {
+     "home": 1.62,
+     "away": 2.25
+    },
+    "betonlineag": {
+     "home": 1.71,
+     "away": 2.2
+    },
+    "unibet_se": {
+     "home": 1.71,
+     "away": 2.18
+    },
+    "unibet_nl": {
+     "home": 1.71,
+     "away": 2.18
+    },
+    "pmu_fr": {
+     "home": 1.63,
+     "away": 2.07
+    },
+    "leovegas_se": {
+     "home": 1.68,
+     "away": 2.15
+    },
+    "pinnacle": {
+     "home": 1.71,
+     "away": 2.25
+    },
+    "williamhill": {
+     "home": 1.7,
+     "away": 2.15
+    },
+    "betfair_ex_eu": {
+     "home": 1.74,
+     "away": 2.3
+    },
+    "coolbet": {
+     "home": 1.68,
+     "away": 2.25
+    },
+    "mybookieag": {
+     "home": 1.68,
+     "away": 2.2
+    },
+    "codere_it": {
+     "home": 1.7,
+     "away": 2.17
+    },
+    "marathonbet": {
+     "home": 1.7,
+     "away": 2.19
+    },
+    "everygame": {
+     "home": 1.71,
+     "away": 2.2
+    },
+    "betanysports": {
+     "home": 1.71,
+     "away": 2.2
+    },
+    "matchbook": {
+     "home": 1.74,
+     "away": 2.32
+    }
+   },
+   "result": {
+    "homeGoals": 124,
+    "awayGoals": 83
+   },
+   "snapshotAt": "2026-10-21T23:44:51Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-22T02:30:00Z",
+   "home": "LAC",
+   "away": "SAC",
+   "market": "moneyline",
+   "sharp": {
+    "home": 1.54,
+    "away": 2.68
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 1.52,
+    "away": 2.573
+   },
+   "max": {
+    "home": 1.56,
+    "away": 2.74
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.52,
+     "away": 2.66
+    },
+    "betfair_ex_eu": {
+     "home": 1.55,
+     "away": 2.74
+    },
+    "nordicbet": {
+     "home": 1.53,
+     "away": 2.45
+    },
+    "betsson": {
+     "home": 1.53,
+     "away": 2.45
+    },
+    "pmu_fr": {
+     "home": 1.47,
+     "away": 2.38
+    },
+    "unibet_nl": {
+     "home": 1.55,
+     "away": 2.5
+    },
+    "leovegas_se": {
+     "home": 1.53,
+     "away": 2.48
+    },
+    "unibet_se": {
+     "home": 1.55,
+     "away": 2.5
+    },
+    "coolbet": {
+     "home": 1.53,
+     "away": 2.58
+    },
+    "gtbets": {
+     "home": 1.53,
+     "away": 2.6
+    },
+    "williamhill": {
+     "home": 1.5,
+     "away": 2.6
+    },
+    "unibet_fr": {
+     "home": 1.49,
+     "away": 2.45
+    },
+    "sport888": {
+     "home": 1.5,
+     "away": 2.6
+    },
+    "betclic_fr": {
+     "home": 1.51,
+     "away": 2.5
+    },
+    "mybookieag": {
+     "home": 1.53,
+     "away": 2.52
+    },
+    "codere_it": {
+     "home": 1.53,
+     "away": 2.55
+    },
+    "winamax_fr": {
+     "home": 1.48,
+     "away": 2.5
+    },
+    "winamax_de": {
+     "home": 1.52,
+     "away": 2.65
+    },
+    "betonlineag": {
+     "home": 1.52,
+     "away": 2.68
+    },
+    "marathonbet": {
+     "home": 1.53,
+     "away": 2.56
+    },
+    "everygame": {
+     "home": 1.5,
+     "away": 2.7
+    },
+    "pinnacle": {
+     "home": 1.54,
+     "away": 2.68
+    },
+    "tipico_de": {
+     "home": 1.47,
+     "away": 2.6
+    },
+    "betanysports": {
+     "home": 1.53,
+     "away": 2.65
+    },
+    "matchbook": {
+     "home": 1.56,
+     "away": 2.74
+    }
+   },
+   "result": {
+    "homeGoals": 121,
+    "awayGoals": 96
+   },
+   "snapshotAt": "2026-10-21T23:44:49Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-22T23:00:00Z",
+   "home": "PHI",
+   "away": "CLE",
+   "market": "moneyline",
+   "sharp": {
+    "home": 1.68,
+    "away": 2.27
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 1.663,
+    "away": 2.217
+   },
+   "max": {
+    "home": 1.74,
+    "away": 2.34
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.74,
+     "away": 2.17
+    },
+    "unibet_fr": {
+     "home": 1.61,
+     "away": 2.15
+    },
+    "betclic_fr": {
+     "home": 1.65,
+     "away": 2.2
+    },
+    "sport888": {
+     "home": 1.67,
+     "away": 2.2
+    },
+    "winamax_de": {
+     "home": 1.68,
+     "away": 2.2
+    },
+    "winamax_fr": {
+     "home": 1.66,
+     "away": 2.15
+    },
+    "gtbets": {
+     "home": 1.67,
+     "away": 2.3
+    },
+    "nordicbet": {
+     "home": 1.65,
+     "away": 2.2
+    },
+    "betsson": {
+     "home": 1.65,
+     "away": 2.2
+    },
+    "leovegas_se": {
+     "home": 1.67,
+     "away": 2.18
+    },
+    "unibet_se": {
+     "home": 1.68,
+     "away": 2.2
+    },
+    "pmu_fr": {
+     "home": 1.6,
+     "away": 2.1
+    },
+    "unibet_nl": {
+     "home": 1.68,
+     "away": 2.2
+    },
+    "williamhill": {
+     "home": 1.67,
+     "away": 2.2
+    },
+    "coolbet": {
+     "home": 1.68,
+     "away": 2.25
+    },
+    "mybookieag": {
+     "home": 1.61,
+     "away": 2.34
+    },
+    "betfair_ex_eu": {
+     "home": 1.73,
+     "away": 2.34
+    },
+    "codere_it": {
+     "home": 1.6,
+     "away": 2.11
+    },
+    "tipico_de": {
+     "home": 1.62,
+     "away": 2.25
+    },
+    "pinnacle": {
+     "home": 1.68,
+     "away": 2.27
+    },
+    "matchbook": {
+     "home": 1.73,
+     "away": 2.34
+    }
+   },
+   "result": {
+    "homeGoals": 114,
+    "awayGoals": 106
+   },
+   "snapshotAt": "2026-10-21T23:44:49Z",
+   "source": "the-odds-api"
+  },
+  {
+   "league": "nba",
+   "season": "20262027",
+   "date": "2026-10-23T01:30:00Z",
+   "home": "OKC",
+   "away": "DEN",
+   "market": "moneyline",
+   "sharp": {
+    "home": 1.34,
+    "away": 3.62
+   },
+   "sharpBook": "pinnacle",
+   "avg": {
+    "home": 1.308,
+    "away": 3.512
+   },
+   "max": {
+    "home": 1.35,
+    "away": 3.75
+   },
+   "book": {
+    "onexbet": {
+     "home": 1.35,
+     "away": 3.38
+    },
+    "unibet_fr": {
+     "home": 1.3,
+     "away": 3.4
+    },
+    "betclic_fr": {
+     "home": 1.3,
+     "away": 3.4
+    },
+    "sport888": {
+     "home": 1.3,
+     "away": 3.5
+    },
+    "winamax_de": {
+     "home": 1.33,
+     "away": 3.45
+    },
+    "winamax_fr": {
+     "home": 1.3,
+     "away": 3.25
+    },
+    "gtbets": {
+     "home": 1.31,
+     "away": 3.6
+    },
+    "nordicbet": {
+     "home": 1.25,
+     "away": 3.6
+    },
+    "betsson": {
+     "home": 1.25,
+     "away": 3.6
+    },
+    "betonlineag": {
+     "home": 1.3,
+     "away": 3.67
+    },
+    "leovegas_se": {
+     "home": 1.3,
+     "away": 3.45
+    },
+    "unibet_se": {
+     "home": 1.32,
+     "away": 3.5
+    },
+    "pmu_fr": {
+     "home": 1.25,
+     "away": 3.3
+    },
+    "unibet_nl": {
+     "home": 1.32,
+     "away": 3.5
+    },
+    "williamhill": {
+     "home": 1.3,
+     "away": 3.5
+    },
+    "coolbet": {
+     "home": 1.31,
+     "away": 3.6
+    },
+    "mybookieag": {
+     "home": 1.3,
+     "away": 3.57
+    },
+    "betfair_ex_eu": {
+     "home": 1.35,
+     "away": 3.75
+    },
+    "codere_it": {
+     "home": 1.31,
+     "away": 3.45
+    },
+    "tipico_de": {
+     "home": 1.3,
+     "away": 3.4
+    },
+    "pinnacle": {
+     "home": 1.34,
+     "away": 3.62
+    },
+    "matchbook": {
+     "home": 1.35,
+     "away": 3.7
+    },
+    "betanysports": {
+     "home": 1.31,
+     "away": 3.55
+    },
+    "everygame": {
+     "home": 1.3,
+     "away": 3.7
+    },
+    "marathonbet": {
+     "home": 1.34,
+     "away": 3.35
+    }
+   },
+   "result": {
+    "homeGoals": 96,
+    "awayGoals": 84
+   },
+   "snapshotAt": "2026-10-23T01:15:15Z",
+   "source": "the-odds-api"
+  }
+ ],
+ "unmatched": [],
+ "skipped": {
+  "noResult": 0,
+  "noSharp": 0
+ }
+}

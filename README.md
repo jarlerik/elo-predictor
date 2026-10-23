@@ -21,7 +21,7 @@ The model-side verdict is in [docs/CAN_ELO_BEAT_THE_BOOKS.md](docs/CAN_ELO_BEAT_
 | Champions League | `data/ucl/ratings.json` seeded from clubelo.com, updated from `fixturedownload.com/feed/json/champions-league-<year>` | current |
 | World Cup | `data/soccer/ratings.json` seeded from eloratings.net | — |
 | EPL odds history | football-data.co.uk per-season CSVs (Pinnacle, Betfair Exchange, named books, market average and best) | 2012-13 onwards |
-| NHL / Liiga / NBA odds history | The Odds API daily snapshots | NHL 2020-21 onwards, Liiga March 2025 onwards; NBA not stored yet |
+| NHL / Liiga / NBA odds history | The Odds API daily snapshots | NHL 2020-21 onwards, Liiga March 2025 onwards, NBA 2024-25 onwards |
 | Live prices | The Odds API (`eu` and `fi` regions) for the scan; OddsPapi (Pinnacle) for sharp prices on bets and the sharp close | — |
 
 ## Getting Started
@@ -77,9 +77,8 @@ The model does not beat the market ([docs/CAN_ELO_BEAT_THE_BOOKS.md](docs/CAN_EL
 5. **Weekly:** refresh the stored games and prices for the backtests:
    ```bash
    npm run games:fetch -- nhl 2026 --refresh && npm run games:fetch -- liiga 2026 --refresh && npm run games:fetch -- nba 2026 --refresh
-   npm run odds:fetch -- nhl 2026 && npm run odds:fetch -- liiga 2026
+   npm run odds:fetch -- nhl 2026 && npm run odds:fetch -- liiga 2026 && npm run odds:fetch -- nba 2026
    ```
-   The NBA's price history is not stored yet; `npm run odds:fetch -- nba 2025` would store a season for about 1,700 credits.
 6. **Verdict:** `npm run metrics` prints the sharp CLV; read it at fifty scan-driven bets. Positive means the Finnish books give away value at the prices taken; around zero means the rule does not work for these accounts.
 
 Useful scan flags: `npm run scan -- nhl liiga nba` (leagues), `--hours 24` (window), `--alpha 0.03` (looser bar), `--books veikkaus_fi` (candidate books), `--offline` (last cached board, no credits).

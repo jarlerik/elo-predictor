@@ -713,13 +713,14 @@ function seasonOfRow(row: LedgerRow): string {
   return row.id.split(":")[2];
 }
 
-/** Mean of max-close / sharp-close − 1 over all priced games and sides. */
+/** Mean of max-close / sharp-close − 1 over all priced games and sides (two sides on a two-way market). */
 export function clvProxy(rows: WalkRow[]): { mean: number | null; beatShare: number | null; n: number } {
   const v: number[] = [];
   for (const r of rows) {
     const o = r.odds;
-    if (!o?.max || o.max.draw === undefined || o.sharp.draw === undefined) continue;
-    v.push(o.max.home / o.sharp.home - 1, o.max.draw / o.sharp.draw - 1, o.max.away / o.sharp.away - 1);
+    if (!o?.max) continue;
+    v.push(o.max.home / o.sharp.home - 1, o.max.away / o.sharp.away - 1);
+    if (o.max.draw !== undefined && o.sharp.draw !== undefined) v.push(o.max.draw / o.sharp.draw - 1);
   }
   if (!v.length) return { mean: null, beatShare: null, n: 0 };
   return {
@@ -771,8 +772,8 @@ export const DEFAULT_AXES: GridAxes = {
 
 /** Hockey leagues: home advantage sits lower than in soccer. */
 export const HOCKEY_AXES: GridAxes = { ...DEFAULT_AXES, homeAdv: [20, 35, 50] };
-/** Basketball: FiveThirtyEight's 100 points of home court, bracketed. */
-export const BASKETBALL_AXES: GridAxes = { ...DEFAULT_AXES, homeAdv: [60, 80, 100, 120] };
+/** Basketball: the fitted 40 points of home court, bracketed (FiveThirtyEight's 100 scored worse on every K). */
+export const BASKETBALL_AXES: GridAxes = { ...DEFAULT_AXES, homeAdv: [20, 40, 60, 80] };
 
 export function axesFor(sport: Sport): GridAxes {
   return sport === "hockey" ? HOCKEY_AXES : sport === "basketball" ? BASKETBALL_AXES : DEFAULT_AXES;

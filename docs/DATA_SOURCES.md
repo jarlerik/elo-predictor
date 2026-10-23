@@ -26,7 +26,7 @@ in-memory data keeps being served and the error is logged.
 | World Cup        | `data/soccer/ratings.json`              | —                     | none              | seed before and during the tournament                               |
 | EPL odds history | `football-data.co.uk/mmz4281/<yy><yy>/E0.csv` → `data/odds/epl/` | 2012-13 onwards | `npm run odds:fetch` (current season refetched after a day) | extend `src/odds/aliases.ts` when a club name is reported unmatched |
 | EPL game history | `data/games/epl/` from fixturedownload (2016-17+) or the odds files (older) | 2012-13 onwards | `npm run games:fetch` | none |
-| NHL / Liiga / NBA odds history | The Odds API daily snapshots → `data/odds/<league>/` | NHL 2020-21+, Liiga March 2025+, NBA not fetched yet | `npm run odds:fetch -- nhl\|liiga\|nba` (needs `THE_ODDS_API_KEY`) | none |
+| NHL / Liiga / NBA odds history | The Odds API daily snapshots → `data/odds/<league>/` | NHL 2020-21+, Liiga March 2025+, NBA 2024-25+ | `npm run odds:fetch -- nhl\|liiga\|nba` (needs `THE_ODDS_API_KEY`) | none |
 | NHL / Liiga game history | `data/games/<league>/` from the league APIs | 2019-20 onwards | `npm run games:fetch -- nhl\|liiga` | none |
 | NBA game history | `data/games/nba/` from fixturedownload | 2018-19 onwards | `npm run games:fetch -- nba` | none |
 
@@ -110,8 +110,10 @@ the wrong name.
   against 0.633 for the goal-margin form and 0.632 with no margin term;
   40 Elo points match the observed 55 % home-win rate, well under
   FiveThirtyEight's 100 from the years when home court was worth more.
-  Values in `LEAGUES.nba`; no market backtest yet, since no prices are
-  stored.
+  Values in `LEAGUES.nba`. The market backtest (train 2024-25, test
+  2025-26) puts the model 0.030 ± 0.007 behind Pinnacle's close with a
+  blend weight of zero, as in every other league; its grid confirms 40 at
+  every K (docs/CONTINUOUS_IMPROVEMENT.md).
 - **Upkeep:** `NBA_TEAMS` when a franchise moves or is renamed. Eight
   codes are NHL tri-codes too (BOS, CHI, DAL, DET, MIN, PHI, TOR, UTA),
   so a bet always names its league and `inferLeague` returns null for a
@@ -226,9 +228,11 @@ Champions League page exist for the final.
   `moneyline` with Pinnacle as the sharp price (the books' mean
   probability when Pinnacle is absent) and no `regulation` trio. The live
   board was checked on 2026-10-23 (28 books on a game, full club names,
-  "LA Clippers"); the archive has not been fetched, so its start
-  (`ARCHIVE_START` June 2020, the provider's own) is unverified. A season
-  is about 165 game days, so about 1,700 credits.
+  "LA Clippers"). The archive is stored from 2024-25: 165–167 game days
+  and about 1,670 credits a season; 1,145 of 1,231 games priced in
+  2025-26, Pinnacle on 980 of them, 27 books. Earlier seasons are not
+  fetched, so the archive start (`ARCHIVE_START` June 2020, the
+  provider's own) is unverified there.
 - **Team names:** NHL names folded (accents and dots dropped) against
   `NHL_TEAM_NAMES` plus "St Louis Blues", "Montréal Canadiens", "Arizona
   Coyotes", "Utah Hockey Club"; Liiga uses the short club names that match

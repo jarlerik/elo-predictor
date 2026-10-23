@@ -110,12 +110,13 @@ Odds API or manual entry.
 `npm run backtest:outliers -- <league>` applies the same rule to the
 per-book closing lines already stored for the market backtest: The Odds
 API's European books ten minutes before the first game of each day for
-the hockey leagues (NHL from 2020, Liiga from March 2025), and
-football-data's six named books (Bet365, bwin, Interwetten, Pinnacle,
-William Hill, Bet Victor) for the EPL. Every book is a candidate, as in
-the paper. The NBA has no stored prices yet (`npm run odds:fetch -- nba
-<season>`, about 1,700 credits a season). Reports: `data/reports/outliers-nhl-20261019-1050.md`,
-`outliers-liiga-20261019-1050.md`, `outliers-epl-20261019-1050.md`.
+the hockey leagues (NHL from 2020, Liiga from March 2025) and the NBA
+(2024-25 onwards), and football-data's six named books (Bet365, bwin,
+Interwetten, Pinnacle, William Hill, Bet Victor) for the EPL. Every book
+is a candidate, as in the paper. Reports:
+`data/reports/outliers-nhl-20261019-1050.md`,
+`outliers-liiga-20261019-1050.md`, `outliers-epl-20261019-1050.md`,
+`outliers-nba-20261023-1403.md`.
 
 | League | α | Bets | Hit | Expected hit | Yield | ± se | At the sharp price |
 |---|---|---|---|---|---|---|---|
@@ -128,6 +129,9 @@ the paper. The NBA has no stored prices yet (`npm run odds:fetch -- nba
 | Liiga 60-minute 1X2 | 0.05 | 25 | 56.0 % | 55.7 % | +1.2 % | 19.1 % | +1.9 % |
 | EPL 1X2 | 0.02 | 272 | 49.6 % | 47.7 % | +5.7 % | 8.0 % | −0.4 % |
 | EPL 1X2 | 0.05 | 0 | – | – | – | – | – |
+| NBA moneyline | 0.02 | 2,200 | 51.1 % | 51.7 % | +1.6 % | 2.8 % | +2.6 % |
+| NBA moneyline | 0.03 | 397 | 51.4 % | 50.0 % | +6.8 % | 6.9 % | +6.8 % |
+| NBA moneyline | 0.05 | 46 | 50.0 % | 44.4 % | +26.7 % | 26.5 % | +16.9 % |
 
 Reading it:
 
@@ -138,9 +142,15 @@ Reading it:
   had 32 books; the hockey snapshots have 12 to 14 per market, the EPL
   file six. With fewer books the mean sits closer to each book and
   five-point outliers are rare: 114 NHL bets in eight seasons, 25 in
-  Liiga, none in the EPL. The volume the paper reports needs the width
+  Liiga, 46 in the NBA over two seasons, none in the EPL. The volume the paper reports needs the width
   of its feed.
-- **The NHL moneyline is the one market with a positive drift**, +2 %
+- **The NBA moneyline drifts the same way**: +1.6 % ± 2.8 at α 0.02 over
+  2,200 bets and +6.8 % ± 6.9 at 0.03, and the sharp price agrees (+2.6 %
+  and +6.8 %). But the outliers are 1xBet's slow lines and the two
+  exchanges, not a book a Finnish account can hold, and the stored
+  history is the European region only, so Veikkaus' NBA pricing is not
+  in it; the live scans are the only record of that.
+- **The NHL moneyline is the one hockey market with a positive drift**, +2 %
   at α = 0.02 on a thousand bets and +7 % at 0.03 on 346, both inside
   two standard errors, and the sharp price agrees the bets carry a
   small edge (+1 to +3 %). The outliers come mostly from Betsson,

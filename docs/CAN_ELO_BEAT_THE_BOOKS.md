@@ -17,7 +17,7 @@ for us is decided by live closing line value, not by any backtest.
 
 ## What the evidence says
 
-The backtests measured the quantity that decides this. In all three leagues
+The backtests measured the quantity that decides this. In all four leagues
 the best blend of model and market price puts zero weight on the model. The
 market's closing price already contains everything a results-based rating
 knows, plus more.
@@ -27,6 +27,7 @@ knows, plus more.
 | EPL (2012-13 to 2026-27, Pinnacle) | 0.021 ± 0.003 | 0 | data/reports/backtest-epl-20261018-1809.md |
 | Liiga (2025-26 on, consensus) | 0.026 | 0 | data/reports/backtest-liiga-20261018-1856.md |
 | NHL (2020-21 on, consensus, K 10) | 0.009 to 0.013 | 0 | data/reports/backtest-nhl-20261019-0818.md |
+| NBA (2024-25 on, Pinnacle two-way) | 0.030 ± 0.007 | 0 | data/reports/backtest-nba-20261023-1404.md |
 
 Closing the whole NHL gap would only bring the model level with the market,
 not ahead of it, and a bet needs to be ahead by more than the margin.

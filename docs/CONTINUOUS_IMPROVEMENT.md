@@ -261,13 +261,13 @@ docs/MORNING_SCAN.md (`npm run scan`, `npm run backtest:outliers`).
 10. **Two-way soccer sharp lists and correct-score prices** are dropped on
    save (see docs/METRICS_AND_DASHBOARD.md step 8); needs a `sides` notion
    on the ledger row.
-11. **NBA market backtest.** The NBA (added 23 October 2026) has nine
-   stored seasons of games but no prices: `npm run odds:fetch -- nba
-   2024 2026` stores The Odds API snapshots (about 1,700 credits a
-   season), then `npm run backtest:market -- nba` and `npm run
-   backtest:outliers -- nba` give the two-way verdicts. The Elo defaults
-   (home advantage 40, K 20, points-margin multiplier) were chosen on
-   outcomes only; re-fit them on train seasons once the prices are in.
+11. **NBA.** Prices are stored from 2024-25 and the verdict is the same
+   as everywhere else: blend weight 0, model 0.030 ± 0.007 behind
+   Pinnacle's two-way close (`backtest-nba-20261023-1404`). The grid
+   (train 2024-25) confirms home advantage 40 at every K and prefers
+   K 30 with scale 500 by 0.003 on test, under 1 se, so K 20 / scale 400
+   stand. Next: judge K 30 again with 2026-27 as a second test season;
+   the 2020-21 to 2023-24 archive costs about 1,700 credits a season.
 
 ## Cadence
 
@@ -292,4 +292,6 @@ docs/MORNING_SCAN.md (`npm run scan`, `npm run backtest:outliers`).
 | 2026-10-18 | Liiga: baseline vs consensus 60-minute price and Pinnacle moneyline; blend weight 0; every Elo variant rejected | — | +0.026 | −2.1 % (596, sharp-model-0) | `backtest-liiga-20261018-1856` |
 | 2026-10-19 | NHL: grid chooses K 10 on train; **accepted** (test 2023-27 Δ 0.013 → 0.009 and moneyline 0.020 → 0.014, both 2 se; flat on 2025-26 alone) | +0.007 → +0.004 | +0.013 → +0.009 | −7.8 % → −9.4 % (avg close, model edge) | `backtest-nhl-20261019-0818` |
 | 2026-10-23 | NBA added: fixturedownload games 2018-19 → 2026-27, two-way model (no draw), FiveThirtyEight points-margin K; on outcomes only (no prices stored) home advantage 40 and K 20 give log loss 0.626 vs 0.633 for the goal-margin form | — | — | — | `npm run fit:homeadv -- nba` |
+| 2026-10-23 | NBA market backtest (The Odds API 2024-25 → 2026-27, train 2024-25): model 0.611 vs Pinnacle two-way close 0.581; blend weight 0; grid confirms home advantage 40, prefers K 30 / scale 500 by 0.003 on test (under 1 se): **not accepted** | +0.026 | +0.030 | −5.1 % (986, max-shrunk-2) | `backtest-nba-20261023-1404` |
+| 2026-10-23 | Outlier rule on the NBA lines, every book a candidate: α 0.03 397 bets +6.8 % ± 6.9, sharp expectation +6.8 %; the outliers are 1xBet and the exchanges, and the European-region history never carries the Finnish books | — | — | see docs/MORNING_SCAN.md | `outliers-nba-20261023-1403` |
 | 2026-10-19 | Outlier rule (Kaunitz 2017) on the stored per-book lines, every book a candidate: hit rate matches mean(p_cons − α); NHL moneyline +2.0 % ± 3.3 at α 0.02 (1,020 bets), other markets ≈ 0 at the sharp price; almost no bets at α 0.05 with 6–14 books per market | — | — | see docs/MORNING_SCAN.md | `outliers-{nhl,liiga,epl}-20261019-1050` |

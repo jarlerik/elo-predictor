@@ -100,7 +100,10 @@ export const LEAGUES: Record<LeagueId, LeagueInfo> = {
     // which dates from the years when home court was worth more. K 20 with
     // the points-margin multiplier scored log loss 0.626 on the 7,248 games
     // after two burn-in seasons, against 0.633 for the goal-margin form and
-    // 0.632 with no margin term; K 10–30 are within 0.003.
+    // 0.632 with no margin term; K 10–30 are within 0.003. The market
+    // backtest's grid (train 2024-25) confirms 40 at every K; K 30 with
+    // scale 500 is 0.003 better on test, under one standard error, so
+    // the defaults stand.
     homeAdv: 40,
     baseK: 20,
     marginMode: "points",
