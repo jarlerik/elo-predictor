@@ -44,7 +44,7 @@ which is the figure the ledger's closing line value is measured on.
 
 ## The procedure
 
-    npm run scan                      # NHL, Liiga, EPL, Champions League; games in the next 36 h
+    npm run scan                      # NHL, Liiga, EPL, NBA, Champions League; games in the next 36 h
     npm run scan -- nhl liiga --hours 24
     npm run scan -- --alpha 0.04 --books veikkaus_fi
     npm run scan -- --max-age 120     # reuse a board fetched within two hours
@@ -52,7 +52,7 @@ which is the figure the ledger's closing line value is measured on.
 
 1. **Which leagues have games.** The scan asks The Odds API for every
    unstarted event of each league (`icehockey_nhl`, `icehockey_liiga`,
-   `soccer_epl`, `soccer_uefa_champs_league`) and keeps the ones starting
+   `soccer_epl`, `basketball_nba`, `soccer_uefa_champs_league`) and keeps the ones starting
    inside the window. Kickoffs are printed in Helsinki time.
 2. **Market consensus.** One call per league with `regions=eu,fi` and the
    head-to-head market returns every book's line: on an NHL game 12
@@ -65,8 +65,10 @@ which is the figure the ledger's closing line value is measured on.
 3. **Veikkaus prices.** The Finnish region carries `veikkaus_fi`,
    `unibet_fi` and `leovegas_fi`. Veikkaus quotes the soccer 1X2 and, on
    hockey, only the two-way winner including overtime; Unibet and LeoVegas
-   quote the 60-minute 1X2 on hockey as well. Those three are the default
-   candidate books (`--books` changes the set).
+   quote the 60-minute 1X2 on hockey as well. On basketball every book,
+   Veikkaus included, quotes the winner including overtime and nothing
+   else (28 books on an NBA game, 23 October 2026). Those three are the
+   default candidate books (`--books` changes the set).
 4. **The margin check.** Every (book, outcome) whose price exceeds
    `1 / (p_cons − α)` is a candidate, sorted by the paper's expected value
    `odds × (p_cons − α) − 1`. The report shows, per candidate, the price,
@@ -96,10 +98,10 @@ boards are cached under `data/odds/raw/the-odds-api/live/` (ignored) and
 reused within `--max-age` minutes, so a rerun costs nothing.
 
 **Cost.** Two credits per league per fresh board (one per region and
-market), eight for the four leagues; the free events endpoint is used
+market), ten for the five leagues; the free events endpoint is used
 for nothing else. The 20,000-credit plan had 5,445 credits left on
 19 October 2026 and ends on 18 November 2026; a morning scan every day
-until then uses about 250. OddsPapi's free tier does not carry Veikkaus,
+until then uses about 300. OddsPapi's free tier does not carry Veikkaus,
 so after that date the Finnish lines need either another month of The
 Odds API or manual entry.
 
@@ -111,7 +113,8 @@ API's European books ten minutes before the first game of each day for
 the hockey leagues (NHL from 2020, Liiga from March 2025), and
 football-data's six named books (Bet365, bwin, Interwetten, Pinnacle,
 William Hill, Bet Victor) for the EPL. Every book is a candidate, as in
-the paper. Reports: `data/reports/outliers-nhl-20261019-1050.md`,
+the paper. The NBA has no stored prices yet (`npm run odds:fetch -- nba
+<season>`, about 1,700 credits a season). Reports: `data/reports/outliers-nhl-20261019-1050.md`,
 `outliers-liiga-20261019-1050.md`, `outliers-epl-20261019-1050.md`.
 
 | League | α | Bets | Hit | Expected hit | Yield | ± se | At the sharp price |
@@ -160,10 +163,10 @@ Unibet FI and LeoVegas FI are a little above it on some longshots. At
 lines, which the history says are worth about zero at the sharp price.
 
 So the honest expectation is: a Veikkaus candidate at the paper's margin
-will be rare, perhaps a few a month across the four leagues, and the
+will be rare, perhaps a few a month across the five leagues, and the
 decision whether the rule works for a Finnish account is the sharp CLV of
 the bets actually placed, read at fifty. The scan makes that cheap to
-collect: one command each morning, eight credits, every candidate logged
+collect: one command each morning, ten credits, every candidate logged
 with the sharp price next to it.
 
 ## Settings worth revisiting
@@ -178,4 +181,4 @@ with the sharp price next to it.
 - **Timing.** The paper's 9.9 % came from prices one to five hours before
   kickoff and its real bets from a live dashboard. A scan in the morning
   sees prices that can move by evening; a second run before the first
-  kickoff (`--max-age 0`) costs another eight credits.
+  kickoff (`--max-age 0`) costs another ten credits.

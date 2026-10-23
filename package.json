@@ -29,5 +29,5 @@
     "tsx": "^4.7.0",
     "typescript": "^5.9.3"
   },
-  "description": "Command-line betting ledger, bookmaker scan and Elo backtests for the NHL, SM-liiga, Premier League and Champions League"
+  "description": "Command-line betting ledger, bookmaker scan and Elo backtests for the NHL, SM-liiga, Premier League, NBA and Champions League"
 }

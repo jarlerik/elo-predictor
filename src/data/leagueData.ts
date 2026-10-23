@@ -4,12 +4,14 @@ import { CURRENT_NHL_TEAMS } from "../utils/teamData";
 import { fetchNhlData } from "./nhlFetcher";
 import { fetchLiigaData } from "./liigaFetcher";
 import { fetchEplData } from "./eplFetcher";
+import { fetchNbaData } from "./nbaFetcher";
 import { computeElosFromGames } from "../elo/calculator";
 import {
   fitDrawFactorFromHistory,
   HOCKEY_DRAW_FACTOR,
   isFullTimeDraw,
   isRegulationDraw,
+  NO_DRAW,
   SOCCER_DRAW_FACTOR,
 } from "../elo/probabilities";
 
@@ -66,7 +68,7 @@ export interface LeagueState extends LeagueData {
  * Davidson draw factor fitted from the league's own games, using the
  * ratings as they stood before each game: full-time draws for soccer,
  * games that went to OT/SO for hockey. Falls back to the sport constant
- * with too little history.
+ * with too little history. Basketball has no draw at all.
  */
 export function drawFactorFor(
   league: LeagueId,
@@ -79,8 +81,10 @@ export function drawFactorFor(
     baseK?: number;
     seasonRegression?: number;
     newTeamElo?: number;
+    marginMode?: "unsigned" | "signed" | "none" | "goals" | "points";
   } = {}
 ): number {
+  if (LEAGUES[league].sport === "basketball") return NO_DRAW;
   const soccer = LEAGUES[league].sport === "soccer";
   return fitDrawFactorFromHistory(
     games,
@@ -104,6 +108,8 @@ async function loadLeagueData(league: LeagueId): Promise<LeagueData> {
       return fetchLiigaData();
     case "epl":
       return fetchEplData();
+    case "nba":
+      return fetchNbaData();
   }
 }
 
@@ -125,18 +131,19 @@ export async function ensureLeague(league: LeagueId): Promise<LeagueState> {
   const p = (async () => {
     try {
       const data = await loadLeagueData(league);
-      const { homeAdv, baseK } = LEAGUES[league];
+      const { homeAdv, baseK, marginMode } = LEAGUES[league];
       const elos = computeElosFromGames(data.games, {
         currentTeams: data.currentTeams,
         homeAdv,
         baseK,
+        marginMode,
       });
       const drawFactor = drawFactorFor(
         league,
         data.games,
         data.currentTeams,
         homeAdv,
-        { baseK }
+        { baseK, marginMode }
       );
       const state: LeagueState = {
         ...data,

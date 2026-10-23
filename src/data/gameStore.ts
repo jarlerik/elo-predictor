@@ -16,6 +16,7 @@ import { seasonLabelFor } from "../odds/store";
 import { fetchEplSeason, eplSeasonFor } from "./eplFetcher";
 import { fetchNhlSeason, nhlSeasonFor } from "./nhlFetcher";
 import { fetchLiigaSeason, liigaSeasonFor } from "./liigaFetcher";
+import { fetchNbaSeason, nbaSeasonFor } from "./nbaFetcher";
 
 export interface GameSeasonFile {
   fetchedAt: string;
@@ -92,12 +93,14 @@ export function currentStartYear(league: LeagueId): number {
       return Number(nhlSeasonFor().slice(0, 4));
     case "liiga":
       return liigaSeasonFor() - 1;
+    case "nba":
+      return nbaSeasonFor();
   }
 }
 
 /**
  * One season from the league's live feed, as a store file. `onUnknown`
- * gets team names the league table cannot place (EPL only; the hockey
+ * gets team names the league table cannot place (EPL and NBA; the hockey
  * feeds carry codes). Liiga seasons are keyed by end year upstream, so a
  * start year of 2024 fetches `season=2025`.
  */
@@ -128,6 +131,12 @@ export async function fetchSeasonFromFeed(
       const s = await fetchLiigaSeason(startYear + 1);
       if (!s.games.length) return null;
       return { fetchedAt: now, source: "liiga-api", complete, games: s.games, currentTeams: [...s.teams], note: "regular season (runkosarja) only" };
+    }
+    case "nba": {
+      const s = await fetchNbaSeason(startYear, onUnknown);
+      if (!s.games.length) return null;
+      // 1,230 games a season; the pandemic 2020-21 season stored 1,079.
+      return { fetchedAt: now, source: "fixturedownload", complete: complete && s.games.length >= 1000, games: s.games, currentTeams: [...s.teams], note: "regular season only (the feed has no playoffs); NBA Cup placeholder games dropped" };
     }
   }
 }

@@ -20,7 +20,7 @@ import { LeagueId, LEAGUES, isLeagueId } from "../src/utils/leagues";
 
 const argv = process.argv.slice(2);
 const league: LeagueId = isLeagueId(argv[0]) ? (argv.shift() as LeagueId) : "epl";
-const trainUntilYear = Number(flagValue("--train-until") ?? (league === "epl" ? 2021 : league === "nhl" ? 2023 : 2025));
+const trainUntilYear = Number(flagValue("--train-until") ?? (league === "epl" ? 2021 : league === "nhl" || league === "nba" ? 2023 : 2025));
 const variants: { name: string; elo: Partial<EloConfig> }[] = JSON.parse(
   argv.find((a) => a.startsWith("[")) ?? '[{"name":"baseline","elo":{}}]'
 );
@@ -39,7 +39,7 @@ const base: WalkForwardConfig = {
   seasons: seasonsOf(games),
   burnInSeasons: Number(flagValue("--burnin") ?? 2),
   trainUntil: `${trainUntilYear}${trainUntilYear + 1}`,
-  elo: { homeAdv: LEAGUES[league].homeAdv, baseK: LEAGUES[league].baseK, timeWeighting: false, seasonRegression: 0, newTeamElo: 1500 },
+  elo: { homeAdv: LEAGUES[league].homeAdv, baseK: LEAGUES[league].baseK, marginMode: LEAGUES[league].marginMode, timeWeighting: false, seasonRegression: 0, newTeamElo: 1500 },
   drawFactorScale: 1,
 };
 console.log(`${LEAGUES[league].name}: ${games.length} games, ${odds.length} odds rows, seasons ${seasons[0]}..${seasons[seasons.length - 1]}, burn-in ${base.burnInSeasons}, train until ${base.trainUntil}`);

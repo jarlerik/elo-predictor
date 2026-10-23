@@ -12,7 +12,7 @@
 import fs from "fs";
 import path from "path";
 import { GameRecord } from "../utils/types";
-import { LEAGUES } from "../utils/leagues";
+import { LEAGUES, Sport, isLeagueId } from "../utils/leagues";
 import { LedgerLeague, ModelSnapshot, isLedgerLeague } from "./ledger";
 import { ensureLeague } from "./leagueData";
 import { ensureUcl } from "./uclFetcher";
@@ -198,7 +198,7 @@ const EPS = 1e-12;
 const round4 = (v: number) => Math.round(v * 10000) / 10000;
 const FORTNIGHT = 14 * 24 * 60 * 60 * 1000;
 
-function outcomeOf(g: GameRecord, sport: "hockey" | "soccer"): Outcome {
+function outcomeOf(g: GameRecord, sport: Sport): Outcome {
   if (sport === "hockey" && g.decidedInOTorSO) return 1;
   if (g.homeGoals > g.awayGoals) return 0;
   if (g.awayGoals > g.homeGoals) return 2;
@@ -220,9 +220,9 @@ const logLossOf = (p: number[], y: number) => -Math.log(Math.max(p[y], EPS));
 
 async function gamesFor(league: LedgerLeague): Promise<{
   games: GameRecord[];
-  sport: "hockey" | "soccer";
+  sport: Sport;
 } | null> {
-  if (league === "nhl" || league === "liiga" || league === "epl") {
+  if (isLeagueId(league)) {
     const state = await ensureLeague(league);
     return { games: state.games, sport: LEAGUES[league].sport };
   }

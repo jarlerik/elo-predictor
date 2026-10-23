@@ -50,9 +50,11 @@ export interface EloOptions {
    * autocorrelation term uses |home − away| regardless of who won. "signed":
    * the FiveThirtyEight form, where the term uses winner minus loser (with
    * home advantage), damping expected blowouts and amplifying upsets.
-   * "none": K ignores the margin.
+   * "none": K ignores the margin. "points": the FiveThirtyEight NBA form,
+   * (margin + 3)^0.8 / (7.5 + 0.006 × winner's rating edge), about 1 for a
+   * ten-point win by the favourite, for margins measured in points.
    */
-  marginMode?: "unsigned" | "signed" | "none" | "goals";
+  marginMode?: "unsigned" | "signed" | "none" | "goals" | "points";
   /**
    * With marginMode "goals": the result the update is scored against is
    * 0.5 + goalDiff × goalStep, clamped to 0..1, instead of 1 / 0.5 / 0.
@@ -185,6 +187,12 @@ export function computeElosFromGames(
       marginMult =
         Math.log(goalDiff + 1 || 1) * (2.2 / (Math.max(0, winnerMinusLoser) * 0.001 + 2.2));
       if (goalDiff === 0) marginMult = 2.2 / (Math.max(0, winnerMinusLoser) * 0.001 + 2.2) * Math.log(2);
+    } else if (marginMode === "points") {
+      // Winner's rating edge (home advantage included) is signed: a big
+      // favourite winning big is damped, an upset is amplified.
+      const winnerMinusLoser =
+        actualHome >= 0.5 ? homeRating - awayRating : awayRating - homeRating;
+      marginMult = Math.pow(goalDiff + 3, 0.8) / Math.max(1, 7.5 + 0.006 * winnerMinusLoser);
     }
 
     // OT/SO -> reduce impact

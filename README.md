@@ -1,6 +1,6 @@
 # ELO Predictor
 
-A command-line betting ledger and bookmaker scanner for the NHL, the Finnish SM-liiga, the English Premier League and the UEFA Champions League, with an Elo model and the backtests that showed it does not beat the market.
+A command-line betting ledger and bookmaker scanner for the NHL, the Finnish SM-liiga, the English Premier League, the NBA and the UEFA Champions League, with an Elo model and the backtests that showed it does not beat the market.
 
 What it does:
 
@@ -17,10 +17,11 @@ The model-side verdict is in [docs/CAN_ELO_BEAT_THE_BOOKS.md](docs/CAN_ELO_BEAT_
 | NHL games | `api.nhle.com` official stats API | 2 previous + current (ratings); 2019-20 onwards stored for the backtests |
 | SM-liiga games | `liiga.fi/api/v2/games` (regular season) | 2 previous + current; 2019-20 onwards stored |
 | Premier League games | `fixturedownload.com/feed/json/epl-<year>` | 2 previous + current; 2012-13 onwards stored |
+| NBA games | `fixturedownload.com/feed/json/nba-<year>` (regular season) | 2 previous + current; 2018-19 onwards stored |
 | Champions League | `data/ucl/ratings.json` seeded from clubelo.com, updated from `fixturedownload.com/feed/json/champions-league-<year>` | current |
 | World Cup | `data/soccer/ratings.json` seeded from eloratings.net | — |
 | EPL odds history | football-data.co.uk per-season CSVs (Pinnacle, Betfair Exchange, named books, market average and best) | 2012-13 onwards |
-| NHL / Liiga odds history | The Odds API daily snapshots | NHL 2020-21 onwards, Liiga March 2025 onwards |
+| NHL / Liiga / NBA odds history | The Odds API daily snapshots | NHL 2020-21 onwards, Liiga March 2025 onwards; NBA not stored yet |
 | Live prices | The Odds API (`eu` and `fi` regions) for the scan; OddsPapi (Pinnacle) for sharp prices on bets and the sharp close | — |
 
 ## Getting Started
@@ -56,7 +57,7 @@ The model-side verdict is in [docs/CAN_ELO_BEAT_THE_BOOKS.md](docs/CAN_ELO_BEAT_
 
 The model does not beat the market ([docs/CAN_ELO_BEAT_THE_BOOKS.md](docs/CAN_ELO_BEAT_THE_BOOKS.md)), so the betting routine is the outlier rule: bet where a Finnish book's price stands clearly above the bookmakers' consensus. Full procedure and the evidence in [docs/MORNING_SCAN.md](docs/MORNING_SCAN.md).
 
-1. **Morning: run the scan** (eight The Odds API credits for the four leagues; reruns within 30 minutes are free).
+1. **Morning: run the scan** (ten The Odds API credits for the five leagues; reruns within 30 minutes are free).
    ```bash
    npm run scan
    ```
@@ -75,12 +76,13 @@ The model does not beat the market ([docs/CAN_ELO_BEAT_THE_BOOKS.md](docs/CAN_EL
    `npm run settle -- --dry-run` shows what would settle; `--id <bet id> --result win|loss|void` settles one bet by hand.
 5. **Weekly:** refresh the stored games and prices for the backtests:
    ```bash
-   npm run games:fetch -- nhl 2026 --refresh && npm run games:fetch -- liiga 2026 --refresh
+   npm run games:fetch -- nhl 2026 --refresh && npm run games:fetch -- liiga 2026 --refresh && npm run games:fetch -- nba 2026 --refresh
    npm run odds:fetch -- nhl 2026 && npm run odds:fetch -- liiga 2026
    ```
+   The NBA's price history is not stored yet; `npm run odds:fetch -- nba 2025` would store a season for about 1,700 credits.
 6. **Verdict:** `npm run metrics` prints the sharp CLV; read it at fifty scan-driven bets. Positive means the Finnish books give away value at the prices taken; around zero means the rule does not work for these accounts.
 
-Useful scan flags: `npm run scan -- nhl liiga` (leagues), `--hours 24` (window), `--alpha 0.03` (looser bar), `--books veikkaus_fi` (candidate books), `--offline` (last cached board, no credits).
+Useful scan flags: `npm run scan -- nhl liiga nba` (leagues), `--hours 24` (window), `--alpha 0.03` (looser bar), `--books veikkaus_fi` (candidate books), `--offline` (last cached board, no credits).
 
 ### Commands
 
@@ -122,9 +124,9 @@ elo-predictor/
 
 ## How It Works
 
-1. **Ratings.** Each league's played games are pulled from its feed and run through an Elo update with a margin multiplier and a per-league K; the draw factor of the Davidson model is fitted from the league's own draw (or OT/SO) rate.
+1. **Ratings.** Each league's played games are pulled from its feed and run through an Elo update with a margin multiplier and a per-league K; the draw factor of the Davidson model is fitted from the league's own draw (or OT/SO) rate. Basketball cannot end level, so the NBA is a two-way model whose K scales with the points margin.
 2. **Backtests.** The ratings are replayed strictly walk-forward against stored bookmaker prices; the model's log loss is compared with the de-vigged sharp close and the blend weight that minimises log loss is reported. It is zero in every league, which is why the model is kept for context, not for picks.
-3. **Scan.** The outlier rule reads the consensus of the European books as the probability and flags any Finnish book priced above it by more than the paper's allowance.
+3. **Scan.** The outlier rule reads the consensus of the European books as the probability and flags any Finnish book priced above it by more than the paper's allowance. Soccer is scanned on the 1X2, hockey on the 60-minute 1X2 and the winner including overtime, basketball on the winner including overtime only.
 4. **Ledger.** Every bet is logged with the book's line, the sharp line and the model's view; settlement reads the results; the sharp closing line value is the figure that decides whether the rule works.
 
 ## License

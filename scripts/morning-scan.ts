@@ -3,7 +3,7 @@
  * where a Finnish book stands above the consensus by more than the
  * margin (Kaunitz et al. 2017; see docs/MORNING_SCAN.md).
  *
- *   npm run scan                                  # nhl liiga epl ucl, next 36 h
+ *   npm run scan                                  # nhl liiga epl nba ucl, next 36 h
  *   npm run scan -- nhl liiga --hours 24
  *   npm run scan -- --alpha 0.04 --books veikkaus_fi
  *   npm run scan -- --max-age 120                 # reuse a board fetched within 2 h
@@ -16,7 +16,7 @@
 import fs from "fs";
 import path from "path";
 import { loadDotEnv } from "../src/utils/env";
-import { fetchLiveBoard, isConfigured, isScanLeague, SCAN_LEAGUES, ScanLeague, FI_BOOKS } from "../src/odds/liveBoard";
+import { fetchLiveBoard, isConfigured, isScanLeague, SCAN_LEAGUES, ScanLeague, FI_BOOKS, scanSport } from "../src/odds/liveBoard";
 import { scanBoard, LeagueScan, Candidate } from "../src/odds/scan";
 import { KAUNITZ_ALPHA } from "../src/odds/outliers";
 
@@ -61,10 +61,11 @@ function candidateRow(c: Candidate, n: number): string {
 }
 
 function gameRow(g: LeagueScan["games"][number], books: string[]): string {
-  const hockey = g.league === "nhl" || g.league === "liiga";
-  const cons = hockey
-    ? `${g.pTwo ? `${p3(g.pTwo.home)} / ${p3(g.pTwo.away)}` : "–"} (${g.twoWayBooks}) · ${g.pThree ? `${p3(g.pThree.home)} / ${p3(g.pThree.draw)} / ${p3(g.pThree.away)}` : "–"} (${g.threeWayBooks})`
-    : `${g.pThree ? `${p3(g.pThree.home)} / ${p3(g.pThree.draw)} / ${p3(g.pThree.away)}` : "–"} (${g.threeWayBooks})`;
+  const sport = scanSport(g.league);
+  const hockey = sport === "hockey";
+  const two = `${g.pTwo ? `${p3(g.pTwo.home)} / ${p3(g.pTwo.away)}` : "–"} (${g.twoWayBooks})`;
+  const three = `${g.pThree ? `${p3(g.pThree.home)} / ${p3(g.pThree.draw)} / ${p3(g.pThree.away)}` : "–"} (${g.threeWayBooks})`;
+  const cons = hockey ? `${two} · ${three}` : sport === "basketball" ? two : three;
   const fi = books
     .map((b) => {
       const l = g.books[b];
@@ -127,8 +128,9 @@ async function main() {
       lines.push("No games in the window.");
       continue;
     }
-    const hockey = s.league === "nhl" || s.league === "liiga";
-    lines.push(`| Kickoff | Game | Consensus p % ${hockey ? "ML (books) · 1X2 60' (books)" : "1X2 (books)"} | Pinnacle | Finnish books | Best value |`);
+    const sport = scanSport(s.league);
+    const consHead = sport === "hockey" ? "ML (books) · 1X2 60' (books)" : sport === "basketball" ? "ML (books)" : "1X2 (books)";
+    lines.push(`| Kickoff | Game | Consensus p % ${consHead} | Pinnacle | Finnish books | Best value |`);
     lines.push("|---|---|---|---|---|---|");
     for (const g of s.games) lines.push(gameRow(g, s.books));
   }

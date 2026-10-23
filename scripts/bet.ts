@@ -7,8 +7,8 @@
  *   npm run bet -- ... --dry-run                       # show the row, write nothing
  *
  * Positional form: <league> <HOME> <AWAY> <pick: team code | DRAW> <odds> <stake>.
- * `--market` defaults to the league's 1X2 (regulation for hockey, fullTime
- * for soccer); `--line` is the book's full price list for the market
+ * `--market` defaults to the league's main market (regulation for hockey,
+ * fullTime for soccer, moneyline for basketball); `--line` is the book's full price list for the market
  * (home,draw,away or home,away) and `--sharp` the sharp reference list;
  * without `--sharp` Pinnacle's prices are fetched from OddsPapi when the
  * key is set. The model's probability and ratings are attached from the
@@ -37,7 +37,7 @@ import { kellyStake } from "../src/utils/kelly";
 import { fetchSharpOdds, isConfigured as oddspapiConfigured } from "../src/odds/oddspapi";
 import { isOddsLeague } from "../src/odds/oddspapiAliases";
 import { Candidate } from "../src/odds/scan";
-import { LEAGUES } from "../src/utils/leagues";
+import { LEAGUES, MAIN_MARKET, isLeagueId } from "../src/utils/leagues";
 
 loadDotEnv();
 const { flag, has, positional } = argv();
@@ -116,10 +116,11 @@ async function fromArgs(): Promise<Input> {
   if (!(odds > 1)) throw new Error("odds must be above 1");
   const stake = Number(flag("--stake") ?? stakeArg ?? 1);
   if (!(stake > 0)) throw new Error("stake must be positive");
-  const hockey = league === "nhl" || league === "liiga";
+  const sport = isLeagueId(league) ? LEAGUES[league].sport : "soccer";
   const marketArg = flag("--market");
   const market: LedgerMarket =
-    marketArg === "regulation" || marketArg === "moneyline" || marketArg === "fullTime" ? marketArg : hockey ? "regulation" : "fullTime";
+    marketArg === "regulation" || marketArg === "moneyline" || marketArg === "fullTime" ? marketArg : MAIN_MARKET[sport];
+  if (sport === "basketball" && market !== "moneyline") throw new Error("basketball has no draw: the only market is the moneyline");
   if (market === "moneyline" && pick === "DRAW") throw new Error("the moneyline has no draw");
   const sides = MARKET_SIDES[market];
   let sharpOdds = parseList(flag("--sharp"), sides);
@@ -127,7 +128,7 @@ async function fromArgs(): Promise<Input> {
   let date = flag("--date") ?? null;
   if (!date) {
     try {
-      if (league === "nhl" || league === "liiga" || league === "epl") date = kickoffOf((await ensureLeague(league)).upcoming, home, away);
+      if (isLeagueId(league)) date = kickoffOf((await ensureLeague(league)).upcoming, home, away);
       else if (league === "ucl") date = kickoffOf((await ensureUcl()).upcoming, home, away);
     } catch (e) {
       console.error(`kickoff lookup failed: ${(e as Error).message}`);

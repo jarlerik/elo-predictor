@@ -3,9 +3,12 @@
  * Elo walk and draw-factor refit at each candidate, scored by 1X2 log loss
  * and Brier, with the predicted vs observed home-win rate alongside.
  *
- *   npm run fit:homeadv              # all three leagues, steps of 10
+ *   npm run fit:homeadv              # every league, steps of 10
  *   npm run fit:homeadv -- nhl       # one league
  *   npm run fit:homeadv -- epl 5     # finer grid
+ *
+ * The grid runs to 120 points, 200 for basketball (home court is worth
+ * about 100 Elo points in the NBA).
  *
  * The chosen values live in LEAGUES[id].homeAdv (src/utils/leagues.ts).
  */
@@ -31,14 +34,16 @@ for (const league of leagues) {
     "homeAdv  logLoss   brier    home pred/obs   draw pred/obs   drawFactor"
   );
   const scores: { homeAdv: number; logLoss: number }[] = [];
-  for (let homeAdv = 0; homeAdv <= 120; homeAdv += step) {
-    const baseK = LEAGUES[league].baseK;
+  const max = LEAGUES[league].sport === "basketball" ? 200 : 120;
+  for (let homeAdv = 0; homeAdv <= max; homeAdv += step) {
+    const { baseK, marginMode } = LEAGUES[league];
     const elos = computeElosFromGames(state.games, {
       currentTeams: state.currentTeams,
       homeAdv,
       baseK,
+      marginMode,
     });
-    const drawFactor = drawFactorFor(league, state.games, state.currentTeams, homeAdv, { baseK });
+    const drawFactor = drawFactorFor(league, state.games, state.currentTeams, homeAdv, { baseK, marginMode });
     const o = backtestLeague(league, { ...state, elos, drawFactor, homeAdv }, homeAdv)
       .overall;
     scores.push({ homeAdv, logLoss: o.logLoss });

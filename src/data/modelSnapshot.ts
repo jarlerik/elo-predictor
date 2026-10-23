@@ -1,8 +1,8 @@
 /**
  * The model's view of one pairing at bet time, for the ledger's
  * `probability` and `model` fields: Elo ratings and 1X2 / two-way
- * probabilities from the league state (NHL, Liiga, EPL), the Champions
- * League ratings, or the seeded national-team ratings.
+ * probabilities from the league state (NHL, Liiga, EPL, NBA), the
+ * Champions League ratings, or the seeded national-team ratings.
  */
 import fs from "fs";
 import path from "path";
@@ -10,7 +10,7 @@ import { ensureLeague } from "./leagueData";
 import { ensureUcl } from "./uclFetcher";
 import { LedgerLeague, LedgerMarket, ModelSnapshot } from "./ledger";
 import { eloToWinProb, findTeamElo, NO_DRAW, SOCCER_DRAW_FACTOR } from "../elo/probabilities";
-import { LEAGUES } from "../utils/leagues";
+import { LEAGUES, isLeagueId } from "../utils/leagues";
 
 export interface ModelView {
   snapshot: ModelSnapshot;
@@ -31,13 +31,15 @@ export async function modelView(
   let awayElo: number | null = null;
   let homeAdv = 60;
   let drawFactor = SOCCER_DRAW_FACTOR;
-  if (league === "nhl" || league === "liiga" || league === "epl") {
+  if (isLeagueId(league)) {
     const state = await ensureLeague(league);
     homeElo = findTeamElo(home, state.elos)?.elo ?? null;
     awayElo = findTeamElo(away, state.elos)?.elo ?? null;
     homeAdv = state.homeAdv;
     drawFactor = state.drawFactor;
-    if (LEAGUES[league].sport === "hockey" && market === "moneyline") drawFactor = NO_DRAW;
+    // The two-way winner incl. overtime has no draw (basketball's state
+    // draw factor is already zero).
+    if (LEAGUES[league].sport !== "soccer" && market === "moneyline") drawFactor = NO_DRAW;
   } else if (league === "ucl") {
     const { ratings } = await ensureUcl();
     homeElo = ratings[home] ?? null;

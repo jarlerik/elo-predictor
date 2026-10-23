@@ -11,10 +11,10 @@
  * To extend: run `npm run odds:close -- --dry-run` (or the sharp route) and
  * add every "unmatched" name printed to the override list for its league.
  */
-import { EPL_TEAMS, LIIGA_TEAMS, UCL_TEAMS } from "../utils/leagues";
+import { EPL_TEAMS, LIIGA_TEAMS, NBA_TEAMS, UCL_TEAMS } from "../utils/leagues";
 import { NHL_TEAM_NAMES } from "../utils/teamData";
 
-export type OddsLeague = "nhl" | "liiga" | "epl" | "ucl";
+export type OddsLeague = "nhl" | "liiga" | "epl" | "ucl" | "nba";
 
 const fold = (s: string) => s.trim().toLowerCase().replace(/\s+/g, " ");
 
@@ -209,6 +209,14 @@ const OVERRIDES: Record<OddsLeague, Record<string, string>> = {
     "Chelsea FC": "CHE",
     "Newcastle United FC": "NEW",
   },
+  nba: {
+    // OddsPapi's NBA fixtures (2026-10-23) use the full club names exactly
+    // as NBA_TEAMS does, "LA Clippers" included; these are the other
+    // spellings seen elsewhere.
+    "Los Angeles Clippers": "LAC",
+    "L.A. Clippers": "LAC",
+    "L.A. Lakers": "LAL",
+  },
 };
 
 function build(league: OddsLeague): Map<string, string> {
@@ -236,6 +244,12 @@ function build(league: OddsLeague): Map<string, string> {
     case "nhl":
       for (const [abbr, name] of Object.entries(NHL_TEAM_NAMES)) add(name, abbr);
       break;
+    case "nba":
+      for (const [abbr, t] of Object.entries(NBA_TEAMS)) {
+        add(t.name, abbr);
+        add(t.apiName, abbr);
+      }
+      break;
   }
   for (const [name, abbr] of Object.entries(OVERRIDES[league])) add(name, abbr);
   return map;
@@ -258,4 +272,4 @@ export function resolveOddspapiAbbr(
 }
 
 export const isOddsLeague = (v: unknown): v is OddsLeague =>
-  v === "nhl" || v === "liiga" || v === "epl" || v === "ucl";
+  v === "nhl" || v === "liiga" || v === "epl" || v === "ucl" || v === "nba";

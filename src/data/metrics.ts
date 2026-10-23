@@ -371,6 +371,7 @@ const LEAGUE_LABELS: Record<LedgerLeague, string> = {
   nhl: "NHL",
   liiga: "Liiga",
   epl: "EPL",
+  nba: "NBA",
   ucl: "UCL",
   worldcup: "World Cup",
 };
@@ -413,12 +414,13 @@ const PHASE_BANDS: [number, string][] = [
   [30, "16–30 played"],
   [Infinity, "31+ played"],
 ];
-const HOCKEY_LEAGUES: LedgerLeague[] = ["nhl", "liiga"];
+/** Leagues whose season starts in the autumn (September or October). */
+const AUTUMN_LEAGUES: LedgerLeague[] = ["nhl", "liiga", "nba"];
 
-/** Season a game date falls in: July cutoff for soccer, August for hockey. */
+/** Season a game date falls in: July cutoff for soccer, August for hockey and basketball. */
 export function seasonOfDate(date: string, league: LedgerLeague | null): string {
   const d = new Date(date);
-  const cutoff = league && HOCKEY_LEAGUES.includes(league) ? 7 : 6;
+  const cutoff = league && AUTUMN_LEAGUES.includes(league) ? 7 : 6;
   const start = d.getUTCMonth() >= cutoff ? d.getUTCFullYear() : d.getUTCFullYear() - 1;
   return `${start}-${String(start + 1).slice(2)}`;
 }

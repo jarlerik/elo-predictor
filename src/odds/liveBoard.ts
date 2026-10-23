@@ -8,7 +8,8 @@
  * call, and returns every event that has not started with each book's
  * head-to-head line. The Finnish region (checked 2026-10-19) holds
  * `veikkaus_fi` (two-way only on hockey: the winner including overtime),
- * `unibet_fi` and `leovegas_fi` (three-way 60-minute line on hockey). The
+ * `unibet_fi` and `leovegas_fi` (three-way 60-minute line on hockey). On
+ * basketball every book quotes the two-way winner incl. overtime. The
  * European region holds Pinnacle, the Betfair Exchange, Betsson, NordicBet,
  * Coolbet, William Hill, Unibet, Marathonbet, 1xBet, Tipico, Winamax and a
  * few more: 12 two-way and 14 three-way books on an NHL game.
@@ -22,17 +23,21 @@ import path from "path";
 import { PriceTrio, TwoWay } from "./types";
 import { resolveTheOddsApiAbbr } from "./theOddsApi";
 import { resolveOddspapiAbbr } from "./oddspapiAliases";
-import { LeagueId } from "../utils/leagues";
+import { LeagueId, LEAGUE_IDS, LEAGUES, Sport, isLeagueId } from "../utils/leagues";
 
 export type ScanLeague = LeagueId | "ucl";
-export const SCAN_LEAGUES: ScanLeague[] = ["nhl", "liiga", "epl", "ucl"];
-export const isScanLeague = (v: unknown): v is ScanLeague =>
-  v === "nhl" || v === "liiga" || v === "epl" || v === "ucl";
+export const SCAN_LEAGUES: ScanLeague[] = [...LEAGUE_IDS, "ucl"];
+export const isScanLeague = (v: unknown): v is ScanLeague => isLeagueId(v) || v === "ucl";
+
+/** The sport of a scanned league; the Champions League is soccer. */
+export const scanSport = (league: ScanLeague): Sport =>
+  league === "ucl" ? "soccer" : LEAGUES[league].sport;
 
 export const SPORT_KEY: Record<ScanLeague, string> = {
   nhl: "icehockey_nhl",
   liiga: "icehockey_liiga",
   epl: "soccer_epl",
+  nba: "basketball_nba",
   ucl: "soccer_uefa_champs_league",
 };
 

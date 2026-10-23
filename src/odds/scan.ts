@@ -3,17 +3,18 @@
  * board (src/odds/liveBoard.ts) for the books the bettor can use.
  *
  * Each game yields up to two markets: the three-way line (soccer 1X2, or
- * the hockey 60-minute 1X2 that Unibet and LeoVegas quote) and the hockey
- * two-way line (winner including overtime, the only hockey market
- * Veikkaus shows here). The consensus of each market is taken over the
- * books that are not candidates, so a Finnish book never confirms itself.
+ * the hockey 60-minute 1X2 that Unibet and LeoVegas quote) and the two-way
+ * line (winner including overtime: the only hockey market Veikkaus shows
+ * here, and the only basketball market at all). The consensus of each
+ * market is taken over the books that are not candidates, so a Finnish
+ * book never confirms itself.
  *
  * Alongside the paper's figures every candidate carries the edge against
  * the de-vigged sharp price (Pinnacle when it quotes the market, else the
  * median of the other books), which is what the ledger's closing line
  * value is measured against.
  */
-import { Board, BoardEvent, FI_BOOKS, ScanLeague } from "./liveBoard";
+import { Board, BoardEvent, FI_BOOKS, ScanLeague, scanSport } from "./liveBoard";
 import { Lines, findOutliers, meanOddsConsensus, KAUNITZ_ALPHA } from "./outliers";
 import { devig, overround, MARKET_SIDES } from "../utils/sharp";
 import { OddsMarket, PriceTrio, TwoWay } from "./types";
@@ -178,22 +179,26 @@ export function scanBoard(board: Board, opts: ScanOptions = {}): LeagueScan {
     if (!Number.isFinite(t) || t < now || t > horizon) continue;
     const three = toLines(ev.threeWay);
     const two = toLines(ev.twoWay);
-    const soccer = ev.league === "epl" || ev.league === "ucl";
-    const threeMarket: OddsMarket = soccer ? "fullTime" : "regulation";
+    const sport = scanSport(ev.league);
+    // Soccer: the 1X2 only. Hockey: the 60-minute 1X2 and the winner incl.
+    // overtime. Basketball: the winner incl. overtime only.
+    const threeMarket: OddsMarket | null =
+      sport === "soccer" ? "fullTime" : sport === "hockey" ? "regulation" : null;
+    const hasTwoWay = sport !== "soccer";
 
     const found: Candidate[] = [
-      ...scanMarket(ev, threeMarket, three, { alpha, books }),
-      ...(soccer ? [] : scanMarket(ev, "moneyline", two, { alpha, books })),
+      ...(threeMarket ? scanMarket(ev, threeMarket, three, { alpha, books }) : []),
+      ...(hasTwoWay ? scanMarket(ev, "moneyline", two, { alpha, books }) : []),
     ];
     candidates.push(...found);
 
-    const cThree = meanOddsConsensus(three, MARKET_SIDES[threeMarket], candidateSet);
-    const cTwo = soccer ? null : meanOddsConsensus(two, MARKET_SIDES.moneyline, candidateSet);
+    const cThree = threeMarket ? meanOddsConsensus(three, MARKET_SIDES[threeMarket], candidateSet) : null;
+    const cTwo = hasTwoWay ? meanOddsConsensus(two, MARKET_SIDES.moneyline, candidateSet) : null;
     const bookLines: GameSummary["books"] = {};
     for (const b of books) {
       const entry: Partial<Record<OddsMarket, Record<string, number>>> = {};
-      if (three[b]) entry[threeMarket] = three[b];
-      if (!soccer && two[b]) entry.moneyline = two[b];
+      if (threeMarket && three[b]) entry[threeMarket] = three[b];
+      if (hasTwoWay && two[b]) entry.moneyline = two[b];
       if (Object.keys(entry).length) bookLines[b] = entry;
     }
     games.push({

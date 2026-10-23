@@ -19,7 +19,8 @@ import { computeElosFromGames } from "./calculator";
  * Leagues with a game history (NHL, Liiga, EPL) fit the factor from their
  * own games with `fitDrawFactor`; the constants are the fallbacks when
  * there is no history to fit against and the values for the seeded
- * competitions (World Cup, Champions League).
+ * competitions (World Cup, Champions League). Basketball cannot end level,
+ * so the NBA uses NO_DRAW and only the two-way market.
  */
 export const NO_DRAW = 0;
 export const SOCCER_DRAW_FACTOR = 0.6;
@@ -74,7 +75,7 @@ export function fitDrawFactorFromHistory(
     baseK?: number;
     seasonRegression?: number;
     newTeamElo?: number;
-    marginMode?: "unsigned" | "signed" | "none" | "goals";
+    marginMode?: "unsigned" | "signed" | "none" | "goals" | "points";
     goalStep?: number;
     earlyK?: { mult: number; games: number };
     /** Divisor used by the Elo update. */

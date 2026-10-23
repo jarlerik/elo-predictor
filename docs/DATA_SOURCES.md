@@ -2,7 +2,7 @@
 
 This app mixes two kinds of data:
 
-- **Live game history** (NHL, SM-liiga, Premier League): pulled from public
+- **Live game history** (NHL, SM-liiga, Premier League, NBA): pulled from public
   feeds at runtime, Elo computed from scratch on every load. Nothing to
   maintain except the team tables when the league's membership changes.
 - **Seeded ratings** (Champions League, World Cup): a JSON file in `data/`
@@ -21,12 +21,14 @@ in-memory data keeps being served and the error is logged.
 | NHL              | `api.nhle.com` stats API                | 2 previous + current  | every 6 h         | `CURRENT_NHL_TEAMS` / `NHL_TEAM_NAMES` on expansion or rename       |
 | SM-liiga         | `liiga.fi/api/v2/games`                 | 2 previous + current  | every 6 h         | `LIIGA_TEAMS` when a club joins or is renamed                       |
 | Premier League   | `fixturedownload.com/feed/json/epl-*`   | 2 previous + current  | every 6 h         | `EPL_TEAMS` when a promoted club is missing                         |
+| NBA              | `fixturedownload.com/feed/json/nba-*`   | 2 previous + current  | every 6 h         | `NBA_TEAMS` when a franchise moves or is renamed                    |
 | Champions League | `data/ucl/ratings.json` + `fixturedownload.com/feed/json/champions-league-*` | current | games every 6 h | seed + `UCL_TEAMS` once per season                        |
 | World Cup        | `data/soccer/ratings.json`              | —                     | none              | seed before and during the tournament                               |
 | EPL odds history | `football-data.co.uk/mmz4281/<yy><yy>/E0.csv` → `data/odds/epl/` | 2012-13 onwards | `npm run odds:fetch` (current season refetched after a day) | extend `src/odds/aliases.ts` when a club name is reported unmatched |
 | EPL game history | `data/games/epl/` from fixturedownload (2016-17+) or the odds files (older) | 2012-13 onwards | `npm run games:fetch` | none |
-| NHL / Liiga odds history | The Odds API daily snapshots → `data/odds/<league>/` | NHL 2020-21+, Liiga March 2025+ | `npm run odds:fetch -- nhl\|liiga` (needs `THE_ODDS_API_KEY`) | none |
+| NHL / Liiga / NBA odds history | The Odds API daily snapshots → `data/odds/<league>/` | NHL 2020-21+, Liiga March 2025+, NBA not fetched yet | `npm run odds:fetch -- nhl\|liiga\|nba` (needs `THE_ODDS_API_KEY`) | none |
 | NHL / Liiga game history | `data/games/<league>/` from the league APIs | 2019-20 onwards | `npm run games:fetch -- nhl\|liiga` | none |
+| NBA game history | `data/games/nba/` from fixturedownload | 2018-19 onwards | `npm run games:fetch -- nba` | none |
 
 Team tables live in `src/utils/leagues.ts` (Liiga, EPL, UCL) and
 `src/utils/teamData.ts` (NHL). Codes must be unique across every league
@@ -84,6 +86,36 @@ the wrong name.
   derives 2012-13 to 2015-16 from the football-data odds files, which carry
   the results; `npm run games:fetch -- epl 2012 2026 --verify` cross-checks
   every score on the seasons both sources cover.
+
+## NBA
+
+- **Endpoint:** `https://fixturedownload.com/feed/json/nba-<season start year>`
+  (`nba-2026` = 2026-27), the same free feed as the EPL. Regular season
+  only: 1,230 games plus the NBA Cup final; the playoffs are not in the
+  feed. Seasons 2018-19 onwards are served (checked 2026-10-23; 2017-18
+  is not). Provider: `src/data/nbaFetcher.ts`.
+- **Season id:** `YYYY(YYYY+1)` as for the NHL; `nbaSeasonFor()` puts July
+  onwards in the season starting that year.
+- **Played-game filter:** null scores are the schedule. NBA Cup knockout
+  games are listed as "To be announced" v "To be announced" until the
+  teams are known and are skipped until then. A basketball game cannot
+  end level, so `decidedInOTorSO` is always false, the draw factor is
+  zero and the only market is the winner including overtime
+  (`moneyline`); `npm run bet` refuses any other market for the NBA.
+- **Elo:** K scales with the points margin in FiveThirtyEight's form,
+  (margin + 3)^0.8 / (7.5 + 0.006 × winner's rating edge)
+  (`marginMode: "points"` in `src/elo/calculator.ts`). On the stored
+  games, scored from 2020-21 after two burn-in seasons with no age
+  weighting (7,248 games), K 20 and home advantage 40 give log loss 0.626
+  against 0.633 for the goal-margin form and 0.632 with no margin term;
+  40 Elo points match the observed 55 % home-win rate, well under
+  FiveThirtyEight's 100 from the years when home court was worth more.
+  Values in `LEAGUES.nba`; no market backtest yet, since no prices are
+  stored.
+- **Upkeep:** `NBA_TEAMS` when a franchise moves or is renamed. Eight
+  codes are NHL tri-codes too (BOS, CHI, DAL, DET, MIN, PHI, TOR, UTA),
+  so a bet always names its league and `inferLeague` returns null for a
+  pair that fits both.
 
 ## Premier League odds history (football-data.co.uk)
 
@@ -168,11 +200,11 @@ Champions League page exist for the final.
 - **Adding a team:** add the code to both the ratings file and
   `COUNTRY_NAMES`.
 
-## Hockey odds history (The Odds API)
+## Hockey and NBA odds history (The Odds API)
 
 - **Endpoint:** `GET https://api.the-odds-api.com/v4/historical/sports/<sport>/odds?regions=eu&markets=h2h&date=<ISO>`
-  with `icehockey_nhl` or `icehockey_liiga`, one call per game day at ten
-  minutes before the day's first puck drop. Returns every event not yet
+  with `icehockey_nhl`, `icehockey_liiga` or `basketball_nba`, one call
+  per game day at ten minutes before the day's first tip-off. Returns every event not yet
   started at that snapshot with each bookmaker's head-to-head prices.
   Provider: `src/odds/theOddsApi.ts`.
 - **Cost:** 10 credits per call (per market and region). A season is about
@@ -190,6 +222,13 @@ Champions League page exist for the final.
   cost per game and was not worth it.
 - **Coverage (checked 2026-10-18):** NHL from the 2020 restart, Liiga from
   March 2025. Days before `ARCHIVE_START` in the provider are skipped.
+- **NBA:** no draw line, so the record's own market is the two-way
+  `moneyline` with Pinnacle as the sharp price (the books' mean
+  probability when Pinnacle is absent) and no `regulation` trio. The live
+  board was checked on 2026-10-23 (28 books on a game, full club names,
+  "LA Clippers"); the archive has not been fetched, so its start
+  (`ARCHIVE_START` June 2020, the provider's own) is unverified. A season
+  is about 165 game days, so about 1,700 credits.
 - **Team names:** NHL names folded (accents and dots dropped) against
   `NHL_TEAM_NAMES` plus "St Louis Blues", "Montréal Canadiens", "Arizona
   Coyotes", "Utah Hockey Club"; Liiga uses the short club names that match
@@ -222,10 +261,12 @@ football-data.co.uk files instead.
   (kickoff ±1 day), `/v4/odds?fixtureId=&bookmakers=pinnacle` (live),
   `/v4/historical-odds?fixtureId=&bookmakers=pinnacle` (price history, free),
   `/v4/account` (usage, unmetered).
-- **Ids:** soccer sport 10, ice hockey 15; EPL tournament 17, NHL 234;
-  Pinnacle slug `pinnacle`; soccer "Full Time Result" market 101
-  (outcomes 101/102/103); hockey "Regular Time Result" 153 (153/154/155)
-  and "Winner (incl. overtime and penalties)" 151 (151/152). Liiga and
+- **Ids:** soccer sport 10, ice hockey 15, basketball 11; EPL tournament
+  17, NHL 234, NBA 132; Pinnacle slug `pinnacle`; soccer "Full Time
+  Result" market 101 (outcomes 101/102/103); hockey "Regular Time Result"
+  153 (153/154/155) and "Winner (incl. overtime and penalties)" 151
+  (151/152); basketball full-game moneyline 111 (111 home, 112 away,
+  checked with a live call on 2026-10-23, three requests). Liiga and
   Champions League tournament ids are looked up by slug at first use.
 - **Budget:** the free tier is 250 requests a month; every billable call
   increments `data/odds/oddspapi/budget.json` (`{month, used}`). Above 200

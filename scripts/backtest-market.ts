@@ -22,8 +22,7 @@ import { readAllOdds } from "../src/odds/store";
 import {
   buildReport,
   DEFAULT_POLICIES,
-  DEFAULT_AXES,
-  HOCKEY_AXES,
+  axesFor,
   grid,
   reportMarkdown,
   seasonsOf,
@@ -68,7 +67,7 @@ const cfg: WalkForwardConfig = {
     timeWeighting: has("--age-weighting"),
     seasonRegression: Number(flag("--regress") ?? 0),
     newTeamElo: Number(flag("--new-team") ?? 1500),
-    marginMode: (flag("--margin") as "unsigned" | "signed" | "none" | undefined) ?? "unsigned",
+    marginMode: (flag("--margin") as "unsigned" | "signed" | "none" | "points" | undefined) ?? LEAGUES[league].marginMode ?? "unsigned",
     scale: Number(flag("--scale") ?? 400),
     probScale: flag("--prob-scale") ? Number(flag("--prob-scale")) : undefined,
   },
@@ -82,7 +81,7 @@ console.error(
 const t0 = Date.now();
 const walk = walkForward(games, odds, cfg);
 const sensitivity = has("--grid")
-  ? grid(games, odds, cfg, LEAGUES[league].sport === "hockey" ? HOCKEY_AXES : DEFAULT_AXES)
+  ? grid(games, odds, cfg, axesFor(LEAGUES[league].sport))
   : null;
 const report = buildReport(walk, DEFAULT_POLICIES, sensitivity);
 const md = reportMarkdown(report);

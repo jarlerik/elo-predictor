@@ -22,7 +22,7 @@
  */
 import { createHash } from "crypto";
 import { GameRecord } from "../utils/types";
-import { LeagueId, LEAGUES } from "../utils/leagues";
+import { LeagueId, LEAGUES, MAIN_MARKET, Sport } from "../utils/leagues";
 import { computeElosFromGames } from "../elo/calculator";
 import {
   eloToWinProb,
@@ -59,8 +59,8 @@ export interface EloConfig {
   seasonRegression: number;
   /** Starting rating for promoted or returning teams. */
   newTeamElo: number;
-  /** See EloOptions.marginMode; default "unsigned". */
-  marginMode?: "unsigned" | "signed" | "none" | "goals";
+  /** See EloOptions.marginMode; default "unsigned" ("points" for the NBA). */
+  marginMode?: "unsigned" | "signed" | "none" | "goals" | "points";
   goalStep?: number;
   earlyK?: { mult: number; games: number };
   /**
@@ -167,11 +167,23 @@ function outcomeOf(g: GameRecord, hockey: boolean): Outcome {
   return 1;
 }
 
+/**
+ * De-vigged [home, draw, away] of a price list. A two-way list (basketball)
+ * keeps the draw slot at zero, so the same scoring runs over both.
+ */
 function toProbs(trio: PriceTrio | undefined): [number, number, number] | null {
-  if (!trio || trio.draw === undefined) return null;
+  if (!trio) return null;
+  if (trio.draw === undefined) {
+    const p = devig({ home: trio.home, away: trio.away }, MARKET_SIDES.moneyline);
+    return p ? [p.home, 0, p.away] : null;
+  }
   const p = devig({ home: trio.home, draw: trio.draw, away: trio.away }, MARKET_SIDES.fullTime);
   return p ? [p.home, p.draw, p.away] : null;
 }
+
+/** Fallback draw factor of a sport when the history is too thin to fit one. */
+const drawFallback = (sport: Sport) =>
+  sport === "hockey" ? HOCKEY_DRAW_FACTOR : sport === "soccer" ? SOCCER_DRAW_FACTOR : NO_DRAW;
 
 function mlRow(
   homeElo: number,
@@ -270,7 +282,8 @@ export function walkForward(
   odds: OddsRecord[],
   cfg: WalkForwardConfig
 ): WalkResult {
-  const hockey = LEAGUES[cfg.league].sport === "hockey";
+  const sport = LEAGUES[cfg.league].sport;
+  const hockey = sport === "hockey";
   const seasons = cfg.seasons.length ? cfg.seasons : seasonsOf(games);
   const scored = new Set(seasons.slice(cfg.burnInSeasons));
   const sorted = [...games].sort((a, b) => a.date.localeCompare(b.date) || a.gamePk - b.gamePk);
@@ -310,7 +323,7 @@ export function walkForward(
   // Per-season draw factor and baseline from earlier seasons only.
   const drawFactor = new Map<string, number>();
   const baseline = new Map<string, [number, number, number]>();
-  const fallback = hockey ? HOCKEY_DRAW_FACTOR : SOCCER_DRAW_FACTOR;
+  const fallback = drawFallback(sport);
   for (const s of scored) {
     const prior = sorted.filter((g) => g.season < s);
     const nu = fitDrawFactorFromHistory(prior, hockey ? isRegulationDraw : isFullTimeDraw, {
@@ -520,6 +533,8 @@ export function calibrationOf(rows: WalkRow[]): { model: Bucket[]; market: Bucke
   for (const r of rows) {
     if (!r.pSharp) continue;
     for (let i = 0; i < 3; i++) {
+      // A two-way market has no draw to calibrate.
+      if (i === 1 && r.p[1] === 0 && r.pSharp[1] === 0) continue;
       addToBucket(model, r.p[i], r.y === i);
       addToBucket(market, r.pSharp[i], r.y === i);
     }
@@ -554,7 +569,7 @@ export function simulate(
 ): { rows: LedgerRow[]; stats: SimulationStats } {
   const out: LedgerRow[] = [];
   const stats: SimulationStats = { gamesConsidered: 0, gamesWithoutPrice: 0, bets: 0 };
-  const market = LEAGUES[league].sport === "hockey" ? "regulation" : "fullTime";
+  const market = MAIN_MARKET[LEAGUES[league].sport];
 
   for (const r of rows) {
     if (!r.odds) continue;
@@ -568,7 +583,7 @@ export function simulate(
           ? policy.timing === "close" ? o.max : o.maxOpen
           : policy.timing === "close" ? o.avg : o.avgOpen;
     const pSharp = toProbs(sharpTrio);
-    if (!priceTrio || priceTrio.draw === undefined || !pSharp) {
+    if (!priceTrio || !pSharp) {
       stats.gamesWithoutPrice++;
       continue;
     }
@@ -579,9 +594,11 @@ export function simulate(
       continue;
 
     const prob = policy.prob === "model" ? r.p : mix(r.p, pSharp, policy.shrinkWeight);
-    const prices: [number, number, number] = [priceTrio.home, priceTrio.draw, priceTrio.away];
+    // A two-way market has no draw price; that side is never a candidate.
+    const prices: [number, number, number] = [priceTrio.home, priceTrio.draw ?? 0, priceTrio.away];
     const candidates: { side: number; edge: number }[] = [];
     for (let i = 0; i < 3; i++) {
+      if (!(prices[i] > 1)) continue;
       const edge = prob[i] * prices[i] - 1;
       if (edge < policy.minEdge) continue;
       if (policy.minOdds !== undefined && prices[i] < policy.minOdds) continue;
@@ -754,6 +771,12 @@ export const DEFAULT_AXES: GridAxes = {
 
 /** Hockey leagues: home advantage sits lower than in soccer. */
 export const HOCKEY_AXES: GridAxes = { ...DEFAULT_AXES, homeAdv: [20, 35, 50] };
+/** Basketball: FiveThirtyEight's 100 points of home court, bracketed. */
+export const BASKETBALL_AXES: GridAxes = { ...DEFAULT_AXES, homeAdv: [60, 80, 100, 120] };
+
+export function axesFor(sport: Sport): GridAxes {
+  return sport === "hockey" ? HOCKEY_AXES : sport === "basketball" ? BASKETBALL_AXES : DEFAULT_AXES;
+}
 
 export interface GridCell {
   elo: {

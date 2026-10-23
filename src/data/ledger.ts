@@ -14,10 +14,10 @@
 import fs from "fs";
 import path from "path";
 import { CURRENT_NHL_TEAMS } from "../utils/teamData";
-import { EPL_TEAMS, LIIGA_TEAMS, UCL_TEAMS } from "../utils/leagues";
+import { EPL_TEAMS, LIIGA_TEAMS, NBA_TEAMS, UCL_TEAMS } from "../utils/leagues";
 import { COUNTRY_NAMES } from "../utils/soccerTeams";
 
-export type LedgerLeague = "nhl" | "liiga" | "epl" | "ucl" | "worldcup";
+export type LedgerLeague = "nhl" | "liiga" | "epl" | "nba" | "ucl" | "worldcup";
 export type LedgerMarket =
   | "regulation"
   | "moneyline"
@@ -149,6 +149,7 @@ export function isLedgerLeague(v: unknown): v is LedgerLeague {
     v === "nhl" ||
     v === "liiga" ||
     v === "epl" ||
+    v === "nba" ||
     v === "ucl" ||
     v === "worldcup"
   );
@@ -157,15 +158,22 @@ export function isLedgerLeague(v: unknown): v is LedgerLeague {
 /**
  * Guess the league from the two team codes. Codes are unique across leagues
  * except that English clubs keep their EPL code in the Champions League, so
- * two EPL codes default to the Premier League.
+ * two EPL codes default to the Premier League, and that eight NBA codes are
+ * NHL tri-codes too (BOS, CHI, DAL, DET, MIN, PHI, TOR, UTA): a pair that
+ * fits both leagues is null, and the caller must name the league.
  */
 export function inferLeague(home: string, away: string): LedgerLeague | null {
   const inNhl = (c: string) => CURRENT_NHL_TEAMS.has(c);
+  const inNba = (c: string) => c in NBA_TEAMS;
   const inLiiga = (c: string) => c in LIIGA_TEAMS;
   const inEpl = (c: string) => c in EPL_TEAMS;
   const inUcl = (c: string) => c in UCL_TEAMS;
   const inWc = (c: string) => c in COUNTRY_NAMES;
-  if (inNhl(home) && inNhl(away)) return "nhl";
+  const nhl = inNhl(home) && inNhl(away);
+  const nba = inNba(home) && inNba(away);
+  if (nhl && nba) return null;
+  if (nhl) return "nhl";
+  if (nba) return "nba";
   if (inLiiga(home) && inLiiga(away)) return "liiga";
   if (inEpl(home) && inEpl(away)) return "epl";
   if (inUcl(home) && inUcl(away)) return "ucl";
@@ -405,7 +413,7 @@ export function rowsFromBetFile(
         bet.market === "moneyline" ||
         bet.market === "fullTime"
           ? bet.market
-          : league === "nhl" || league === "liiga"
+          : league === "nhl" || league === "liiga" || league === "nba"
           ? "moneyline"
           : "fullTime";
       rows.push(

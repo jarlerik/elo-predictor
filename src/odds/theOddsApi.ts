@@ -1,6 +1,6 @@
 /**
  * The Odds API (the-odds-api.com): historical bookmaker prices for the
- * hockey leagues, which football-data does not cover.
+ * hockey leagues and the NBA, which football-data does not cover.
  *
  * One call per game day at ten minutes before the day's first puck drop:
  *
@@ -20,17 +20,23 @@
  *   three-way books' de-vigged probabilities (`sharpBook: "consensus"`),
  *   with the average and best closing price across those books.
  *
+ * Basketball has no draw, so an NBA record's own market is the two-way
+ * `moneyline` with Pinnacle as the sharp price (the books' average when
+ * Pinnacle is absent) and no `regulation` trio.
+ *
  * Checked live on 2026-10-18: NHL archive from the 2020 restart, Liiga from
  * March 2025; Pinnacle present on both; 6–13 books carry the Draw on an NHL
  * day, 10 on a Liiga day. Team names: "St Louis Blues", "Montréal
  * Canadiens", "Utah Mammoth"; Liiga uses the short club names ("Ilves",
- * "Kärpät"). Raw snapshots are kept under data/odds/raw/ (ignored) so a
- * rerun costs nothing.
+ * "Kärpät"); the NBA uses the full club names with "LA Clippers" (live
+ * board, 2026-10-23; the archive start is the provider's June 2020 one and
+ * is UNVERIFIED for the NBA). Raw snapshots are kept under data/odds/raw/
+ * (ignored) so a rerun costs nothing.
  */
 import axios from "axios";
 import fs from "fs";
 import path from "path";
-import { LeagueId } from "../utils/leagues";
+import { LeagueId, LEAGUES, NBA_TEAM_NAMES } from "../utils/leagues";
 import { NHL_TEAM_NAMES } from "../utils/teamData";
 import { OddsProvider, OddsRecord, PriceTrio, TwoWay, UnmatchedName } from "./types";
 import { resolveAbbr } from "./aliases";
@@ -40,12 +46,12 @@ import { readGameSeason, currentStartYear } from "../data/gameStore";
 import { GameRecord } from "../utils/types";
 
 const BASE = "https://api.the-odds-api.com/v4";
-const SPORT: Partial<Record<LeagueId, string>> = { nhl: "icehockey_nhl", liiga: "icehockey_liiga" };
+const SPORT: Partial<Record<LeagueId, string>> = { nhl: "icehockey_nhl", liiga: "icehockey_liiga", nba: "basketball_nba" };
 const REGIONS = "eu";
 const MARKETS = "h2h";
 const SNAPSHOT_LEAD_MS = 10 * 60 * 1000;
 /** First day with data per league (checked 2026-10-18); earlier days are skipped unpaid. */
-const ARCHIVE_START: Partial<Record<LeagueId, string>> = { nhl: "2020-07-01", liiga: "2025-03-01" };
+const ARCHIVE_START: Partial<Record<LeagueId, string>> = { nhl: "2020-07-01", liiga: "2025-03-01", nba: "2020-07-01" };
 /** Stop before the month's credits are gone; live checks need some too. */
 const CREDIT_FLOOR = 300;
 const SHARP = "pinnacle";
@@ -75,8 +81,17 @@ for (const [name, abbr] of Object.entries({
   "Montreal Canadiens": "MTL",
 })) NHL_BY_NAME.set(fold(name), abbr);
 
+const NBA_BY_NAME = new Map<string, string>();
+for (const [abbr, name] of Object.entries(NBA_TEAM_NAMES)) NBA_BY_NAME.set(fold(name), abbr);
+for (const [name, abbr] of Object.entries({
+  "Los Angeles Clippers": "LAC",
+  "L.A. Clippers": "LAC",
+  "L.A. Lakers": "LAL",
+})) NBA_BY_NAME.set(fold(name), abbr);
+
 export function resolveTheOddsApiAbbr(league: LeagueId, name: string): string | null {
   if (league === "nhl") return NHL_BY_NAME.get(fold(name)) ?? null;
+  if (league === "nba") return NBA_BY_NAME.get(fold(name)) ?? null;
   if (league === "liiga") return resolveAbbr(league, name) ?? resolveOddspapiAbbr("liiga", name);
   return resolveAbbr(league, name);
 }
@@ -178,6 +193,38 @@ function eventRecord(
   }
   const three = Object.values(threeWay);
   const two = Object.values(twoWay);
+
+  if (LEAGUES[league].sport === "basketball") {
+    // No draw line: the record's own market is the two-way winner incl.
+    // overtime. Pinnacle is the sharp price; without it, the books' mean
+    // probability as odds.
+    if (!two.length) return null;
+    const pin = twoWay[SHARP];
+    const sharp: TwoWay = pin ?? {
+      home: round3(two.length / two.reduce((s, x) => s + 1 / x.home, 0)),
+      away: round3(two.length / two.reduce((s, x) => s + 1 / x.away, 0)),
+    };
+    return {
+      league,
+      season,
+      date: game.date,
+      home: game.homeAbbr,
+      away: game.awayAbbr,
+      market: "moneyline",
+      sharp,
+      sharpBook: pin ? "pinnacle" : "avg",
+      avg: {
+        home: round3(two.reduce((s, x) => s + x.home, 0) / two.length),
+        away: round3(two.reduce((s, x) => s + x.away, 0) / two.length),
+      },
+      max: { home: Math.max(...two.map((x) => x.home)), away: Math.max(...two.map((x) => x.away)) },
+      book: twoWay,
+      result: { homeGoals: game.homeGoals, awayGoals: game.awayGoals },
+      snapshotAt: ev.bookmakers[0]?.last_update,
+      source: "the-odds-api",
+    };
+  }
+
   if (!three.length && !twoWay[SHARP]) return null;
 
   // Consensus: median de-vigged probability per side, renormalised.

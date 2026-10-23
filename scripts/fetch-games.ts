@@ -10,8 +10,9 @@
  * derived from the football-data odds files (which carry the results), so
  * `npm run odds:fetch` must have stored them first. NHL: the stats API,
  * regular season and playoffs (preseason dropped). Liiga: liiga.fi, regular
- * season only. --verify compares the games with the odds files on every
- * season that has both and fails on any score mismatch.
+ * season only. NBA: fixturedownload.com, 2018-19 onwards, regular season
+ * only. --verify compares the games with the odds files on every season
+ * that has both and fails on any score mismatch.
  */
 import {
   currentStartYear,

@@ -10,7 +10,7 @@
  * For every game and market the consensus is p_cons = 1 / mean odds over
  * the stored books (football-data's named books' closing columns for the
  * EPL; The Odds API's European books at ten minutes before the day's
- * first game for the hockey leagues). One flat unit goes on each
+ * first game for the hockey leagues and the NBA). One flat unit goes on each
  * (game, side) whose best price among the candidate books exceeds
  * 1 / (p_cons − α), as in the paper. Reports per α the number of bets,
  * hit rate against the paper's expected hit rate, yield with its standard
@@ -25,7 +25,7 @@ import { readAllOdds, joinOdds, gameKey } from "../src/odds/store";
 import { OddsRecord } from "../src/odds/types";
 import { Lines, meanOddsConsensus, kaunitzThreshold, kaunitzEv } from "../src/odds/outliers";
 import { devig, MARKET_SIDES } from "../src/utils/sharp";
-import { LeagueId, LEAGUES, isLeagueId } from "../src/utils/leagues";
+import { LeagueId, LEAGUES, MAIN_MARKET, isLeagueId } from "../src/utils/leagues";
 import { GameRecord } from "../src/utils/types";
 
 const args = process.argv.slice(2);
@@ -69,8 +69,8 @@ function outcomeOf(g: GameRecord, market: Market): GameMarket["outcome"] {
   return g.homeGoals > g.awayGoals ? "home" : "away";
 }
 
-/** football-data stores pre-match and closing columns; keep the closing ones (suffix C). */
-function threeWayLines(o: OddsRecord): Lines {
+/** The record's own market per book. football-data stores pre-match and closing columns; keep the closing ones (suffix C). */
+function mainLines(o: OddsRecord): Lines {
   const out: Lines = {};
   for (const [book, trio] of Object.entries(o.book ?? {})) {
     if (o.source === "football-data") {
@@ -87,14 +87,14 @@ const markets: GameMarket[] = [];
 for (const g of games) {
   const o = join.matched.get(gameKey(g));
   if (!o) continue;
-  const three = threeWayLines(o);
-  if (Object.keys(three).length >= minBooks) {
-    const market: Market = LEAGUES[league].sport === "soccer" ? "fullTime" : "regulation";
+  const main = mainLines(o);
+  if (Object.keys(main).length >= minBooks) {
+    const market: Market = MAIN_MARKET[LEAGUES[league].sport];
     markets.push({
       game: g,
       season: o.season,
       market,
-      lines: three,
+      lines: main,
       outcome: outcomeOf(g, market),
       sharp: devig({ ...o.sharp } as Record<string, number>, MARKET_SIDES[market]),
       sharpBook: o.sharpBook,

@@ -39,9 +39,14 @@ export interface OddsRecord {
   season: string;
   /** ISO kickoff; UTC midnight of the match day when the source has no time. */
   date: string;
-  /** App abbreviations (EPL_TEAMS / LIIGA_TEAMS / NHL codes). */
+  /** App abbreviations (EPL_TEAMS / LIIGA_TEAMS / NBA_TEAMS / NHL codes). */
   home: string;
   away: string;
+  /**
+   * The record's own market: the soccer 1X2, the hockey 60-minute 1X2, or
+   * the basketball winner incl. overtime (two-way, so `sharp` and the
+   * other trios carry no `draw`).
+   */
   market: OddsMarket;
   /**
    * Sharp reference close: Pinnacle's last price before kickoff when the

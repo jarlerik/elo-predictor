@@ -5,7 +5,7 @@
  * and reported by the caller; nothing is guessed, because a wrong code
  * silently joins a game to the wrong odds.
  */
-import { LeagueId, EPL_TEAMS, LIIGA_TEAMS } from "../utils/leagues";
+import { LeagueId, EPL_TEAMS, LIIGA_TEAMS, NBA_TEAMS } from "../utils/leagues";
 import { CURRENT_NHL_TEAMS } from "../utils/teamData";
 
 /** football-data.co.uk spellings that differ from the fixture feed's. */
@@ -28,12 +28,21 @@ const EPL_ALIASES: Map<string, string> = (() => {
 })();
 
 const LIIGA_ALIASES: Map<string, string> = reverse(LIIGA_TEAMS);
+const NBA_ALIASES: Map<string, string> = reverse(NBA_TEAMS);
 
-/** Codes must not collide across leagues: inferLeague picks the league from them. */
+/**
+ * Codes must not collide across leagues, since inferLeague picks the league
+ * from them. The one allowed overlap is NBA with NHL (BOS, CHI, DAL, DET,
+ * MIN, PHI, TOR, UTA): the two leagues share city tri-codes, and a bet on
+ * either always names its league.
+ */
 for (const code of Object.keys(EPL_TEAMS)) {
-  if (CURRENT_NHL_TEAMS.has(code) || code in LIIGA_TEAMS) {
+  if (CURRENT_NHL_TEAMS.has(code) || code in LIIGA_TEAMS || code in NBA_TEAMS) {
     throw new Error(`team code ${code} is used by more than one league`);
   }
+}
+for (const code of Object.keys(NBA_TEAMS)) {
+  if (code in LIIGA_TEAMS) throw new Error(`team code ${code} is used by more than one league`);
 }
 
 /** App code for a provider's team name, or null when unknown. */
@@ -46,5 +55,7 @@ export function resolveAbbr(league: LeagueId, name: string): string | null {
       return LIIGA_ALIASES.get(key) ?? null;
     case "nhl":
       return CURRENT_NHL_TEAMS.has(key) ? key : null;
+    case "nba":
+      return NBA_ALIASES.get(key) ?? null;
   }
 }

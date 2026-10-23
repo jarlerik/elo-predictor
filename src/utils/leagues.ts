@@ -2,8 +2,19 @@
 // (navigation, labels). Team tables map the app's short codes to the full
 // display name and the exact team name used by the upstream data source.
 
-export type LeagueId = "nhl" | "liiga" | "epl";
-export type Sport = "hockey" | "soccer";
+export type LeagueId = "nhl" | "liiga" | "epl" | "nba";
+export type Sport = "hockey" | "soccer" | "basketball";
+
+/**
+ * The market a league is bet and backtested on: the 60-minute 1X2 for
+ * hockey, the full-time 1X2 for soccer, and the winner including overtime
+ * for basketball, which cannot end level and so has no three-way line.
+ */
+export const MAIN_MARKET: Record<Sport, "regulation" | "fullTime" | "moneyline"> = {
+  hockey: "regulation",
+  soccer: "fullTime",
+  basketball: "moneyline",
+};
 
 export interface LeagueInfo {
   id: LeagueId;
@@ -29,6 +40,12 @@ export interface LeagueInfo {
    * (docs/CONTINUOUS_IMPROVEMENT.md); 20 is the historical default.
    */
   baseK: number;
+  /**
+   * How the winning margin scales K (EloOptions.marginMode). The goal
+   * sports use the default log-margin form; basketball margins run to 30
+   * points, so the NBA uses the FiveThirtyEight form ("points").
+   */
+  marginMode?: "unsigned" | "signed" | "none" | "goals" | "points";
 }
 
 export const LEAGUES: Record<LeagueId, LeagueInfo> = {
@@ -68,6 +85,25 @@ export const LEAGUES: Record<LeagueId, LeagueInfo> = {
     awayLabel: "Away Team",
     homeAdv: 45,
     baseK: 20,
+  },
+  nba: {
+    id: "nba",
+    name: "NBA",
+    shortName: "NBA",
+    sport: "basketball",
+    icon: "🏀",
+    homeLabel: "Home Team",
+    awayLabel: "Away Team",
+    // Fitted 23 October 2026 on the stored 2018-19 → 2026-27 games
+    // (`npm run fit:homeadv -- nba`, lowest log loss at 30–50 and 40 matches
+    // the observed 55 % home-win rate). Well under FiveThirtyEight's 100,
+    // which dates from the years when home court was worth more. K 20 with
+    // the points-margin multiplier scored log loss 0.626 on the 7,248 games
+    // after two burn-in seasons, against 0.633 for the goal-margin form and
+    // 0.632 with no margin term; K 10–30 are within 0.003.
+    homeAdv: 40,
+    baseK: 20,
+    marginMode: "points",
   },
 };
 
@@ -195,6 +231,45 @@ export const UCL_TEAMS: Record<string, LeagueTeam & { country: string }> = {
   VIL: { name: "Villarreal", apiName: "Villarreal", country: "ESP" },
 };
 
+// NBA. apiName = `HomeTeam` in https://fixturedownload.com/feed/json/nba-<season start year>
+// (2018-19 onwards), which is also how The Odds API and OddsPapi spell the
+// clubs ("LA Clippers" on all three, checked 2026-10-23). Eight codes (BOS,
+// CHI, DAL, DET, MIN, PHI, TOR, UTA) are NHL tri-codes too, so a bet on
+// either league names the league explicitly and inferLeague returns null
+// for such a pair.
+export const NBA_TEAMS: Record<string, LeagueTeam> = {
+  ATL: { name: "Atlanta Hawks", apiName: "Atlanta Hawks" },
+  BOS: { name: "Boston Celtics", apiName: "Boston Celtics" },
+  BKN: { name: "Brooklyn Nets", apiName: "Brooklyn Nets" },
+  CHA: { name: "Charlotte Hornets", apiName: "Charlotte Hornets" },
+  CHI: { name: "Chicago Bulls", apiName: "Chicago Bulls" },
+  CLE: { name: "Cleveland Cavaliers", apiName: "Cleveland Cavaliers" },
+  DAL: { name: "Dallas Mavericks", apiName: "Dallas Mavericks" },
+  DEN: { name: "Denver Nuggets", apiName: "Denver Nuggets" },
+  DET: { name: "Detroit Pistons", apiName: "Detroit Pistons" },
+  GSW: { name: "Golden State Warriors", apiName: "Golden State Warriors" },
+  HOU: { name: "Houston Rockets", apiName: "Houston Rockets" },
+  IND: { name: "Indiana Pacers", apiName: "Indiana Pacers" },
+  LAC: { name: "LA Clippers", apiName: "LA Clippers" },
+  LAL: { name: "Los Angeles Lakers", apiName: "Los Angeles Lakers" },
+  MEM: { name: "Memphis Grizzlies", apiName: "Memphis Grizzlies" },
+  MIA: { name: "Miami Heat", apiName: "Miami Heat" },
+  MIL: { name: "Milwaukee Bucks", apiName: "Milwaukee Bucks" },
+  MIN: { name: "Minnesota Timberwolves", apiName: "Minnesota Timberwolves" },
+  NOP: { name: "New Orleans Pelicans", apiName: "New Orleans Pelicans" },
+  NYK: { name: "New York Knicks", apiName: "New York Knicks" },
+  OKC: { name: "Oklahoma City Thunder", apiName: "Oklahoma City Thunder" },
+  ORL: { name: "Orlando Magic", apiName: "Orlando Magic" },
+  PHI: { name: "Philadelphia 76ers", apiName: "Philadelphia 76ers" },
+  PHX: { name: "Phoenix Suns", apiName: "Phoenix Suns" },
+  POR: { name: "Portland Trail Blazers", apiName: "Portland Trail Blazers" },
+  SAC: { name: "Sacramento Kings", apiName: "Sacramento Kings" },
+  SAS: { name: "San Antonio Spurs", apiName: "San Antonio Spurs" },
+  TOR: { name: "Toronto Raptors", apiName: "Toronto Raptors" },
+  UTA: { name: "Utah Jazz", apiName: "Utah Jazz" },
+  WAS: { name: "Washington Wizards", apiName: "Washington Wizards" },
+};
+
 function namesOf(teams: Record<string, LeagueTeam>): Record<string, string> {
   return Object.fromEntries(
     Object.entries(teams).map(([abbr, t]) => [abbr, t.name])
@@ -204,6 +279,7 @@ function namesOf(teams: Record<string, LeagueTeam>): Record<string, string> {
 export const LIIGA_TEAM_NAMES = namesOf(LIIGA_TEAMS);
 export const EPL_TEAM_NAMES = namesOf(EPL_TEAMS);
 export const UCL_TEAM_NAMES = namesOf(UCL_TEAMS);
+export const NBA_TEAM_NAMES = namesOf(NBA_TEAMS);
 
 /**
  * Build a reverse lookup (upstream name -> app abbreviation) for a fetcher.

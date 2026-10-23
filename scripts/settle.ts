@@ -8,7 +8,7 @@
  *   npm run settle -- --id "..." --result void
  *
  * Results come from the same feeds the ratings use (NHL stats API, liiga.fi,
- * fixturedownload for the EPL and the Champions League); World Cup bets
+ * fixturedownload for the EPL, the NBA and the Champions League); World Cup bets
  * are settled by hand with --id. A bet settles as a win when its pick is
  * the market's outcome: the 60-minute result for `regulation` (a game
  * decided in OT/SO is the draw), the final result for `moneyline` and
@@ -20,6 +20,7 @@ import { ensureLedger, LedgerRow, LedgerResult, round2, settleRows } from "../sr
 import { ensureLeague } from "../src/data/leagueData";
 import { ensureUcl } from "../src/data/uclFetcher";
 import { GameRecord } from "../src/utils/types";
+import { isLeagueId } from "../src/utils/leagues";
 
 loadDotEnv();
 const { flag, has } = argv();
@@ -51,7 +52,7 @@ function findGame(row: LedgerRow, games: GameRecord[]): GameRecord | null {
 }
 
 async function playedGames(league: LedgerRow["league"]): Promise<GameRecord[] | null> {
-  if (league === "nhl" || league === "liiga" || league === "epl") return (await ensureLeague(league)).games;
+  if (isLeagueId(league)) return (await ensureLeague(league)).games;
   if (league === "ucl") return (await ensureUcl()).games;
   return null;
 }

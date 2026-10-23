@@ -22,7 +22,7 @@
  * baseline is an independent Poisson at the league's mean goals per side.
  */
 import { GameRecord } from "../utils/types";
-import { LeagueId, LEAGUES, Sport } from "../utils/leagues";
+import { LeagueId, LEAGUES, MAIN_MARKET, Sport } from "../utils/leagues";
 import { LeagueState } from "./leagueData";
 import { computeElosFromGames } from "../elo/calculator";
 import { eloToWinProb, NO_DRAW } from "../elo/probabilities";
@@ -128,7 +128,7 @@ export interface Backtest {
   league: LeagueId;
   name: string;
   sport: Sport;
-  market: "regulation" | "fullTime";
+  market: "regulation" | "fullTime" | "moneyline";
   homeAdv: number;
   drawFactor: number;
   games: number;
@@ -197,7 +197,12 @@ function outcomeOf(g: GameRecord, sport: Sport): Outcome {
 
 /** Score every game of the league once. */
 function toProbs(trio: PriceTrio | undefined): [number, number, number] | null {
-  if (!trio || trio.draw === undefined) return null;
+  if (!trio) return null;
+  if (trio.draw === undefined) {
+    // Two-way market (basketball): the draw slot stays at zero.
+    const p = devig({ home: trio.home, away: trio.away }, MARKET_SIDES.moneyline);
+    return p ? [p.home, 0, p.away] : null;
+  }
   const p = devig({ home: trio.home, draw: trio.draw, away: trio.away }, MARKET_SIDES.fullTime);
   return p ? [p.home, p.draw, p.away] : null;
 }
@@ -241,6 +246,8 @@ export function predictHistory(
   computeElosFromGames(state.games, {
     currentTeams: state.currentTeams,
     homeAdv,
+    baseK: LEAGUES[league].baseK,
+    marginMode: LEAGUES[league].marginMode,
     onGame: (g, homeElo, awayElo) => {
       const probs = eloToWinProb(homeElo, awayElo, homeAdv, drawFactor);
       const p: [number, number, number] = [
@@ -630,7 +637,7 @@ export function backtestLeague(
     league,
     name: info.name,
     sport: info.sport,
-    market: info.sport === "hockey" ? "regulation" : "fullTime",
+    market: MAIN_MARKET[info.sport],
     homeAdv,
     drawFactor: state.drawFactor,
     games: games.length,

@@ -261,6 +261,13 @@ docs/MORNING_SCAN.md (`npm run scan`, `npm run backtest:outliers`).
 10. **Two-way soccer sharp lists and correct-score prices** are dropped on
    save (see docs/METRICS_AND_DASHBOARD.md step 8); needs a `sides` notion
    on the ledger row.
+11. **NBA market backtest.** The NBA (added 23 October 2026) has nine
+   stored seasons of games but no prices: `npm run odds:fetch -- nba
+   2024 2026` stores The Odds API snapshots (about 1,700 credits a
+   season), then `npm run backtest:market -- nba` and `npm run
+   backtest:outliers -- nba` give the two-way verdicts. The Elo defaults
+   (home advantage 40, K 20, points-margin multiplier) were chosen on
+   outcomes only; re-fit them on train seasons once the prices are in.
 
 ## Cadence
 
@@ -284,4 +291,5 @@ docs/MORNING_SCAN.md (`npm run scan`, `npm run backtest:outliers`).
 | 2026-10-18 | Model–market blend: best weight on the model is 0 on train, test and the market average | — | — | — | section "Third turn" |
 | 2026-10-18 | Liiga: baseline vs consensus 60-minute price and Pinnacle moneyline; blend weight 0; every Elo variant rejected | — | +0.026 | −2.1 % (596, sharp-model-0) | `backtest-liiga-20261018-1856` |
 | 2026-10-19 | NHL: grid chooses K 10 on train; **accepted** (test 2023-27 Δ 0.013 → 0.009 and moneyline 0.020 → 0.014, both 2 se; flat on 2025-26 alone) | +0.007 → +0.004 | +0.013 → +0.009 | −7.8 % → −9.4 % (avg close, model edge) | `backtest-nhl-20261019-0818` |
+| 2026-10-23 | NBA added: fixturedownload games 2018-19 → 2026-27, two-way model (no draw), FiveThirtyEight points-margin K; on outcomes only (no prices stored) home advantage 40 and K 20 give log loss 0.626 vs 0.633 for the goal-margin form | — | — | — | `npm run fit:homeadv -- nba` |
 | 2026-10-19 | Outlier rule (Kaunitz 2017) on the stored per-book lines, every book a candidate: hit rate matches mean(p_cons − α); NHL moneyline +2.0 % ± 3.3 at α 0.02 (1,020 bets), other markets ≈ 0 at the sharp price; almost no bets at α 0.05 with 6–14 books per market | — | — | see docs/MORNING_SCAN.md | `outliers-{nhl,liiga,epl}-20261019-1050` |

@@ -22,9 +22,12 @@
  * (151/152) both carry Pinnacle prices; Liiga is tournament 134; the
  * historical snapshots are oldest first and continue in-play, so the close
  * is picked by timestamp; /v4/account returns 404 despite the docs, so the
- * budget is counted locally. Still UNVERIFIED: the Champions League
- * tournament id (discovered at runtime from /v4/tournaments and cached)
- * and the exact leaf shape of /v4/odds (handled tolerantly).
+ * budget is counted locally. Checked 2026-10-23: basketball is sportId 11,
+ * the NBA tournament 132, and Pinnacle's full-game moneyline market 111
+ * (outcomes 111 home, 112 away; /v4/odds body `bookmakerOdds.pinnacle.
+ * markets["111"].outcomes[id].players["0"].price`). Still UNVERIFIED: the
+ * Champions League tournament id (discovered at runtime from
+ * /v4/tournaments and cached).
  */
 import axios from "axios";
 import fs from "fs";
@@ -47,13 +50,14 @@ export const ENDPOINTS = {
 } as const;
 
 export const IDS = {
-  sport: { soccer: 10, hockey: 15 },
+  sport: { soccer: 10, hockey: 15, basketball: 11 },
   bookmaker: "pinnacle",
   /** Known tournament ids; null = discover from /v4/tournaments (cached). */
   tournament: {
     epl: 17, // docs example (get-fixtures): Liverpool v Man United, tournamentId 17
     nhl: 234, // oddspapi.io/sports/ice-hockey
     liiga: 134 as number | null, // /v4/tournaments?sportId=15, slug "liiga", category "finland" (2026-10-18)
+    nba: 132, // oddspapi.io/sports/basketball/nba; fixtures checked 2026-10-23
     ucl: null as number | null, // UNVERIFIED
   },
   /** Slug fragments used to discover the unknown tournaments. */
@@ -65,6 +69,7 @@ export const IDS = {
     soccer1x2: { id: 101, home: 101, draw: 102, away: 103 },
     hockeyRegulation: { id: 153, home: 153, draw: 154, away: 155 },
     hockeyMoneyline: { id: 151, home: 151, away: 152 },
+    basketballMoneyline: { id: 111, home: 111, away: 112 },
   },
 } as const;
 
@@ -179,7 +184,11 @@ interface Tournament {
 }
 
 const sportOf = (league: OddsLeague) =>
-  league === "nhl" || league === "liiga" ? IDS.sport.hockey : IDS.sport.soccer;
+  league === "nhl" || league === "liiga"
+    ? IDS.sport.hockey
+    : league === "nba"
+      ? IDS.sport.basketball
+      : IDS.sport.soccer;
 
 async function tournamentIdFor(
   league: OddsLeague,
@@ -365,6 +374,14 @@ function pricesFrom(
   body: Any,
   before: number | null
 ): Omit<LiveSharpPrices, "fetchedAt" | "sharpSource"> | null {
+  if (league === "nba") {
+    // The winner incl. overtime is the only market; it serves both as the
+    // main price list and as the two-way `moneyline` the ledger reads.
+    const ml = trioOf(body, IDS.markets.basketballMoneyline, before);
+    if (!ml) return null;
+    const two = { home: r2(ml.home), away: r2(ml.away) };
+    return { sharpOdds: two, moneyline: two };
+  }
   const hockey = league === "nhl" || league === "liiga";
   if (!hockey) {
     const trio = trioOf(body, IDS.markets.soccer1x2, before);
