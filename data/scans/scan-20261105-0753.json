@@ -1,0 +1,645 @@
+{
+ "generatedAt": "2026-11-05T05:53:14.354Z",
+ "alpha": 0.05,
+ "books": [
+  "veikkaus_fi",
+  "unibet_fi",
+  "leovegas_fi"
+ ],
+ "hours": 36,
+ "leagues": [
+  {
+   "league": "nhl",
+   "fetchedAt": "2026-11-05T05:53:12.880Z",
+   "cached": false,
+   "creditsLeft": 19978,
+   "alpha": 0.05,
+   "books": [
+    "veikkaus_fi",
+    "unibet_fi",
+    "leovegas_fi"
+   ],
+   "games": [
+    {
+     "league": "nhl",
+     "eventId": "9e57c39752bfbc587ce341650fcd5a19",
+     "commence": "2026-11-06T00:10:00Z",
+     "home": "PIT",
+     "away": "BOS",
+     "mapped": true,
+     "threeWayBooks": 14,
+     "twoWayBooks": 12,
+     "pThree": {
+      "home": 0.41322314049586784,
+      "draw": 0.24380333197887033,
+      "away": 0.414651002073255
+     },
+     "pTwo": {
+      "home": 0.5188679245283019,
+      "away": 0.5233111322549953
+     },
+     "pinnacle": {
+      "home": 1.97,
+      "away": 1.92
+     },
+     "books": {
+      "veikkaus_fi": {
+       "moneyline": {
+        "home": 1.95,
+        "away": 1.85
+       }
+      },
+      "unibet_fi": {
+       "regulation": {
+        "home": 2.5,
+        "draw": 4.1,
+        "away": 2.55
+       }
+      },
+      "leovegas_fi": {
+       "regulation": {
+        "home": 2.5,
+        "draw": 4.1,
+        "away": 2.55
+       }
+      }
+     },
+     "best": null
+    },
+    {
+     "league": "nhl",
+     "eventId": "18dd8ea86db020028f8d1c130b99d616",
+     "commence": "2026-11-06T00:10:00Z",
+     "home": "NYI",
+     "away": "CAR",
+     "mapped": true,
+     "threeWayBooks": 14,
+     "twoWayBooks": 12,
+     "pThree": {
+      "home": 0.31282586027111575,
+      "draw": 0.23923444976076558,
+      "away": 0.5188067444876783
+     },
+     "pTwo": {
+      "home": 0.4081632653061225,
+      "away": 0.6314580941446613
+     },
+     "pinnacle": {
+      "home": 2.51,
+      "away": 1.58
+     },
+     "books": {
+      "veikkaus_fi": {
+       "moneyline": {
+        "home": 2.48,
+        "away": 1.53
+       }
+      },
+      "unibet_fi": {
+       "regulation": {
+        "home": 3.45,
+        "draw": 4.3,
+        "away": 1.94
+       }
+      },
+      "leovegas_fi": {
+       "regulation": {
+        "home": 3.45,
+        "draw": 4.35,
+        "away": 1.94
+       }
+      }
+     },
+     "best": null
+    },
+    {
+     "league": "nhl",
+     "eventId": "fc2cccfb47dffb4677b85d247c768ae9",
+     "commence": "2026-11-06T00:10:00Z",
+     "home": "TBL",
+     "away": "CHI",
+     "mapped": true,
+     "threeWayBooks": 14,
+     "twoWayBooks": 10,
+     "pThree": {
+      "home": 0.7138607971445566,
+      "draw": 0.1884422110552764,
+      "away": 0.16634322151372333
+     },
+     "pTwo": {
+      "home": 0.8045052292839904,
+      "away": 0.23877745940783196
+     },
+     "pinnacle": {
+      "home": 1.25,
+      "away": 4.27
+     },
+     "books": {
+      "unibet_fi": {
+       "regulation": {
+        "home": 1.4,
+        "draw": 6,
+        "away": 6.75
+       }
+      },
+      "leovegas_fi": {
+       "regulation": {
+        "home": 1.4,
+        "draw": 6,
+        "away": 6.75
+       }
+      }
+     },
+     "best": null
+    },
+    {
+     "league": "nhl",
+     "eventId": "f05e184ffd9a6192d19ceee27d51a9de",
+     "commence": "2026-11-06T00:10:00Z",
+     "home": "CBJ",
+     "away": "DAL",
+     "mapped": true,
+     "threeWayBooks": 14,
+     "twoWayBooks": 11,
+     "pThree": {
+      "home": 0.3753518923991242,
+      "draw": 0.2450479885644272,
+      "away": 0.4507888805409467
+     },
+     "pTwo": {
+      "home": 0.47701647875108405,
+      "away": 0.5652620760534429
+     },
+     "pinnacle": {
+      "home": 2.12,
+      "away": 1.79
+     },
+     "books": {
+      "unibet_fi": {
+       "regulation": {
+        "home": 2.75,
+        "draw": 4.2,
+        "away": 2.28
+       }
+      },
+      "leovegas_fi": {
+       "regulation": {
+        "home": 2.75,
+        "draw": 4.25,
+        "away": 2.3
+       }
+      }
+     },
+     "best": null
+    },
+    {
+     "league": "nhl",
+     "eventId": "6828fb175fa928f75d7978128372c817",
+     "commence": "2026-11-06T00:10:00Z",
+     "home": "DET",
+     "away": "VGK",
+     "mapped": true,
+     "threeWayBooks": 14,
+     "twoWayBooks": 12,
+     "pThree": {
+      "home": 0.35283740076448106,
+      "draw": 0.24494794856093077,
+      "away": 0.47374654559810503
+     },
+     "pTwo": {
+      "home": 0.45833333333333337,
+      "away": 0.5835543766578251
+     },
+     "pinnacle": {
+      "home": 2.26,
+      "away": 1.7
+     },
+     "books": {
+      "veikkaus_fi": {
+       "moneyline": {
+        "home": 2.18,
+        "away": 1.68
+       }
+      },
+      "unibet_fi": {
+       "regulation": {
+        "home": 2.95,
+        "draw": 4.2,
+        "away": 2.18
+       }
+      },
+      "leovegas_fi": {
+       "regulation": {
+        "home": 2.95,
+        "draw": 4.25,
+        "away": 2.2
+       }
+      }
+     },
+     "best": null
+    },
+    {
+     "league": "nhl",
+     "eventId": "cb757b1c9cf684423578700bb6aef492",
+     "commence": "2026-11-06T00:10:00Z",
+     "home": "MTL",
+     "away": "UTA",
+     "mapped": true,
+     "threeWayBooks": 14,
+     "twoWayBooks": 12,
+     "pThree": {
+      "home": 0.392156862745098,
+      "draw": 0.23966446974236066,
+      "away": 0.4398826979472141
+     },
+     "pTwo": {
+      "home": 0.48932384341637003,
+      "away": 0.5530417295123177
+     },
+     "pinnacle": {
+      "home": 2.07,
+      "away": 1.83
+     },
+     "books": {
+      "veikkaus_fi": {
+       "moneyline": {
+        "home": 2.12,
+        "away": 1.72
+       }
+      },
+      "unibet_fi": {
+       "regulation": {
+        "home": 2.63,
+        "draw": 4.25,
+        "away": 2.38
+       }
+      },
+      "leovegas_fi": {
+       "regulation": {
+        "home": 2.63,
+        "draw": 4.25,
+        "away": 2.38
+       }
+      }
+     },
+     "best": null
+    },
+    {
+     "league": "nhl",
+     "eventId": "eefdb55d84dd6a95ef53b76d3935f3c9",
+     "commence": "2026-11-06T00:10:00Z",
+     "home": "NJD",
+     "away": "STL",
+     "mapped": true,
+     "threeWayBooks": 14,
+     "twoWayBooks": 12,
+     "pThree": {
+      "home": 0.5309734513274337,
+      "draw": 0.23682652457075193,
+      "away": 0.30356691120667845
+     },
+     "pTwo": {
+      "home": 0.6501182033096926,
+      "away": 0.3904863329783457
+     },
+     "pinnacle": {
+      "home": 1.55,
+      "away": 2.59
+     },
+     "books": {
+      "veikkaus_fi": {
+       "moneyline": {
+        "home": 1.55,
+        "away": 2.45
+       }
+      },
+      "unibet_fi": {
+       "regulation": {
+        "home": 1.92,
+        "draw": 4.3,
+        "away": 3.5
+       }
+      },
+      "leovegas_fi": {
+       "regulation": {
+        "home": 1.93,
+        "draw": 4.35,
+        "away": 3.5
+       }
+      }
+     },
+     "best": null
+    },
+    {
+     "league": "nhl",
+     "eventId": "b945b7133224c704b734e04becd109f0",
+     "commence": "2026-11-06T00:10:00Z",
+     "home": "NYR",
+     "away": "PHI",
+     "mapped": true,
+     "threeWayBooks": 14,
+     "twoWayBooks": 12,
+     "pThree": {
+      "home": 0.48563334682314846,
+      "draw": 0.24410089503661508,
+      "away": 0.34168564920273353
+     },
+     "pTwo": {
+      "home": 0.5975013579576316,
+      "away": 0.44212218649517676
+     },
+     "pinnacle": {
+      "home": 1.69,
+      "away": 2.28
+     },
+     "books": {
+      "veikkaus_fi": {
+       "moneyline": {
+        "home": 1.7,
+        "away": 2.15
+       }
+      },
+      "unibet_fi": {
+       "regulation": {
+        "home": 2.08,
+        "draw": 4.2,
+        "away": 3.15
+       }
+      },
+      "leovegas_fi": {
+       "regulation": {
+        "home": 2.1,
+        "draw": 4.2,
+        "away": 3.15
+       }
+      }
+     },
+     "best": null
+    },
+    {
+     "league": "nhl",
+     "eventId": "5d5b6a0f376a8d9bd4f5e46891e6c6d8",
+     "commence": "2026-11-06T00:10:00Z",
+     "home": "WPG",
+     "away": "VAN",
+     "mapped": true,
+     "threeWayBooks": 14,
+     "twoWayBooks": 12,
+     "pThree": {
+      "home": 0.5730659025787965,
+      "draw": 0.22611644997173544,
+      "away": 0.27075812274368233
+     },
+     "pTwo": {
+      "home": 0.6765067650676506,
+      "away": 0.36532713384257726
+     },
+     "pinnacle": {
+      "home": 1.47,
+      "away": 2.84
+     },
+     "books": {
+      "veikkaus_fi": {
+       "moneyline": {
+        "home": 1.48,
+        "away": 2.64
+       }
+      },
+      "unibet_fi": {
+       "regulation": {
+        "home": 1.74,
+        "draw": 4.6,
+        "away": 4.1
+       }
+      },
+      "leovegas_fi": {
+       "regulation": {
+        "home": 1.75,
+        "draw": 4.6,
+        "away": 4.1
+       }
+      }
+     },
+     "best": null
+    },
+    {
+     "league": "nhl",
+     "eventId": "c672f144ecbb937d3b15b483847129d2",
+     "commence": "2026-11-06T01:10:00Z",
+     "home": "EDM",
+     "away": "ANA",
+     "mapped": true,
+     "threeWayBooks": 14,
+     "twoWayBooks": 12,
+     "pThree": {
+      "home": 0.5393258426966291,
+      "draw": 0.22526750516238037,
+      "away": 0.3058883507519755
+     },
+     "pTwo": {
+      "home": 0.6451612903225806,
+      "away": 0.3952569169960473
+     },
+     "pinnacle": {
+      "home": 1.56,
+      "away": 2.55
+     },
+     "books": {
+      "veikkaus_fi": {
+       "moneyline": {
+        "home": 1.54,
+        "away": 2.48
+       }
+      },
+      "unibet_fi": {
+       "regulation": {
+        "home": 1.89,
+        "draw": 4.5,
+        "away": 3.5
+       }
+      },
+      "leovegas_fi": {
+       "regulation": {
+        "home": 1.89,
+        "draw": 4.5,
+        "away": 3.55
+       }
+      }
+     },
+     "best": null
+    },
+    {
+     "league": "nhl",
+     "eventId": "446de9651d2d2948326d970e9f858a33",
+     "commence": "2026-11-06T02:40:00Z",
+     "home": "COL",
+     "away": "NSH",
+     "mapped": true,
+     "threeWayBooks": 14,
+     "twoWayBooks": 11,
+     "pThree": {
+      "home": 0.5689900426742533,
+      "draw": 0.2235885969815539,
+      "away": 0.27694438033694896
+     },
+     "pTwo": {
+      "home": 0.6724949562878278,
+      "away": 0.36643459142543056
+     },
+     "pinnacle": {
+      "home": 1.48,
+      "away": 2.82
+     },
+     "books": {
+      "veikkaus_fi": {
+       "moneyline": {
+        "home": 1.45,
+        "away": 2.75
+       }
+      },
+      "unibet_fi": {
+       "regulation": {
+        "home": 1.77,
+        "draw": 4.6,
+        "away": 3.95
+       }
+      },
+      "leovegas_fi": {
+       "regulation": {
+        "home": 1.78,
+        "draw": 4.7,
+        "away": 3.95
+       }
+      }
+     },
+     "best": null
+    }
+   ],
+   "candidates": [],
+   "unmatched": []
+  },
+  {
+   "league": "liiga",
+   "fetchedAt": "2026-11-05T05:53:13.142Z",
+   "cached": false,
+   "creditsLeft": 19976,
+   "alpha": 0.05,
+   "books": [
+    "veikkaus_fi",
+    "unibet_fi",
+    "leovegas_fi"
+   ],
+   "games": [],
+   "candidates": [],
+   "unmatched": []
+  },
+  {
+   "league": "epl",
+   "fetchedAt": "2026-11-05T05:53:13.566Z",
+   "cached": false,
+   "creditsLeft": 19974,
+   "alpha": 0.05,
+   "books": [
+    "veikkaus_fi",
+    "unibet_fi",
+    "leovegas_fi"
+   ],
+   "games": [],
+   "candidates": [],
+   "unmatched": []
+  },
+  {
+   "league": "nba",
+   "fetchedAt": "2026-11-05T05:53:13.962Z",
+   "cached": false,
+   "creditsLeft": 19972,
+   "alpha": 0.05,
+   "books": [
+    "veikkaus_fi",
+    "unibet_fi",
+    "leovegas_fi"
+   ],
+   "games": [
+    {
+     "league": "nba",
+     "eventId": "2a76b31e02d1416de069a995589515fc",
+     "commence": "2026-11-06T02:10:00Z",
+     "home": "PHX",
+     "away": "ORL",
+     "mapped": true,
+     "threeWayBooks": 0,
+     "twoWayBooks": 22,
+     "pThree": null,
+     "pTwo": {
+      "home": 0.5701254275940707,
+      "away": 0.5007511266900351
+     },
+     "pinnacle": null,
+     "books": {
+      "unibet_fi": {
+       "moneyline": {
+        "home": 1.73,
+        "away": 2.12
+       }
+      },
+      "leovegas_fi": {
+       "moneyline": {
+        "home": 1.73,
+        "away": 2.12
+       }
+      }
+     },
+     "best": null
+    },
+    {
+     "league": "nba",
+     "eventId": "ac38449dd3dfbe1c9b48164b6a41aa83",
+     "commence": "2026-11-06T03:10:00Z",
+     "home": "GSW",
+     "away": "MIA",
+     "mapped": true,
+     "threeWayBooks": 0,
+     "twoWayBooks": 22,
+     "pThree": null,
+     "pTwo": {
+      "home": 0.6657789613848203,
+      "away": 0.40609137055837574
+     },
+     "pinnacle": null,
+     "books": {
+      "unibet_fi": {
+       "moneyline": {
+        "home": 1.52,
+        "away": 2.55
+       }
+      },
+      "leovegas_fi": {
+       "moneyline": {
+        "home": 1.51,
+        "away": 2.55
+       }
+      }
+     },
+     "best": null
+    }
+   ],
+   "candidates": [],
+   "unmatched": []
+  },
+  {
+   "league": "ucl",
+   "fetchedAt": "2026-11-05T05:53:14.353Z",
+   "cached": false,
+   "creditsLeft": 19972,
+   "alpha": 0.05,
+   "books": [
+    "veikkaus_fi",
+    "unibet_fi",
+    "leovegas_fi"
+   ],
+   "games": [],
+   "candidates": [],
+   "unmatched": []
+  }
+ ]
+}
